@@ -4,7 +4,7 @@
 
 - TASK_01 build skeleton — done
 - TASK_02 clasetMarker theory — done
-- TASK_03 NTactical — unblocked (not started)
+- TASK_03 NTactical — done
 - TASK_04 clasetNet — unblocked (not started)
 - TASK_05 rule model + canonical form — unblocked (not started)
 - TASK_06 five derived rules — blocked (needs 05)
@@ -18,9 +18,10 @@
 
 ## 2. Next unblocked task
 
-TASK_03 (`TASK_03_ntactical.md`).
+TASK_04 (`TASK_04_claset_net.md`).
 
 ## 3. Completion log
 
 - 2026-07-15 TASK_01 — build skeleton landed; upto-auto gate is green.
 - 2026-07-15 TASK_02 — clasetMarker theory landed; upto-auto gate is green.
+- 2026-07-15 TASK_03 — NTactical landed; selftests and upto-auto gate are green.
