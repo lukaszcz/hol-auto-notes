@@ -12,7 +12,7 @@
 - TASK_10 TypeBase hook — done
 - TASK_11 seed theory — done (verified against TASK_11; selftests and upto-auto gate green)
 - TASK_12 theory_tests — done (verified against TASK_12; theory tests pass on two consecutive runs and upto-auto gate is green)
-- TASK_13 bookkeeping + full gate — done
+- TASK_13 bookkeeping + full gate — done (reverified against TASK_13 and sources; fresh full gate green)
 
 ## 2. Next unblocked task
 
@@ -32,4 +32,4 @@ None: Phase 0 is complete.
 - 2026-07-15 TASK_10 — TypeBase contribution registry, catch-up hook, distinctness/injectivity rules, and idempotence landed; implementation and acceptance criteria rechecked, selftests and upto-auto gate are green.
 - 2026-07-15 TASK_11 — seed theory landed; implementation and acceptance criteria rechecked against TASK_11, selftests and upto-auto gate are green.
 - 2026-07-15 TASK_12 — cross-theory persistence tests landed; implementation and acceptance criteria rechecked against TASK_12, two consecutive theory-test runs and upto-auto gate are green.
-- 2026-07-15 TASK_13 — plans updated; Phase 0 interfaces frozen; `help/Docfiles` deferred to Phase 1; full `bin/build -F -t` gate is green.
+- 2026-07-15 TASK_13 — plans updated; Phase 0 interfaces frozen; `help/Docfiles` deferred to Phase 1; implementation reverified against TASK_13; fresh `bin/build -F -t` gate is green.
