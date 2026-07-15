@@ -597,3 +597,20 @@ schema (v1); attribute names; marker vocabulary; `add_rule`/`export_rule`/
 points + ordering contract; `register_tyinfo_contribution`;
 `claset_config`.  Everything else (`decls` internals, net implementation)
 is private to `src/auto/rules`.
+
+## 12. Completion notes (2026-07-15)
+
+Phase 0 is complete.  The task completion log records no unplanned semantic
+changes.  The agreed refinements are: the original parent-plan sketch's
+`extra_netpair` is absent (the delivered claset has `safe0`, `safep`,
+`unsafe`, and `dup`); the aesop in-memory index, builder metadata, and
+tactic-valued rules are deferred to Phase 4, while v1 persists optional
+`prio` only.  D12 superseded the original attribute spelling with the six
+HOL4-native names `intro`/`sintro`, `elim`/`selim`, and `dest`/`sdest`;
+removal is function-based.  The TypeBase hook deliberately seeds only
+distinctness and injectivity; constructor intros and case splits remain for
+Phase 3's `[iff]` and Phase S's `[split]` work respectively.
+
+No `help/Docfiles` entries were added: they are deferred to Phase 1, when
+user-facing tactics exist.  The §11 interface list is frozen as of
+2026-07-15; changes require an owner decision.

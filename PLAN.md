@@ -170,6 +170,21 @@ exercised by `bin/build -F` and by a `--seq` extension of
 
 The shared foundation for both search engines and BLAST (D2, D4).
 
+**Status (2026-07-15): delivered.**  `src/auto/rules/` now provides the
+persistent claset, attributes, markers, TypeBase contributions, seed theory,
+and regression suite described in `PLAN_phase_0.md`.  The implementation
+refined this initial sketch as follows: it has four classical netpairs
+(`safe0`, `safep`, `unsafe`, and `dup`), not an `extra_netpair`; the aesop
+in-memory index is deferred to Phase 4.  The persisted v1 schema reserves
+only optional `prio` metadata; aesop builders and tactic-valued rules are
+also Phase 4 work.  D12's HOL4-native attributes are
+`[intro]`/`[elim]`/`[dest]` (unsafe) and
+`[sintro]`/`[selim]`/`[sdest]` (safe), with function-based removal.  The
+TypeBase hook seeds distinctness and injectivity only: constructor intros
+await Phase 3's `[iff]` machinery and case splits await Phase S's `[split]`
+set.  `help/Docfiles` entries are deferred to Phase 1, when user-facing
+tactics exist.
+
 **Rule kinds.**  {intro, elim, dest} × {safe, unsafe}, following
 `Pure/bires.ML:113–142` (the `?`/extra kind is dropped: it exists only for
 Isabelle's single-step `rule` method; revisit if a structured-rule tactic is
@@ -525,6 +540,10 @@ rule-by-rule — misclassified "safe" rules are the classic way clasets rot.
   documented per release.
 - Distribution impact: full `bin/build -F -t` green at every phase
   boundary (simp changes especially).
+
+### Gate record
+
+- **2026-07-15, Phase 0:** `bin/build -F -t` **green** (TASK_13 gate).
 
 ### Promotion (Phase 9, gated on the layer proving itself)
 
