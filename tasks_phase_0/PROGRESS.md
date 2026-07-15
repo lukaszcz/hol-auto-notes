@@ -1,4 +1,4 @@
-# Phase 0 task progress (verified 2026-07-15; TASK_04 rechecked)
+# Phase 0 task progress (verified 2026-07-15; TASK_04 and TASK_05 rechecked)
 
 ## 1. Task status
 
@@ -6,8 +6,8 @@
 - TASK_02 clasetMarker theory — done
 - TASK_03 NTactical — done
 - TASK_04 clasetNet — done
-- TASK_05 rule model + canonical form — unblocked (not started)
-- TASK_06 five derived rules — blocked (needs 05)
+- TASK_05 rule model + canonical form — done
+- TASK_06 five derived rules — unblocked (not started)
 - TASK_07 clasetLib value — blocked (needs 03, 04, 06)
 - TASK_08 clasetLib persistence + attributes — blocked (needs 07)
 - TASK_09 markers + process_claset_tags — blocked (needs 02, 07)
@@ -18,7 +18,7 @@
 
 ## 2. Next unblocked task
 
-TASK_05 (`TASK_05_claset_rules_model.md`).
+TASK_06 (`TASK_06_derived_rules.md`).
 
 ## 3. Completion log
 
@@ -26,3 +26,4 @@ TASK_05 (`TASK_05_claset_rules_model.md`).
 - 2026-07-15 TASK_02 — clasetMarker theory landed; upto-auto gate is green.
 - 2026-07-15 TASK_03 — NTactical landed; selftests and upto-auto gate are green.
 - 2026-07-15 TASK_04 — clasetNet landed; deliverables and acceptance criteria rechecked; selftests and upto-auto gate are green.
+- 2026-07-15 TASK_05 — rule model, canonical form, declaration bookkeeping, and codec landed; deliverables and acceptance criteria rechecked; selftests and upto-auto gate are green.
