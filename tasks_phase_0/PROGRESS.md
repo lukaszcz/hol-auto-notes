@@ -1,4 +1,4 @@
-# Phase 0 task progress (verified 2026-07-15)
+# Phase 0 task progress (verified 2026-07-15; source, selftests, and gate rechecked)
 
 ## 1. Task status
 
@@ -6,7 +6,7 @@
 - TASK_02 clasetMarker theory — done
 - TASK_03 NTactical — done
 - TASK_04 clasetNet — done
-- TASK_05 rule model + canonical form — done
+- TASK_05 rule model + canonical form — done (reverified; acceptance criteria satisfied)
 - TASK_06 five derived rules — unblocked (in progress; re-opened)
 - TASK_07 clasetLib value — blocked (needs 06; implementation re-opened)
 - TASK_08 clasetLib persistence + attributes — blocked (needs 07)
