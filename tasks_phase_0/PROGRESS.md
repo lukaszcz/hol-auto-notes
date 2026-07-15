@@ -10,13 +10,13 @@
 - TASK_08 clasetLib persistence + attributes — done
 - TASK_09 markers + process_claset_tags — done
 - TASK_10 TypeBase hook — done
-- TASK_11 seed theory — unblocked (not started)
-- TASK_12 theory_tests — blocked (needs 11)
+- TASK_11 seed theory — done (verified against TASK_11; selftests and upto-auto gate green)
+- TASK_12 theory_tests — unblocked (not started)
 - TASK_13 bookkeeping + full gate — blocked (needs 01–12)
 
 ## 2. Next unblocked task
 
-TASK_11 (`TASK_11_seed_theory.md`).
+TASK_12 (`TASK_12_theory_tests.md`).
 
 ## 3. Completion log
 
@@ -30,3 +30,4 @@ TASK_11 (`TASK_11_seed_theory.md`).
 - 2026-07-15 TASK_08 — persistence, lazy batched replay, attributes, and state API landed; selftests and upto-auto gate are green.
 - 2026-07-15 TASK_09 — marker constructors and processing landed; implementation reverified against TASK_09, selftests and upto-auto gate are green.
 - 2026-07-15 TASK_10 — TypeBase contribution registry, catch-up hook, distinctness/injectivity rules, and idempotence landed; implementation and acceptance criteria rechecked, selftests and upto-auto gate are green.
+- 2026-07-15 TASK_11 — seed theory landed; implementation and acceptance criteria rechecked against TASK_11, selftests and upto-auto gate are green.
