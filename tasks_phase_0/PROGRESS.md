@@ -1,4 +1,4 @@
-# Phase 0 task progress (verified 2026-07-15; TASK_05 and TASK_06 rechecked)
+# Phase 0 task progress (verified 2026-07-15)
 
 ## 1. Task status
 
@@ -7,8 +7,8 @@
 - TASK_03 NTactical — done
 - TASK_04 clasetNet — done
 - TASK_05 rule model + canonical form — done
-- TASK_06 five derived rules — done
-- TASK_07 clasetLib value — unblocked (not started)
+- TASK_06 five derived rules — unblocked (in progress; re-opened)
+- TASK_07 clasetLib value — blocked (needs 06; implementation re-opened)
 - TASK_08 clasetLib persistence + attributes — blocked (needs 07)
 - TASK_09 markers + process_claset_tags — blocked (needs 02, 07)
 - TASK_10 TypeBase hook — blocked (needs 08)
@@ -18,7 +18,7 @@
 
 ## 2. Next unblocked task
 
-TASK_07 (`TASK_07_clasetlib_value.md`).
+TASK_06 (`TASK_06_derived_rules.md`).
 
 ## 3. Completion log
 
@@ -27,4 +27,5 @@ TASK_07 (`TASK_07_clasetlib_value.md`).
 - 2026-07-15 TASK_03 — NTactical landed; selftests and upto-auto gate are green.
 - 2026-07-15 TASK_04 — clasetNet landed; deliverables and acceptance criteria rechecked; selftests and upto-auto gate are green.
 - 2026-07-15 TASK_05 — rule model, canonical form, declaration bookkeeping, and codec landed; deliverables and acceptance criteria rechecked; selftests and upto-auto gate are green.
-- 2026-07-15 TASK_06 — five derived rules and ext_info assembly landed; deliverables and acceptance criteria rechecked; golden selftests and upto-auto gate are green.
+- 2026-07-15 TASK_06 — initial implementation landed; verification re-opened it because the swap guard and theorem-level golden/diagnostic checks are incomplete.
+- 2026-07-15 TASK_07 — implementation landed; verification re-opened it because swapped-rule routing, declaration ordering, and lookup tests are incomplete.
