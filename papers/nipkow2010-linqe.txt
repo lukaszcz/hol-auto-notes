@@ -1,0 +1,1066 @@
+ Journal of Automated Reasoning manuscript No.
+ (will be inserted by the editor)
+
+
+
+
+Linear Quantifier Elimination
+
+Tobias Nipkow
+
+
+
+
+Received: date / Accepted: date
+
+
+Abstract This paper presents verified quantifier elimination procedures for dense linear
+orders (two of them novel), for real and for integer linear arithmetic. All procedures are
+defined and verified in the theorem prover Isabelle/HOL, are executable and can be applied
+to HOL formulae themselves (by reflection). The formalization of the different theories is
+highly modular.
+
+
+1 Introduction
+
+This paper is about the concise implementation of quantifier elimination (QE) procedures
+(QEPs) for linear arithmetics. QE is a venerable logical technique which yields decision pro-
+cedures if ground atoms are decidable. The focus of our work is the compact implementation
+of QEPs (for linear arithmetics) inside a theorem prover. All our QEPs have been defined
+and verified in Isabelle/HOL [22]. We do not discuss these formal proofs here. They are
+detailed, mostly structured and available online at afp.sf.net, together with the QEPs them-
+selves. Because the informal proofs of these QEPs can be found in the literature, they need
+not be discussed either. The exception are our novel QEPs, for which informal correctness
+proofs are given.
+    The main contributions of this paper are:
+ – Two novel QEPs for dense linear orders (DLO) inspired by QEPs for linear real arith-
+   metic.
+ – Presentation of 8 verified implementations of QEPs: three for DLO, three for linear real
+   arithmetic and two for Presburger arithmetic. We show everything but the most trivial
+   details, providing reference implementations and convincing the reader that nothing has
+   been swept under the carpet.
+ – Extremely compact formalizations due to the almost excessive use of lists and list com-
+   prehensions.
+ – A common reusable QE framework using Isabelle’s structuring facility of locales, thus
+   factoring out the common parts of the different QEPs.
+
+T. Nipkow
+Institut für Informatik, Technische Universität München
+E-mail: www.in.tum.de/∼nipkow
+2
+
+
+This paper is a contribution to the growing body of verified theorem proving algorithms. In
+spirit it is close to Harrison’s book [13] which presents all algorithms in OCaml.
+     Why this obsession with executable and verified QEPs? The context of this research is
+the question of how to implement trustworthy and efficient decision procedures in founda-
+tional theorem provers, i.e. without having to trust an external oracle. Reflection, originally
+proposed by Boyer and Moore [2] and used to great effect in systems like Coq (e.g. [10])
+and Isabelle (e.g. [4]) has become a standard approach. Suffice it to say that we follow this
+approach, too, and that all the algorithms in this paper can be used directly on formulae in
+Isabelle — details can be found elsewhere (e.g. [21]).
+     It should be emphasized that the presentation is streamlined for succinctness. In partic-
+ular, we always restrict attention to two of the four relations =, <, ≤, 6=. For example, in
+DLOs it suffices to consider = and < because x ≤ y is equivalent with x < y ∨ x = y and
+x 6= y is equivalent with x < y ∨ y < x. An efficient implementation would always work with
+all four relations. The corresponding generalization of our code is straightforward.
+     The paper is structured as follows. In §3 we describe a HOL model of logical formulae
+parameterized by a language of atoms and present two generic QEPs, one based on NNF, one
+on DNF. Both are parameterized by a QEP for a single quantifier. The remaining sections
+present a succession of single-quantifier QEPs for different linear theories: each section
+starts with a simple DNF-based algorithm and proceeds to more efficient NNF-based ones.
+
+
+2 Basic Notation
+
+HOL conforms largely to everyday mathematical notation. This section introduces further
+non-standard notation and in particular a few basic data types with their primitive operations.
+     The types of truth values, natural numbers, integers and reals are called bool, nat, int
+and real. The space of total functions is denoted by ⇒. Type variables are denoted by α, β ,
+etc. The notation t::τ means that term t has type τ.
+     Sets over type α, type α set, follow the usual mathematical conventions.
+     Lists over type α, type α list, come with the empty list [], the infix constructor · , the
+infix @ that appends two lists, and the conversion function set from lists to sets. Variable
+names ending in s usually stand for lists. In addition to the standard functions map and
+filter, Isabelle/HOL also supports Haskell-style list comprehension notation. For example,
+in Haskell [2*x | x <- xs, x > 0] denotes the list of all 2*x, where x iterates over all
+elements of the list xs such that x > 0. Instead of [e | x <- xs, ...] as in Haskell we
+write [e. x ← xs, . . .], and [x←xs. . . .] is short for [x. x←xs, . . .].
+     Note that = on type bool means “iff” and that If P then Q is synonymous with P =⇒ Q.
+     During informal explanations we often switch to everyday mathematical notation where
+(a, b) can be a pair or an open interval.
+
+
+3 Logic
+
+Formulae are defined as a recursive datatype with a parameter type α of atoms:
+     datatype α fm      =    >|⊥|Aα
+                        |    (α fm) ∧ (α fm) | (α fm) ∨ (α fm) | ¬ (α fm) | ∃ (α fm)
+The boldface symbols ∧ , ∨ , ¬ and ∃ are ordinary constructors chosen to resemble the
+logical operators they represent. Constructor A encloses atoms. The type of atoms is left
+                                                                                                               3
+
+
+open by making it a parameter α. Variables are represented by de Bruijn indices: quantifiers
+do not explicitly mention the name of the variable being bound because that is implicit. For
+example, ∃ (∃∃ . . . 0 . . . 1 . . .) represents a formula ∃x1 .∃x0 . . . . x0 . . . x1 . . .. Note that the only
+place where variables can appear is inside atoms. The only distinction between free and
+bound variables is that the index of a free variable is larger than the number of enclosing ∃ .
+
+
+3.1 Auxiliary Functions
+
+The constructors ∧ , ∨ and ¬ have optimized (“short-circuit”) versions and, or and neg:
+    and > ϕ = ϕ                       or > ϕ = >                      neg > = ⊥
+    and ϕ > = ϕ                       or ϕ > = >                      neg ⊥ = >
+    and ⊥ ϕ = ⊥                       or ⊥ ϕ = ϕ                      neg ϕ = ¬ ϕ
+    and ϕ ⊥ = ⊥                       or ϕ ⊥ = ϕ
+    and ϕ 1 ϕ 2 = (ϕ 1 ∧ ϕ 2 )        or ϕ 1 ϕ 2 = (ϕ 1 ∨ ϕ 2 )
+Conjunctions and disjunctions of lists of formulae are easily defined:
+    list-conj [ϕ 1 ,. . .,ϕ n ] = and ϕ 1 (and . . . ϕ n )
+    list-disj [ϕ 1 ,. . .,ϕ n ] = or ϕ 1 (or . . . ϕ n )
+For convenience the following abbreviation is also introduced:
+    Disj us f ≡ list-disj (map f us)
+More interesting is the conversion to DNF:
+    dnf :: α fm ⇒ α list list
+    dnf >            = [[]]
+    dnf ⊥            = []
+    dnf (A ϕ)        = [[ϕ]]
+    dnf (ϕ 1 ∨ ϕ 2 ) = dnf ϕ 1 @ dnf ϕ 2
+    dnf (ϕ 1 ∧ ϕ 2 ) = [d1 @ d2 . d1 ← dnf ϕ 1 , d2 ← dnf ϕ 2 ]
+The resulting list of lists represents the disjunction of conjunctions of atoms. Working with
+lists rather than type fm has the advantage of a well-developed library and notation.
+     Note that dnf assumes that its argument contains neither quantifiers nor negations. Most
+of our work will be concerned with quantifier-free formulae where all negations have not
+just been pushed right in front of atoms but actually into them. This is easy for linear orders
+because ¬(x < y) is equivalent with y ≤ x. This conversion will be described later on because
+it depends on the type of atoms. The (trivial to define) predicates
+    qfree, nqfree :: α fm ⇒ bool
+check whether their argument is free of quantifiers (qfree), and free of negations and quan-
+tifiers (nqfree).
+     There are also two mapping functionals
+    mapfm :: (α ⇒ β ) ⇒ α fm ⇒ β fm
+    amapfm :: (α ⇒ β fm) ⇒ α fm ⇒ β fm
+where mapfm f is the canonical one that simply replaces A a by A (f a), whereas amapfm
+may also simplify the formula via and, or and neg:
+4
+
+    amapfm h >            = >
+    amapfm h ⊥            = ⊥
+    amapfm h (A a)        = ha
+    amapfm h (ϕ 1 ∧ ϕ 2 ) = and (amapfm h ϕ 1 ) (amapfm h ϕ 2 )
+    amapfm h (ϕ 1 ∨ ϕ 2 ) = or (amapfm h ϕ 1 ) (amapfm h ϕ 2 )
+              ¬ ϕ)
+    amapfm h (¬           = neg (amapfm h ϕ)
+Both mapping functionals are only defined and needed for qfree formulae.
+   The set of atoms in a formula is computed by the function atoms :: α fm ⇒ α set.
+
+
+3.2 Interpretation
+
+The interpretation or semantics of a fm is defined via the obvious homomorphic mapping to
+an HOL formula: ∧ becomes ∧, ∨ becomes ∨, etc. The interpretation of atoms is a parameter
+of this mapping. Atoms may refer to variables and are thus interpreted w.r.t. a valuation.
+Since variables are represented as natural numbers, the valuation is naturally represented as
+a list: variable i refers to the ith entry in the list (starting with 0). This leads to the following
+interpretation function interpret :: (α ⇒ β list ⇒ bool) ⇒ α fm ⇒ β list ⇒ bool:
+    interpret h > xs            = True
+    interpret h ⊥ xs            = False
+    interpret h (A a) xs        = h a xs
+    interpret h (ϕ 1 ∧ ϕ 2 ) xs = interpret h ϕ 1 xs ∧ interpret h ϕ 2 xs
+    interpret h (ϕ 1 ∨ ϕ 2 ) xs = interpret h ϕ 1 xs ∨ interpret h ϕ 2 xs
+                 ¬ ϕ) xs
+    interpret h (¬              = ¬ interpret h ϕ xs
+                 ∃ ϕ) xs
+    interpret h (∃              = ∃ x. interpret h ϕ (x · xs)
+In the equation for ∃ the value of the bound variable x is added at the front of the valuation.
+De Bruijn indexing ensures that in the body 0 refers to x and i + 1 refers to bound variable i
+further up.
+
+
+3.3 Atoms
+
+Atoms are more than a type parameter α. They come with an interpretation (their seman-
+tics), and a few other specific functions. These functions are also parameters of the generic
+part of quantifier elimination. Thus the further development will be like a module param-
+eterized with the type of atoms and some functions on atoms. These parameters will be
+instantiated later on when applying the framework to various linear arithmetics.
+     In Isabelle this parameterization is achieved by means of a locale [1], a named context
+of types, functions and assumptions about them. We call this context ATOM. It provides the
+following functions
+      Ia             :: α ⇒ β list ⇒ bool
+      aneg           :: α ⇒ α fm
+      depends0       :: α ⇒ bool
+      decr           :: α ⇒ α
+with the following intended meaning:
+I a a xs is the interpretation of atom a w.r.t. valuation xs, where variable i (note i :: nat
+     because of de Bruijn) is assigned the ith element of xs.
+                                                                                             5
+
+
+aneg negates an atom. It returns a formula which should be free of negations. This is strictly
+   for convenience: it means we can eliminate all negations from a formula. In the worst
+   case we would have to introduce negated versions of all atoms, but in the case of linear
+   orders this is not necessary because we can turn, for example, ¬(x < y) into (y < x) ∨
+   (y = x).
+depends0 a checks if atom a contains (depends on) variable 0.
+decr a decrements every variable in a by 1.
+    Within context ATOM we introduce the abbreviation I ≡ interpret I a . The assumptions
+on the parameters of ATOM can now be stated quite succinctly:
+
+    I (aneg a) xs = (¬ I a a xs)
+    nqfree (aneg a)
+    ¬ depends0 a =⇒ I a a (x · xs) = I a (decr a) xs
+
+Function aneg must return a quantifier and negation-free formula whose interpretation is the
+negation of the input. And when interpreting an atom not containing variable 0 we can drop
+the head of the valuation and decrement the variables without changing the interpretation.
+     These assumptions must be discharged when the locale is instantiated. We do not show
+this in the text because the proofs are straightforward in all cases.
+     In the context of ATOM we define two auxiliary functions: atoms0 ϕ computes the list
+of all atoms in ϕ that depend on variable 0. The negation normal form (NNF) of a qfree
+formula is defined in the customary manner by pushing negations inwards. We show only a
+few representative equations:
+         ¬ (A a))
+    nnf (¬               = aneg a
+    nnf (ϕ 1 ∨ ϕ 2 )     = nnf ϕ 1 ∨ nnf ϕ 2
+         ¬ (ϕ 1 ∨ ϕ 2 )) = nnf (¬
+    nnf (¬                      ¬ ϕ 1 ) ∧ nnf (¬
+                                               ¬ ϕ 2)
+         ¬ (ϕ 1 ∧ ϕ 2 )) = nnf (¬
+    nnf (¬                      ¬ ϕ 1 ) ∨ nnf (¬
+                                               ¬ ϕ 2)
+The first equation differs from the usual definition and gets rid of negations altogether —
+see the explanation of aneg above.
+
+
+3.4 Quantifier Elimination
+
+The elimination of all quantifiers from a formula is achieved by eliminating them one by one
+in a bottom-up fashion. Thus each step needs to deal merely with the elimination of a single
+quantifier in front of a quantifier-free formula. This step is theory-dependent and hard. The
+lifting to arbitrary formulae is simple and can be done once and for all. We assume we are
+                                                                                          ∃ ϕ)
+given a function qe :: α fm ⇒ α fm for the elimination of a single ∃ , i.e. I (qe ϕ) = I (∃
+if qfree ϕ. Note that qe is not applied to ∃ ϕ but just to ϕ, ∃ remains implicit. Lifting qe is
+straightforward:
+    lift-nnf-qe :: (α fm ⇒ α fm) ⇒ α fm ⇒ α fm
+    lift-nnf-qe qe (ϕ 1 ∧ ϕ 2 ) = and (lift-nnf-qe qe ϕ 1 ) (lift-nnf-qe qe ϕ 2 )
+    lift-nnf-qe qe (ϕ 1 ∨ ϕ 2 ) = or (lift-nnf-qe qe ϕ 1 ) (lift-nnf-qe qe ϕ 2 )
+                    ¬ ϕ)
+    lift-nnf-qe qe (¬           = neg (lift-nnf-qe qe ϕ)
+                    ∃ ϕ)
+    lift-nnf-qe qe (∃           = qe (nnf (lift-nnf-qe qe ϕ))
+    lift-nnf-qe qe ϕ            = ϕ
+Note that qe is called with an argument already in NNF.
+6
+
+
+3.4.1 DNF
+
+We can go even further and put the argument of qe into DNF. This can lead to non-elementary
+complexity but allows particularly straightforward algorithms because then we can push ex-
+istential quantifiers through disjunctions as follows (using customary logical notation):
+                                      _^               _             ^
+                               (∃x.           ai j ) = (       ∃x.       ai j )
+                                      i   j                i         j
+
+where ai j are the atoms of the DNF. Thus qe can be applied directly to a conjunction of
+atoms. Using
+                            (∃x. A ∧ B(x)) = (A ∧ (∃x. B(x)))
+where A does not depend on x, we can push the quantifier right in front of a conjunction of
+atoms all of which depend on x. This simplifies matters for qe as much as possible.
+   Now we look at the formalization of this second lifting procedure:
+    lift-dnf-qe :: (α list ⇒ α fm) ⇒ α fm ⇒ α fm
+Because we represent the DNF via lists of lists of atoms, the first argument of lift-dnf-qe
+takes a list rather than a conjunction of atoms.
+    The separation of a list (conjunction) of atoms into those that do contain 0 and those that
+do not, and the application of qe to the former is performed by an auxiliary function:
+    qelim qe as = (let qf = qe [a ← as. depends0 a];
+                      indep = [A(decr a). a ← as, ¬ depends0 a]
+                   in and qf (list-conj indep))
+Because the innermost quantifier is eliminated, all references to other quantifiers need to be
+decremented. For the atoms independent of the innermost quantifier this needs to be done
+explicitly, for the other atoms this must happen inside qe.
+    The main function lift-dnf-qe recurses down the formula (we omit the obvious equations)
+until it finds an ∃ ϕ, removes the quantifiers from ϕ, puts the result into NNF and DNF, and
+applies qelim qe to each disjunct:
+                ∃ ϕ) = Disj (dnf (nnf (lift-dnf-qe qe ϕ))) (qelim qe)
+lift-dnf-qe qe (∃
+
+3.4.2 Equality
+
+We can generalize quantifier elimination via DNF even further based on the predicate cal-
+culus law
+                                 (∃x. x = t ∧ φ ) = φ [t/x]                           (1)
+provided x does not occur in t. In some theories this enables us to remove equalities com-
+pletely: in linear real arithmetic, any equation containing variable x is either independent of
+the value of x (e.g. x = x or x = x + 1) or can be brought into the form x = t with x not in
+t. But even if one cannot remove all equalities, as in most non-linear theories, it is useful to
+deal with x = t separately for obvious efficiency reasons. Hence we extend locale ATOM to
+locale ATOM-EQ containing the following additional parameters
+     solvable0     :: α ⇒ bool
+     trivial       :: α ⇒ bool
+     subst0        :: α ⇒ α ⇒ α
+                                                                                                 7
+
+
+with the following intended meaning expressed by the corresponding assumptions:
+ – For solvable atoms, any valuation of the variables > 0 can be extended to a satisfying
+   valuation: solvable0 eq =⇒ ∃ x. I a eq (x · xs).
+ – Trivial atoms satisfy every valuation: trivial eq =⇒ I a eq xs.
+ – Function subst0 substitutes its first argument, a solvable equality, into its second argu-
+   ment. This is expressed by requiring that subst0 satisfies the substitution lemma under
+   certain conditions: If solvable0 eq and ¬ trivial eq and I a eq (x · xs) and depends0 a
+   then I a (subst0 eq a) xs = I a a (x · xs). And substituting a solvable atom into itself results
+   in a trivial atom: solvable0 eq =⇒ trivial (subst0 eq eq).
+    Now we can define a lifting function that takes a quantifier elimination procedure qe
+on lists of atoms and extends it to lists containing trivial atoms (by filtering them out) and
+solvable atoms (by substituting them in):
+    lift-eq-qe qe as =
+    (let as = [a←as. ¬ trivial a]
+     in case [a←as. solvable0 a] of
+           [] ⇒ qe as
+        | eq · eqs ⇒ (let ineqs = [a←as. ¬ solvable0 a]
+                      in list-conj (map (A ◦ subst0 eq) (eqs @ ineqs))))
+
+
+3.5 Correctness
+
+Correctness of these lifting functions is roughly expressed as follows: if qe eliminates one
+existential while preserving the interpretation, then lift qe eliminates all quantifiers while
+preserving the interpretation.
+    For compactness we employ a set theoretic language for expressing properties of func-
+tions: A → B is the set of functions from A to B. Note that sets and predicates are identified
+in HOL.
+    First we look at lift-nnf-qe. Elimination of all quantifiers is easy:
+Lemma 1 If qe ∈ nqfree → qfree then qfree (lift-nnf-qe qe ϕ).
+Preservation of the interpretation is slightly more involved:
+Lemma 2 If qe ∈ nqfree → qfree and ∀ ϕ∈nqfree. ∀ xs. I (qe ϕ) xs = (∃ x. I ϕ (x · xs))
+then I (lift-nnf-qe qe ϕ) xs = I ϕ xs.
+     For lift-dnf-qe the statements are a bit more involved, but essentially analogous to those
+for lift-nnf-qe. The only difference is that qe applies to lists of atoms as instead of a formula
+ϕ. Function lists yields the set of lists over a given set.
+Lemma 3 If qe ∈ lists depends0 → qfree then qfree (lift-dnf-qe qe ϕ).
+Lemma 4 If qe ∈ lists depends0 → qfree and ∀ as∈ lists depends0 . is-dnf-qe qe as, then
+I (lift-dnf-qe qe ϕ) xs = I ϕ xs.
+where is-dnf-qe qe as ≡ ∀ xs. I (qe as) xs = (∃ x. ∀ a∈set as. I a a (x · xs)). The right-hand
+side is equal to ∃ x. I (list-conj (map A as)) (x · xs).
+     Finally we consider the extension to equality. From the assumptions of locale ATOM-EQ
+it is not hard to prove that if qe performs quantifier elimination on any list of unsolvable
+atoms depending on variable 0, then lift-eq-qe qe is a quantifier elimination procedure on
+any list of atoms depending on 0:
+8
+
+
+Lemma 5 If ∀ as ∈ list(depends0 ∩ −solvable0 ). is-dnf-qe qe as then
+∀ as ∈ list depends0 . is-dnf-qe (lift-eq-qe qe) as.
+In our instantiations, the unsolvable atoms will be the inequalities (<) and qe will only need
+to deal with them; = is taken care of completely by this lifting process.
+    Finally we compose lift-dnf-qe and lift-eq-qe
+      lift-dnfeq-qe = lift-dnf-qe ◦ lift-eq-qe
+and obtain a corollary to lemmas 4 and 5:
+Corollary 1 If qe ∈ lists depends0 → qfree and ∀ as ∈ lists(depends0 ∩ −solvable0 ).
+is-dnf-qe qe as then I (lift-dnfeq-qe qe ϕ) xs = I ϕ xs.
+In the same manner we obtain
+Corollary 2 If qe ∈ list depends0 → qfree then qfree (lift-dnfeq-qe qe ϕ).
+   All proofs in this subsection are straightforward inductions using a number of simple
+additional lemmas.
+
+    In the following sections we define a number of quantifier elimination functions called
+qe-f1 (for different names f ) that eliminate a single ∃ . In each case
+    – we have proved that qe-f1 satisfies the assumptions of lemmas 1 and 2 (or lemmas 3 and
+      4, or corollaries 1 and 2), with qe-f1 for qe,
+    – we define qe-f = lift-nnf-qe qe-f1 (or via lift-dnf-qe, or via lift-dnfeq-qe),
+    – we obtain qfree (qe-f ϕ) and I (qe-f ϕ) xs = I ϕ xs as corollaries of the above lemmas
+      and corollaries.
+Because of this uniformity and because the correctness proofs are either discussed infor-
+mally beforehand or are well-known from the literature, we suppress all of this in the pre-
+sentation. Thus it may look as if we merely present code, but the proofs are all there.
+
+
+
+4 Dense Linear Orders
+
+The theory of dense linear orders (without endpoints) is an extension of the theory of linear
+orders with the axioms
+
+                     x < z =⇒ ∃y. x < y ∧ y < z                ∃u. x < u            ∃l. l < x
+
+It is the canonical example of quantifier elimination [14]. The equivalence (∃ y. x < y ∧ y <
+z) = (x < z) is an easy consequence of the axioms and the essence of Fourier’s elimination
+method. It generalizes to arbitrary conjunctions of inequalities containing the quantified
+variable: partition the inequalities into those of the form li < x and those of the form x < u j
+and combine all pairs:
+                                ^                ^                    ^
+                          (∃x. (       li < x) ∧ (       x < u j )) = (        li < u j )       (2)
+                                   i                 j                    ij
+
+We formalize this DNF-based (and thus non-elementary) quantifier elimination procedure
+in §4.2.
+                                                                                              9
+
+
+    More interesting are two new NNF-based algorithms developed in §4.3–4.5. They are
+based on the test point method (originally due to Cooper [5] and Ferrante and Rackoff [8]
+and later generalized by Weispfenning [26]). The idea is to find a finite set of test points T
+                                              W
+(depending on ϕ) such that (∃x. ϕ(x)) = ( t∈T ϕ(t)). The complication is that (conceptu-
+ally) T may contain values like infinity, infinitesimals or intermediate points, values that are
+not representable in the given term language. The challenge is to define special versions of
+substitution for these values.
+
+
+4.1 Atoms
+
+There are just the two relations < and = and no function symbols. Thus atomic formulae
+can be represented by the following datatype:
+    datatype atom = nat < nat | nat = nat
+Note the bold infix constructors < and = . Because there are no function symbols, the argu-
+ments of the relations must be variables. For example, i < j represents the atom xi < x j in
+de Bruijn notation.
+    Now we can instantiate locale ATOM. Type parameter α becomes type atom. The inter-
+pretation function I a becomes I d l o where
+    I d l o (i = j) xs = (xs[i] = xs[j] )
+    I d l o (i < j) xs = (xs[i] < xs[j] )
+The notation xs[i] means selection of the ith element of xs. The type of I d l o is explicitly
+restricted such that xs must be a list of elements over a dense linear order, where the latter
+is formalized as a type class [11] with the axioms shown at the start of this section. Thus all
+valuations in this section are over dense linear orders. Parameter aneg becomes negd l o :
+    negd l o (i < j) = (A (j < i) ∨ A (i = j))
+    negd l o (i = j) = (A (i < j) ∨ A (j < i))
+The parameters adepends and adecr are instantiated with dependsd l o and decrd l o :
+    dependsd l o (i = j) = (i = 0 ∨ j = 0)
+    dependsd l o (i < j) = (i = 0 ∨ j = 0)
+    decrd l o (i < j) = (i − 1 < j − 1)
+    decrd l o (i = j) = (i − 1 = j − 1)
+This instantiation satisfies all the axioms of ATOM.
+
+
+4.2 DNF-Based Quantifier Elimination
+
+First we consider the special case of a list (conjunction) of < atoms as. We may assume they
+all depend on variable 0, the variable to be eliminated:
+    qe-dlo1 as =
+      (if (0 < 0) ∈ set as then ⊥ else
+       let lbs = [i. (Suc i < 0) ← as];
+           ubs = [j. (0 < Suc j) ← as];
+           pairs = [A(i < j). i ← lbs, j ← ubs]
+       in list-conj pairs)
+10
+
+
+This is an executable version of (2), except that we also take care of the unsatisfiable atom
+x0 < x0 and we decrement the variables to compensate for the eliminated quantifier. Instead
+of detecting only the contradiction x0 < x0 one could (and should) return ⊥ upon finding
+any xi < xi .
+    The extension with equality is provided by instantiating ATOM-EQ (see §3.4.2): solv-
+able0 becomes λ (i = j) ⇒ i=0 ∨ j=0 | a ⇒ False,1 trivial becomes λ (i = j) ⇒ i=j | a ⇒
+False and subst0 is defined as follows:
+      subst0 (i = j) (m < n) = (subst i j m < subst i j n)
+      subst0 (i = j) (m = n) = (subst i j m = subst i j n)
+      subst i j k = (if k = 0 then if i = 0 then j else i else k) − 1
+Discharging the assumptions of ATOM-EQ is straightforward.
+
+
+4.3 The Interior Point Method
+
+Ferrante and Rackoff [8] realized (for linear real arithmetic) that when eliminating x from φ
+it (essentially) suffices to collect all lower bounds l of x (i.e. l < x occurs in φ ) and all upper
+bounds u of x (i.e. x < u occurs in φ ) and try all such (l + u)/2 as test points. This method
+is implemented in §5.3.
+     Now we present a novel quantifier elimination method for DLOs based on Ferrante and
+Rackoff’s idea. The problem with DLOs is that one cannot name any point between two
+variables x and y. Hence a special form of substitution must be defined that behaves as if
+some intermediate point was substituted without requiring such a point. We use the symbolic
+notation x↓y to denote some arbitrary but fixed point in the interval (x, y). Substitution with
+x↓y is defined as follows:
+                           (x↓y < z) = (y ≤ z)               (x↓y = z) = False
+                           (z < x↓y) = (z ≤ x)               (z = x↓y) = False
+                           (x↓y < x↓y) = False               (x↓y = x↓y) = True
+Note that x↓y = z is false because we can always choose x↓y to be different from z. Note
+also that these definitions only work as expected if x < y.
+    We also need the fictitious values −∞ and ∞ first used by Cooper. Then we can formu-
+late the interior point method as a logical equivalence in test point form, where φ must be
+quantifier-free and in NNF:
+                                                        _                _
+               (∃x. φ (x)) = (φ (−∞) ∨ φ (∞) ∨               φ (y) ∨              (y < z ∧ φ (y↓z)))   (3)
+                                                       y∈E             y∈L, z∈U
+
+E is the set of y such that x = y or y = x occur in φ (x), L is the set of y such that y < x occurs
+in φ (x), U is the set of y such that x < y occurs in φ (x), where x is the bound variable and y
+is different from x.
+     We sketch a proof of (3), details can be found in the Isabelle proof. The if-direction is
+easy as in each case a witness is given. Except that −∞, ∞ and y↓z are not proper values.
+But by induction on φ one can show that φ (−∞) etc imply φ (x) for suitable x:
+                                        ∃x.∀y ≤ x. φ (−∞) = φ (y)
+                                         ∃x.∀y ≥ x. φ (∞) = φ (y)
+                                   y < z ∧ φ (y↓z) =⇒ ∀x ∈ (y, z). φ (x)
+  1   The notation λ pat ⇒ e | ... is short for λ v. case v of pat ⇒ e | ... .
+                                                                                              11
+
+
+For the only-if-direction assume φ (x) and not φ (−∞) ∨ φ (∞) ∨ y∈E φ (y). We have to show
+                                                                  W
+
+that φ (y↓z) for some y ∈ L and z ∈ U. From the assumptions it follows by induction on φ
+that there must be y0 ∈ L and z0 ∈ U such that x ∈ (y0 , z0 ). Now we show (by induction on
+φ ) the lemma that innermost intervals (y, z) completely satisfy φ :
+
+Lemma 6 If x ∈ (y, z), x ∈
+                         / E, (y, x) ∩ L = 0/ and (x, z) ∩ U = 0,
+                                                               / then φ (x) implies that
+∀u ∈ (y, z). φ (u).
+
+Given x ∈ (y0 , z0 ) we define y = max{y ∈ L | y < x} and z = min{z ∈ U | x < z}. It is easy
+to see that this satisfies the premises of the lemma and hence ∀u ∈ (y, z). φ (u). Again by
+induction on φ one can show that this actually implies φ (y↓z):
+
+Lemma 7 If x ∈ (y, z), x ∈
+                         / E, (y, x) ∩ L = 0/ and (x, z) ∩U = 0,
+                                                              / then ∀x ∈ (y, z). φ (x) implies
+φ (y↓z).
+
+
+
+4.4 A Verified Implementation of the Interior Point Method
+
+The executable version of (3) is short
+    qe-interior1 ϕ =
+    (let as = atoms0 ϕ; lbs = lbounds as; ubs = ubounds as; ebs = ebounds as;
+         intrs = [ A(l < u) ∧ (subst2 l u ϕ). l←lbs, u←ubs]
+     in list-disj (inf − ϕ · inf + ϕ · intrs @ map (subst ϕ) ebs))
+
+but requires some auxiliary functions:
+    The implementation of substituting l↓u in atoms is given below. Please note that substi-
+tution must not just substitute for variable 0 but must also decrement the other variables.
+
+    asubst2 l u (0 < 0)         = ⊥
+    asubst2 l u (0 < Suc j)     = A (u < j) ∨ A (u = j)
+    asubst2 l u (Suc i < 0)     = A (i < l) ∨ A (i = l)
+    asubst2 l u (Suc i < Suc j) = A (i < j)
+    asubst2 l u (0 = 0)         = >
+    asubst2 l u (0 = Suc v)     = ⊥
+    asubst2 l u (Suc v = 0)     = ⊥
+    asubst2 l u (Suc i = Suc j) = A (i = j)
+
+From atoms to formulae is a short step: subst2 l u ϕ ≡ amapfm (asubst2 l u) ϕ
+    Plain old substitution of a variable k for 0 is defined first on variables, then on atoms and
+finally on formulae:
+
+    isubst k 0 = k
+    isubst k (Suc i) = i
+
+    asubst k (i < j) = (isubst k i < isubst k j)
+    asubst k (i = j) = (isubst k i = isubst k j)
+
+    subst ϕ k ≡ mapfm (asubst k) ϕ
+
+Substituting −∞ for 0 is implemented by amin-inf and inf − :
+12
+
+     amin-inf ( < 0)          = ⊥
+     amin-inf (0 < Suc )      = >
+     amin-inf (Suc i < Suc j) = A (i < j)
+     amin-inf (0 = 0)         = >
+     amin-inf (0 = Suc )      = ⊥
+     amin-inf (Suc = 0)       = ⊥
+     amin-inf (Suc i = Suc j) = A (i = j)
+     inf − ϕ ≡ amapfm amin-inf ϕ
+Dually there is inf + for substituting ∞. Lower bounds, upper bounds and equalities are
+conveniently collected from a list of atoms by list comprehension:
+     lbounds as = [i. (Suc i < 0) ← as]
+     ubounds as = [i. (0 < Suc i) ← as]
+     ebounds as = [i. (Suc i = 0) ← as] @ [i. (0 = Suc i) ← as]
+
+
+4.5 The Method of Infinitesimals
+
+Loos and Weispfenning [15] proposed a quantifier elimination procedure for linear real arith-
+metic (see §5.4) where test points are x + ε (for x a lower bound) or y − ε (for y an upper
+bound) where ε is an infinitesimal. That is, the test points are arbitrarily close to the lower
+or upper bounds of the eliminated variable. In particular, it is not necessary to pair all lower
+and upper bounds but one can choose either set, typically the smaller one. For succinctness
+we ignore this duality and concentrate on the lower bounds only.
+    In this section we adapt the idea of infinitesimals to derive a new quantifier elimination
+procedure for DLOs. We merely need to explain what substitution of x + ε means:
+
+                  (x + ε < y)     = (x < y)        (x + ε = y)     = False
+                  (y < x + ε)     = (y ≤ x)        (y = x + ε)     = False
+                  (x + ε < x + ε) = False          (x + ε = x + ε) = True
+
+where x and y are different variables.
+   The test point method with infinitesimals is justified by the following equivalence,
+where, as usual, φ is quantifier free and in NNF:
+                                                 _              _
+                      (∃x. φ (x)) = (φ (−∞) ∨         φ (y) ∨         φ (y + ε))            (4)
+                                                y∈E             y∈L
+
+where E and L are defined as in (3). The proof is also similar. The main differences are: For
+the if-direction we need to show (by induction on φ ) that y + ε represents a proper witness:
+
+                           φ (y + ε) =⇒ ∃y0 > y. ∀x ∈ (y, y0 ). φ (x)
+
+The two lemmas for the only-if-direction become
+Lemma 8 If y < x, x ∈
+                    / E, (y, x) ∩ L = 0/ and φ (x), then ∀u ∈ (y, x]. φ (u).
+
+Lemma 9 If y < x, x ∈
+                    / E, (y, x) ∩ L = 0/ and ∀u ∈ (y, x]. φ (u), then φ (y + ε).
+
+     Our verified implementation of (4)
+     qe-eps1 ϕ = (let as = atoms0 ϕ; lbs = lbounds as; ebs = ebounds as
+                  in list-disj (inf − ϕ · map (subst+ ϕ) lbs @ map (subst ϕ) ebs))
+                                                                                                  13
+
+
+requires only one new concept, subst+ ϕ y, the substitution φ (y + ε):
+    asubst+ k (0 < 0)         = ⊥
+    asubst+ k (0 < Suc j)     = A (k < j)
+    asubst+ k (Suc i < 0)     = if i = k then > else A (i < k) ∨ A (i = k)
+    asubst+ k (Suc i < Suc j) = A (i < j)
+    asubst+ k (0 = 0)         = >
+    asubst+ k (0 = Suc )      = ⊥
+    asubst+ k (Suc = 0)       = ⊥
+    asubst+ k (Suc i = Suc j) = A (i = j)
+    subst+ ϕ k ≡ amapfm (asubst+ k) ϕ
+
+
+4.6 Complexity
+
+We analyze the complexity of the interior point and the infinitesimal method. A formula of
+size n can contain at most n variables. The set of variables decreases by one in each step. In
+the worst case all of them are bound and need to be eliminated. In each step of the quantifier
+elimination processes (3) and (4) the sets E, L and U are at most as large as k, the current
+number of variables.
+    The interior point method makes at most (k − 1)2 copies of the formula in each step.
+Hence the size of the output formula and also the amount of working space required is
+O(n·(n−1)2 · · · 12 ) = O(n·(n−1)!2 ). The method of infinitesimals, however, only makes at
+most k −1 copies, thus requiring only O(n·(n−1) · · · 1) = O(n!) space. The time complexity
+of both algorithms is linear in their space complexity, i.e. time and space coincide.
+
+
+
+5 Linear Real Arithmetic
+
+Linear real arithmetic is concerned with terms built up from variables, constants, addition,
+and multiplication with constants. Relations between such terms can be put into a normal
+form r ./ c0 ∗ x0 + · · · cn ∗ xn with ./ ∈ {=, <} and r, c0 , . . . , cn ∈ R. It is this normal form
+we work with in this section. Note that although we phrase everything in terms of the real
+numbers, the rational numbers work just as well. In fact, any ordered, divisible, torsion free,
+Abelian group will do.
+    We present verified implementations of three quantifier elimination procedures due to
+Fourier [9], Ferrante and Rackoff [8] and Loos and Weispfenning [15].
+
+
+5.1 Atoms
+
+Type atom formalizes the normal forms explained above:
+    datatype atom = real < (real list) | real = (real list)
+The second constructor argument is the list of coefficients [c0 ,. . .,cn ] of the variables 0 to
+n — remember de Bruijn! Coefficient lists should be viewed as vectors and we define the
+usual vector operations on them:
+x ∗s xs is the componentwise multiplication of a scalar x with a vector xs.
+14
+
+
+xs + ys and xs − ys are componentwise addition and subtraction of vectors.
+hxs,ysi = (∑ (x,y) ← zip xs ys. x∗y) is the inner product of two vectors, i.e. the sum over
+    the componentwise products.
+If the two vectors involved in an operation are of different length, the shorter one is padded
+with 0s (as in Obua’s treatment of matrices [24]). Although only the set of vectors of the
+same length form a vector space, we can prove all the algebraic properties we need, for
+example hxs + ys,zsi = hxs,zsi + hys,zsi.
+     Now we instantiate locale ATOM just like for DLO in §4.1. The main function is the
+interpretation I R of atoms, which is straightforward:
+     I R (r < cs) xs = (r < hcs,xsi)
+     I R (r = cs) xs = (r = hcs,xsi)
+
+
+5.2 Fourier-Motzkin Elimination
+
+Fourier-Motzkin Elimination is a procedure discovered by Fourier [9]. Motzkin [19] (but
+also Farkas [7]) cited Fourier but were concerned with the algebraic background, not the
+algorithm. You put the formula into DNF and for each conjunct the inequalities are split into
+those of the form l < x and those of the form x < u, and then you “multiply out” exactly as
+in (2) for DLOs. Except that one has to transform the inequalities into the form l < x and
+x < u explicitly and the l and u can be proper terms, not just variables.
+    Quantifier elimination for the special case of a list of < atoms as, all of which depend
+on variable 0, is a one-liner
+     qe-lin1 as = list-conj [A(combine p q). p←lbounds as, q←ubounds as]
+where lbounds and ubounds select the inequalities where variable 0 has respectively a posi-
+tive and a negative coefficient
+     lbounds as = [(r/c, (−1/c) ∗s cs). (r < c · cs) ← as, c>0]
+     ubounds as = [(r/c, (−1/c) ∗s cs). (r < c · cs) ← as, c<0]
+and they are combined as explained above:
+     combine (r1 , cs1 ) (r2 , cs2 ) = (r1 − r2 < cs2 − cs1 )
+Instead of transforming the inequalities into l < x and x < u by dividing by the coefficient
+of x one can combine r1 < c1 x + t1 and r2 < c2 x + t2 into c1 r2 − c2 r1 < c1t2 − c2t1 provided
+c1 > 0, c2 < 0, and x does not occur in the ti .
+    The extension with equality is provided by instantiating ATOM-EQ (see §3.4.2, and see
+earlier footnote for λ -notation): solvable0 is any = atom whose head coefficient is nonzero
+(λ (r = c · cs) ⇒ c 6= 0 | a ⇒ False), trivial is any = atome where both sides are zero
+(λ (r = cs) ⇒ r=0 ∧ (∀ c ∈ set cs. c=0) | a ⇒ False), and subst0 is defined as follows:
+     subst0 (r = c · cs) (s < d · ds) = (s − r ∗ d / c < ds − (d / c) ∗s cs)
+     subst0 (r = c · cs) (s = d · ds) = (s − r ∗ d / c = ds − (d / c) ∗s cs)
+
+
+5.3 Ferrante and Rackoff
+
+Ferrante and Rackoff [8], inspired by Cooper [5], avoided DNF conversions by the test point
+method explained in §4. We have already explained the key idea of Ferrante and Rackoff in
+                                                                                               15
+
+
+§4.3. If you replace y↓z in (3) by (y + z)/2 you almost obtain their algorithm. In principle
+any point between y and z works but (y + z)/2 also takes care of equalities: they lump E, L
+and U together (to be avoided in an implementation) but because (y + y)/2 = y this recovers
+E. As their algorithm is well-known, we present its optimized and verified implementation
+right away:
+    qe-FR1 ϕ =
+    (let as = atoms0 ϕ; lbs = lbounds as; ubs = ubounds as; ebs = ebounds ϕ;
+        intrs = [subst ϕ (between l u) . l ← lbs, u ← ubs];
+     in list-disj (inf − ϕ · inf + ϕ · intrs @ map (subst ϕ) ebs))
+Except for the definition of intrs this looks identical to the definition of qe-interior1 in §4.4.
+However, all auxiliary functions are different: they operate on pairs (r, cs) which, under a
+valuation xs, represent the value r + hcs,xsi. First the various bounds are extracted:
+    lbounds as = [(r/c, (−1/c) ∗s cs). (r < c · cs) ← as, c>0]
+    ubounds as = [(r/c, (−1/c) ∗s cs). (r < c · cs) ← as, c<0]
+    ebounds as = [(r/c, (−1/c) ∗s cs). (r = c · cs) ← as, c6=0]
+The intermediate point between two such points is easy:
+    between (r, cs) (s, ds) = ((r + s) / 2, (1 / 2) ∗s (cs + ds))
+We also need both ordinary substitution of (r, cs) pairs
+    asubst (r, cs) (s < d · ds) = (s − d ∗ r < d ∗s cs + ds)
+    asubst (r, cs) (s = d · ds) = (s − d ∗ r = d ∗s cs + ds)
+    asubst rcs a = a
+    subst ϕ rcs ≡ mapfm (asubst rcs) ϕ
+and substitution inf − of −∞ (and the analogous version inf + for ∞):
+    inf − (ϕ 1 ∧ ϕ 2 ) = and (inf − ϕ 1 ) (inf − ϕ 2 )
+    inf − (ϕ 1 ∨ ϕ 2 ) = or (inf − ϕ 1 ) (inf − ϕ 2 )
+    inf − (A (r < c · cs)) = (if c < 0 then > else if 0 < c then ⊥ else A (r < cs))
+    inf − (A (r = c · cs)) = (if c = 0 then A (r = cs) else ⊥)
+    inf − ϕ = ϕ
+This concludes the definition of the auxiliary functions.
+
+
+5.4 Loos and Weispfenning
+
+The method of infinitesimals described in §4.5 was inspired by the analogous method for
+linear real arithmetic proposed by Loos and Weispfenning [15] who also showed practical
+examples where it outperforms Ferrante and Rackoff. For a recent comparison of related
+QEPs see [18]. Our implementation qe-eps1 is textually identical to the one for DLOs in
+§4.5. But the auxiliary functions differ. Luckily we have seen all of them already, except
+subst+ :
+    asubst+ (r, cs) (s < d · ds) =
+    (if d = 0 then A (s < ds)
+     else let u = s − d ∗ r; v = d ∗s cs + ds; lessa = A (u < v)
+          in if d < 0 then lessa else lessa ∨ A (u = v))
+    asubst+ rcs (r = d · ds) = (if d = 0 then A (r = ds) else ⊥)
+    asubst+ rcs a = A a
+    subst+ ϕ rcs ≡ amapfm (asubst+ rcs) ϕ
+16
+
+
+6 Presburger Arithmetic
+
+Presburger Arithmetic is linear integer arithmetic. Presburger [25] showed that this theory
+has quantifier elimination. In contrast to linear real arithmetic we need an additional pred-
+icate to obtain quantifier elimination: there is no quantifier-free equivalent of ∃x. x + x = y
+if we restrict to linear arithmetic. The way out is to allow the divisibility predicate as well,
+but only of the form d | t where d is a constant. Now ∃x. x + x = y is equivalent with 2 | x.
+Alternatively one can introduce congruence relations s ≡ t (mod d) instead of divisibility.
+On the other hand we do not need both < and = on the integers but can restrict our at-
+tention to ≤. Thus we may assume all atoms are of the form i ≤ k0 ∗ x0 + · · · + kn ∗ xn or
+d k i + k0 ∗ x0 + · · · kn ∗ xn , where k is | or -, and d, i, k0 , . . . , kn ∈ Z and d > 0. The negated
+atom i 6≤ j is equivalent with j + 1 ≤ i.
+
+
+6.1 Atoms
+
+The above language of atoms is formalized as follows:
+     datatype atom = Le int (int list) | Dvd int int (int list) | NDvd int int (int list)
+We have avoided infix constructors because they work less well for ternary operations.
+Atoms are interpreted w.r.t. a list of variables as usual:
+     I Z (Le i ks) xs = (i ≤ hks,xsi)
+     I Z (Dvd d i ks) xs = d | (i + hks,xsi)
+     I Z (NDvd d i ks) xs = (¬ d | (i + hks,xsi))
+Note that we reuse the polymorphic vector, i.e. list operations like h.,.i introduced for linear
+real arithmetic: they are defined for arbitrary types with 0, + and ∗.
+     The parameters of locale ATOM are instantiated as follows. The interpretation of atoms
+is given by function I Z above, their negation by
+     negZ (Le i ks) = A (Le (1 − i) (− ks))
+     negZ (Dvd d i ks) = A (NDvd d i ks)
+     negZ (NDvd d i ks) = A (Dvd d i ks)
+and their decrementation by
+     decrZ (Le i ks) = Le i (tl ks)
+     decrZ (Dvd d i ks) = Dvd d i (tl ks)
+     decrZ (NDvd d i ks) = NDvd d i (tl ks)
+where tl is the tail of a list: tl [] = [] and tl (x · xs) = xs.
+   Parameter depends0 becomes λ a. hd-coeff a 6= 0 where
+     hd-coeff (Le i ks) = (case ks of [] ⇒ 0 | k · x ⇒ k)
+     hd-coeff (Dvd d i ks) = (case ks of [] ⇒ 0 | k · x ⇒ k)
+     hd-coeff (NDvd d i ks) = (case ks of [] ⇒ 0 | k · x ⇒ k)
+    There is a slight complication here: We want to exclude atoms of the form Dvd 0 i ks
+and NDvd 0 i ks because they behave anomalously and the algorithms do not generate them
+either. In order to restrict attention to a subset of atoms, locale ATOM in fact has another
+parameter not mentioned so far: anormal :: α ⇒ bool with the axioms
+     anormal a =⇒ ∀ b∈atoms (aneg a). anormal b
+     ¬ depends0 a =⇒ anormal a =⇒ anormal (decr a)
+                                                                                              17
+
+
+In words: negation and decrementation do not lead outside the normal atoms. With the help
+of these axioms the following refined versions of lemmas 2 and 4 can be proved, where
+normal ϕ = (∀ a∈atoms ϕ. anormal a):
+Lemma 10 If qe ∈ nqfree → qfree and qe ∈ nqfree ∩ normal → normal and ∀ ϕ∈normal
+∩ nqfree. ∀ xs. I (qe ϕ) xs = (∃ x. I ϕ (x · xs)), then normal ϕ implies I (lift-nnf-qe qe ϕ) xs
+= I ϕ xs.
+
+Lemma 11 If qe ∈ lists depends0 → qfree and qe ∈ lists (depends0 ∩ anormal) →
+normal and ∀ as ∈ lists(depends0 ∩ anormal). is-dnf-qe qe as, then normal ϕ implies
+I (lift-dnf-qe qe ϕ) xs = I ϕ xs.
+
+The analogous versions of lemmas 1 and 3 are straightforward and omitted.
+   For Presburger arithmetic, parameter anormal becomes λ a. divisor a 6= 0 where
+    divisor (Le i ks) = 1
+    divisor (Dvd d i ks) = d
+    divisor (NDvd d i ks) = d
+
+
+6.2 DNF-based Algorithm
+
+The algorithm we are going to describe differs from Presburger’s original algorithm because
+that one covers only = (and congruence) — Presburger merely states that it can be extended
+to <. Our algorithm resembles Enderton’s version [6], except that the main case split is
+different: Enderton distinguishes if there are congruences or not, we distinguish if there are
+lower bounds or not.
+    Input to the algorithm is P(x), a conjunction of atoms, all depending on x. The algorithm
+consists of the following two steps:
+1. Set all coefficients of x to the positive least common multiple (lcm) m of all coefficients
+   of x in P(x). Call the result Q(m ∗ x). Let R(x) = Q(x) ∧ m | x.
+2. Let δ be the lcm of all divisors d in R(x) and let L be the set of lower bounds for x in
+   R(x). If L 6= 0/ then return t∈T R(t) where T = {l + n | l ∈ L ∧ 0 ≤ n < δ }. If L = 0/
+                                  W
+                  0             0
+   return t∈T R (t) where R is R without ≤-atoms and T = {n | 0 ≤ n < δ }.
+          W
+
+As usual, upper bounds work just as well as lower bounds.
+     For example, if P(x) = (l ≤ 2x ∧ 3x ≤ u), then Q(6 ∗ x) = (3l ≤ 6x ∧ 6x ≤ 2u), R(x) =
+(3l ≤ x ∧ x ≤ 2u ∧ 6 | x), and the result is 0≤n<6 R(3l + n).
+                                             W
+
+     The first step of the algorithm is clearly equivalence preserving. Now we have a con-
+junction R(x) of atoms where x has coefficient 1 everywhere. Equivalence preservation of
+the second step is proved in both directions separately as follows.
+     First we assume the returned formula and show R(t) for some t. If L 6= 0/ then R(t)
+for some t ∈ T and we are done. Now assume L = 0.         / By assumption there must be some
+0 ≤ n < δ such that R0 (n). If there are no upper bounds for x in R(x) either, then R(x) contains
+no ≤-atoms, R0 = R, and hence R(n). Otherwise let U be the set of all upper bounds of x
+in R(x), let m be the minimum of U and let t = n − ((n − m) div δ + 1)δ . We show R(t).
+From R0 (n) and the definition of R0 and t, R0 (t) follows. All ≤-atoms must be upper bound
+constraints x ≤ u and hence m ≤ u. Because (n − m) mod δ < δ we obtain t ≤ m ≤ u. Thus
+t satisfies all ≤-atoms, and hence R(t).
+     Now assume that R(z) for some z. In this direction it is important to note that (non)divisi-
+bility atoms a(x) are cyclic in their divisor d, i.e. a(x) is equivalent with a(x mod d) because
+18
+
+
+the coefficient of x is 1. This carries over to any multiple of d, in particular δ . If L = 0/
+we obtain R0 (z mod δ ) with 0 ≤ z mod δ < δ as required because R0 (x) consists only of
+(non)divisibility atoms. If L 6= 0/ we show R(t) where t = m + n where m is the maximum of
+L and n = (z − m) mod δ . Let a(x) be some atom in R(x). If a is a lower bound atom for x,
+a(t) follows because t ≥ m and m is the maximum of L. If a is an upper bound atom for x,
+a(t) follows because t ≤ z and a(z). If a is a (non)divisibility atom, a(t) follows from a(z)
+because t mod δ = z mod δ .
+
+
+6.3 Formalization
+
+First, head coefficients are set to 1 or -1 (-1 is needed because variables may only appear on
+the lhs of ≤). This is achieved by multiplying each atom a with m/k, where m is the lcm of
+all head coefficients and k is a’s head coefficient (assuming k > 0 for simplicity).
+     hd-coeff1 m (Le i (k · ks)) =
+     (if k = 0 then Le i (k · ks)
+      else let m 0 = m div |k| in Le (m 0 ∗ i) (sgn k · m 0 ∗s ks))
+     hd-coeff1 m (Dvd d i (k · ks)) =
+     (if k = 0 then Dvd d i (k · ks)
+      else let m 0 = m div k in Dvd (m 0 ∗ d) (m 0 ∗ i) (1 · m 0 ∗s ks))
+     hd-coeff1 m (NDvd d i (k · ks)) =
+     (if k = 0 then NDvd d i (k · ks)
+      else let m 0 = m div k in NDvd (m 0 ∗ d) (m 0 ∗ i) (1 · m 0 ∗s ks))
+     hd-coeff1 m a = a
+     sgn i = (if i = 0 then 0 else if 0 < i then 1 else − 1)
+Note that hd-coeff1 is well-defined even if the head coefficient is 0. The DNF-based quan-
+tifier elimination framework guarantees that all atoms under consideration have non-0 head
+coefficients, but below we reuse hd-coeff1 in a context where this is not the case.
+     Function hd-coeffs1 sets the head coefficients of a list of atoms as to 1 or -1 and adds
+the divisibility constraint m | x0 :
+     hd-coeffs1 as =
+     (let m = zlcms (map hd-coeff as) in Dvd m 0 [1] · map (hd-coeff1 m) as)
+Remember that hd-coeff extracts the head coefficient from an atom (see §6.1); zlcms com-
+putes the positive lcm of a list of integers.
+    We prove that hd-coeffs1 leaves the interpretation unchanged in the following sense:
+                                                ∃ (list-conj (map A (hd-coeffs1 as)))) =
+Lemma 12 If ∀ a∈set as. hd-coeff a 6= 0 then I (∃
+   ∃ (list-conj (map A as))).
+I (∃
+     In the second step, quantifier elimination is performed:
+     qe-pres1 as =
+       (let ds = [a←as. is-dvd a]; d = zlcms(map divisor ds); ls = lbounds as
+        in if ls = []
+           then Disj [0..d−1] (λ n. list-conj(map (A ◦ asubst n []) ds))
+           else Disj ls (λ (i,ks).
+                 Disj [0..d−1] (λ n. list-conj(map (A ◦ asubst (i+n) (−ks)) as))))
+                                                                                                19
+
+
+where is-dvd a is true iff a is of the form Dvd or NDvd, and lbounds collects the lower
+bounds for variable 0
+    lbounds as = [(i,ks). Le i (k · ks) ← as, k>0]
+and asubst performs substitution for variable 0:
+    asubst i 0 ks 0 (Le i (k · ks))     = Le (i − k ∗ i 0) (k ∗s ks 0 + ks)
+    asubst i ks (Dvd d i (k · ks)) = Dvd d (i + k ∗ i 0) (k ∗s ks 0 + ks)
+             0    0
+
+    asubst i 0 ks 0 (NDvd d i (k · ks)) = NDvd d (i + k ∗ i 0) (k ∗s ks 0 + ks)
+    asubst i 0 ks 0 a                   = a
+The following lemma shows precisely in which sense asubst is substitution:
+    I Z (asubst i ks a) xs = I Z a ((i + hks,xsi) · xs)
+The actual quantifier elimination procedure is the lifted composition of the two basic steps:
+    qe-pres = lift-dnf-qe (qe-pres1 ◦ hd-coeffs1)
+The correctness proof of qe-pres1 ◦ hd-coeffs1 was given in the previous subsection. In
+order to apply lemma 11 we also need to show that the algorithm preseves normality of
+atoms, which is straightforward but tedious and hence omitted.
+
+
+6.4 Cooper’s Algorithm
+
+Cooper’s algorithm relies on Cooper’s theorem [5] which holds provided all coefficients of
+x in φ (x) are 1 or -1 (or 0):
+                                        _                      _      _
+                   (∃x. φ (x)) = (                φ−∞ ( j) ∨                    φ (y + j))
+                                     j∈(0,δ −1)                y∈L j∈(0,δ −1)
+
+where δ is the lcm of all d such that d | t or d - t occurs in φ (x) and t contains x, L is the set
+of lower bounds for x in φ (x), and φ−∞ ( j) is φ (x) where x has been replaced by −∞ in all
+inequations and by j in all other atoms.
+    We start by setting all head coefficients to 1 or -1 (or leaving them at 0):
+    hd-coeffs1 ϕ =
+    (let m = zlcms (map hd-coeff (atoms0 ϕ))
+     in A (Dvd m 0 [1]) ∧ mapfm (hd-coeff1 m) ϕ)
+This function supersedes its namesake in the previous subsection defined on lists of atoms.
+Remember that atoms0 is the set of atoms that depend on variable 0, i.e. whose head coeffi-
+cient is non-0.
+    Now we start to implement Cooper’s theorem. The substitution φ−∞ ( j) is implemented
+by the composition of
+    inf − (ϕ 1 ∧ ϕ 2 ) = and (inf − ϕ 1 ) (inf − ϕ 2 )
+    inf − (ϕ 1 ∨ ϕ 2 ) = or (inf − ϕ 1 ) (inf − ϕ 2 )
+    inf − (A (Le i (k · ks))) = (if k < 0 then > else if 0 < k then ⊥ else A (Le i (0 · ks)))
+    inf − ϕ = ϕ
+and ordinary substitution:
+    subst i ks ϕ ≡ mapfm (asubst i ks) ϕ
+20
+
+
+The right-hand side of Cooper’s theorem now becomes executable:
+     qe-cooper1 ϕ =
+     (let as = atoms0 ϕ; d = zlcms(map divisor as);
+         lbs = [(i,ks). Le i (k · ks) ← as, k>0]
+      in or (Disj [0..d − 1] (λ n. subst n [] (inf − ϕ)))
+           (Disj lbs (λ (i,ks). Disj [0..d − 1] (λ n. subst (i + n) (−ks) ϕ))))
+The two phases of Cooper’s algorithm are simply composed and lifted:
+     qe-cooper = lift-nnf-qe (qe-cooper1 ◦ hd-coeffs1)
+Our formal correctness proof follows the literature.
+
+
+
+7 Related work
+
+The literature on decision procedures for linear arithmetic is vast. We concentrate on for-
+mally verified algorithms.
+     This paper is a revised combination of [20] and [21], which concentrate on NNF-based
+and DNF-based algorithms, respectively. It is an outgrowth of the work by Chaieb and Nip-
+kow [4] who present a reflective implementations of Cooper’s algorithm. They lack the
+generic framework and they use special purpose data structures for terms instead of relying
+on lists as we do. As a result some of their functions are more complicated than ours and
+theorems and proofs are littered with linearity assumptions that are implicit in our list rep-
+resentation. Hence they can only present part of their implementation. Chaieb [3] presents a
+verified combination of Ferrante-Rackoff and Cooper.
+     Norrish [23] was the first to implement a proof-producing version of Cooper’s algorithm
+in a theorem prover. Similar implementation of QE for complex numbers and for real closed
+fields are reported by Harrison [12] and McLaughlin [17]. The CAD QE procedure for real
+closed fields has been reflected and partly verified by Mahboubi [16].
+
+Acknowledgment Amine Chaieb introduced me to QE and alerted me to the infinitesimal
+approach [15]. He and Jeremy Avigad discussed the material with me extensively. John
+Harrison’s anonymous comments helped to improve the presentation.
+
+
+References
+
+ 1. Clemens Ballarin. Interpretation of locales in Isabelle: Theories and proof contexts. In J. Borwein
+    and W. Farmer, editors, Mathematical Knowledge Management, volume 4108 of LNCS, pages 31–43.
+    Springer, 2006.
+ 2. Robert S. Boyer and J Strother Moore. Metafunctions: proving them correct and using them efficiently as
+    new proof procedures. In R. Boyer and J Moore, editors, The Correctness Problem in Computer Science,
+    pages 103–184. Academic Press, 1981.
+ 3. Amine Chaieb. Verifying mixed real-integer quantifier elimination. In U. Furbach and N. Shankar,
+    editors, Automated Reasoning (IJCAR 2006), volume 4130 of LNCS, pages 528–540. Springer, 2006.
+ 4. Amine Chaieb and Tobias Nipkow. Verifying and reflecting quantifier elimination for Presburger arith-
+    metic. In G. Stutcliffe and A. Voronkov, editors, Logic for Programming, Artificial Intelligence, and
+    Reasoning (LPAR 2005), volume 3835 of LNCS, pages 367–380. Springer, 2005.
+ 5. D.C. Cooper. Theorem proving in arithmetic without multiplication. In B. Meltzer and D. Michie,
+    editors, Machine Intelligence, volume 7, pages 91–100. Edinburgh University Press, 1972.
+ 6. Herbert Enderton. A Mathematical Introduction to Logic. Academic Press, 1972.
+                                                                                                          21
+
+
+ 7. Julius Farkas. Theorie der einfachen Ungleichungen. Journal für die reine und angewandte Mathematik,
+    124:1–27, 1902.
+ 8. Jeanne Ferrante and Charles Rackoff. A decision procedure for the first order theory of real addition
+    with order. SIAM J. Computing, 4:69–76, 1975.
+ 9. Jean Baptiste Joseph Fourier. Solution d’une question particulière du calcul des inégalités. In Gaston
+    Darboux, editor, Joseph Fourier - Œuvres complétes, volume 2, pages 317–328. Gauthier-Villars, 1888–
+    1890.
+10. Georges Gonthier. Formal proof—the four-colour theorem. Notices of the AMS, 55:1382–1393, 2008.
+11. Florian Haftmann and Makarius Wenzel. Constructive type classes in Isabelle. In Th. Altenkirch and
+    C. McBride, editors, Types for Proofs and Programs (TYPES 2006), volume 4502 of LNCS, pages 160–
+    174. Springer, 2007.
+12. John Harrison. Complex quantifier elimination in HOL. In R. Boulton and P. Jackson, editors, TPHOLs
+    2001: Supplemental Proceedings, pages 159–174. Division of Informatics, University of Edinburgh,
+    2001.
+13. John Harrison. Handbook of Practical Logic and Automated Reasoning. Cambridge University Press,
+    2009.
+14. C.H. Langford. Some theorems on deducibility. Annals of Mathematics (2nd Series), 28:16–40, 1927.
+15. Rüdiger Loos and Volker Weispfenning. Applying linear quantifier elimination. The Computer Journal,
+    36:450–462, 1993.
+16. Assia Mahboubi. Contributions à la certification des calculs sur R : théorie, preuves, programmation.
+    PhD thesis, Université de Nice, 2006.
+17. Sean McLaughlin and John Harrison. A proof-producing decision procedure for real arithmetic. In
+    R. Nieuwenhuis, editor, Automated Deduction — CADE-20, volume 3632 of LNCS, pages 295–314.
+    Springer, 2005.
+18. David Monniaux. A quantifier elimination algorithm for linear real arithmetic. In Logic for Pro-
+    gramming, Artificial Intelligence, and Reasoning (LPAR 2008), volume 5330 of LNCS, pages 243–257.
+    Springer, 2008.
+19. Theodor Motzkin. Beiträge zur Theorie der linearen Ungleichungen. PhD thesis, Universität Basel,
+    1936.
+20. Tobias Nipkow. Linear quantifier elimination. In A. Armando, P. Baumgartner, and G. Dowek, editors,
+    Automated Reasoning (IJCAR 2008), volume 5195 of LNCS, pages 18–33. Springer, 2008.
+21. Tobias Nipkow. Reflecting quantifier elimination for linear arithmetic. In O. Grumberg, T. Nipkow, and
+    C. Pfaller, editors, Formal Logical Methods for System Security and Correctness, pages 245–266. IOS
+    Press, 2008.
+22. Tobias Nipkow, Lawrence Paulson, and Markus Wenzel. Isabelle/HOL — A Proof Assistant for Higher-
+    Order Logic, volume 2283 of LNCS. Springer, 2002.
+23. Michael Norrish. Complete integer decision procedures as derived rules in HOL. In D. Basin and
+    B. Wolff, editors, Theorem Proving in Higher Order Logics, TPHOLs 2003, volume 2758 of LNCS,
+    pages 71–86. Springer, 2003.
+24. Steven Obua. Proving bounds for real linear programs in Isabelle/HOL. In J. Hurd, editor, Theorem
+    Proving in Higher Order Logics (TPHOLs 2005), volume 3603 of LNCS, pages 227–244. Springer,
+    2005.
+25. Mojzesz Presburger. Über die Vollständigkeit eines gewissen Systems der Arithmetik ganzer Zahlen,
+    in welchem die Addition als einzige Operation hervortritt. In Comptes Rendus du I Congrès de
+    Mathématiciens des Pays Slaves, pages 92–101, 1929.
+26. Volker Weispfenning. The complexity of linear problems in fields. J. Symbolic Computation, 5:3–27,
+    1988.
+

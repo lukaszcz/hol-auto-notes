@@ -1,0 +1,709 @@
+    Verifying and reflecting quantifier elimination
+              for Presburger arithmetic
+
+                      Amine Chaieb and Tobias Nipkow
+                               Institut für Informatik
+                           Technische Universität München
+
+
+
+
+      Abstract. We present an implementation and verification in higher-
+      order logic of Cooper’s quantifier elimination for Presburger arithmetic.
+      Reflection, i.e. the direct execution in ML, yields a speed-up of a factor of
+      200 over an LCF-style implementation and performs as well as a decision
+      procedure hand-coded in ML.
+
+
+
+1    Introduction
+
+This paper presents a formally verified quantifier elimination procedure
+for Presburger arithmetic (PA) in higher-order logic. There are three
+approaches to decision procedures in theorem provers: unverified code
+(which we ignore), LCF-style proof procedures programmed in a meta-
+language (ML) that invoke the inference rules of the kernel, and reflection,
+where the decision procedure is formalized and proved correct inside the
+system and is executed not by inference but by direct computation.
+     The LCF-style requires no formalization of the meta-theory but has a
+number of disadvantages: (a) it requires intimate knowledge of the inter-
+nals of the underlying theorem prover (which makes it very unportable);
+(b) there is no way to check at compile type if the proofs will really com-
+pose (which easily leads to run time failure and thus incompleteness); (c)
+it is inefficient because one has to go through the inference rules in the
+kernel; (d) if the prover is based on proof objects this can lead to excessive
+space consumption (proofs for PA may require super exponential space
+[7, 16]).
+     For all these reasons we have formalized and verified Cooper’s quan-
+tifier elimination procedure for PA [5]. Our development environment is
+Isabelle/HOL [14]. An experimental feature allows reflective extensions of
+the kernel: computations of ML code generated from HOL functions [3]
+are accepted as equality proofs. Such extensions are sound provided the
+code generator is correct. Coq uses a fast internal λ-calculus evaluator for
+the same purpose [8].
+    We found that reflection leads to a substantial performance improve-
+ment. This is especially marked when proof objects [2] are involved: re-
+flective subproofs are of constant size, which is particularly important
+for proof carrying code applications, where the size of full PA proofs is
+prohibitive.
+    The main contributions of our work are: (a) the first-time formaliza-
+tion and verification of Cooper’s decision procedure in a theorem prover;
+(b) the most substantial (5000 lines) application of reflection in any the-
+orem prover to date (as far as we are aware); (c) a formalization that
+is easily portable to other theorem provers supporting reflection (in con-
+trast to LCF-tactics); (d) performance figures that show a speed-up of up
+to 200 w.r.t. a comparable LCF-style implementation; (e) a first demon-
+stration of reflection in Isabelle/HOL. We also provide a nice example of
+how reflection allows to formalize duality/symmetry arguments based on
+syntax (function mirror in 4.2).
+
+Related work PA has first been proven decidable by Presburger [17]
+whose (inefficient) algorithm was improved by Cooper [5]. Harrison [12]
+implemented Cooper’s procedure as an oracle as well as partially re-
+flected in HOL Light. In [4] we presented an LCF-style implementation
+of Cooper’s algorithm for PA, which is our point of reference. Harri-
+son [10] has also studied the general issue of reflection in LCF-like theo-
+rem provers and bemoans the lack of a natural example where reflection
+yields a speed-up of more than a constant factor. This is true for PA as
+well, but a constant factor of 200 over an LCF-style tactic is worth it. Nor-
+rish [15] discusses implementations for both Cooper’s algorithm (in tatic
+style) and Omega [18] (checking a reflected “proof trace”). Pierre Crgut
+[6] presents a reflective version of the Omega test written for Coq, where
+an optimized proof trace is interpreted to solve the goal. Unlike the other
+references his implementation only deals with quantifier-free PA and is
+incomplete. Presburger’s original algorithm has been formalized in Coq
+by Laurent Thry and is available on the Coq web site.
+    The problem of programming errors in decision procedures has re-
+cently been addressed by several authors using dependent types [13, 1].
+But it seems unlikely that anything as complex as PA can be dealt with
+automatically in such a framework. Nor does this approach guarantee
+completeness: missing cases and local proofs that fail are not detected.
+
+Notation Datatypes are declared using datatype. Lists are built up from
+the empty list [] and consing ·; the infix @ appends two lists. For a list
+l, {{l}} denotes the set of elements of l, and l!n denotes its n th element.
+The data type α option with the constructors ⊥ : α option and b.c : α →
+α option models computations that can fail.
+
+    The rest of this paper is structured as follows. In 2 we give a brief
+overview of reflection. The actual decision procedure and its verification
+is presented in 3 and 4. In 5 we discuss some design decisions and alter-
+natives. Performance results are shown in 6.
+
+2     Reflection
+2.1    An informal introduction
+Reflection means to perform a proof step by computation inside the logic.
+However, inside the logic it is not possible to write functions by pattern
+matching over the syntax of terms or formulae because two syntactically
+distinct formulae may be logically equivalent. Hence the relevant fragment
+of formulae must be represented (reflected) inside the logic as a datatype,
+sometimes also called the shadow syntax [11]. Let us call this type rep,
+the representation.
+    Then there are two functions: interp, a function in the logic, maps an
+element of rep to the formula it represents; convert, an ML function, maps
+a formula to its representation. The two functions should be inverses of
+each other: taking the ML representation of a formula P and applying
+convert to it yields an ML representation of a term p of type rep such
+that the theorem interp p = P can be proved by by rewriting with the
+equations for interp.
+    Typically, the formalized proof step is some equivalence P = P 0 where
+P is given and P 0 is some simplified version of P (e.g. the elimination of a
+quantifier). This transformation is now expressed as a recursive function
+simp of type rep → rep and it is proved (typically by induction on rep)
+that simp preserves the interpretation:
+                        interp p = interp(simp p).
+To apply this theorem to a given formula P we compute (in ML) p =
+convert P , substitute it into our theorem, and compute the value P 0 of
+interp(simp p). The latter step should be done as efficiently as possibly.
+In our case it is performed by an ML computation using the code auto-
+matically generated from the defining equations for simp and interp. This
+yields the theorem interp(simp p) = P 0 . Combining it (by symmetry and
+transitivity) with interp p = P and interp p = interp(simp p) we obtain
+the theorem P = P 0 .
+2.2        Reflection of PA
+
+PA is reflected as follows. The syntax is represented by the data types ι
+for integer expressions and φ for formulae.
+
+                   c | vnat |− ι | ι + ι | ι − ι | ι ∗ ι
+     datatype ι = int
+     datatype φ = ι < ι | ι > ι | ι ≤ ι | ι ≥ ι | ι = ι | ι dvd ι
+                 | T | F | ¬ φ | φ ∧ φ | φ ∨ φ | φ → φ | φ = φ |∃ φ |∀ φ
+
+The bold symbols +, ≤, ∧ etc are constructors and reflect their coun-
+terparts +, ≤, ∧ etc in the logic. The integer constant i in the logic is
+represented by the term bi. Bound variables are represented by de Bruijn
+indices: vn represents the bound variable with index n (a natural number).
+Hence quantifiers need not carry variable names.
+    Throughout the paper p and q are of type φ.
+
+
+                                           [[T ]]is      = T rue
+                                                                                    [[¬p]]is     = (¬[[p]]is )
+[[bi]]is         =i                        [[F ]]is      = F alse
+      ι
+                                                                                    [[p ∧ q]] = ([[p]]is ∧ [[q]]is )
+                                                                                              is
+[[vn ]]is        = is!n                    [[a < b]]is = ([[a]]is           is
+                                                                 ι < [[b]]ι )
+         ι
+                                                     is          is         is      [[p ∨ q]]is = ([[p]]is ∨ [[q]]is )
+[[− a]]is        = −[[a]]is                [[a > b]]     = ([[a]]ι > [[b]]ι )
+           ι                ι
+                                                                                    [[p → q]]is = ([[p]]is → [[q]]is )
+[[a + b]]is              is
+               ι = [[a]]ι + [[b]]ι
+                                      is
+                                           [[a ≤ b]]is = ([[a]]is           is
+                                                                 ι ≤ [[b]]ι )
+                                                                                    [[p = q]]is = ([[p]]is = [[q]]is )
+[[a − b]]is      = [[a]] is
+                             −  [[b]] is
+                                           [[a ≥ b]]is = ([[a]]isι  ≥ [[b]] is
+                                                                            ι )
+               ι         ι            ι
+                                                                                    [[∃ p]]is    = (∃x.[[p]]x·is )
+[[a ∗ b]]is      = [[a]]is       is
+                         ι ·[[b]]ι         [[a = b]]is = ([[a]]is           is
+                                                                 ι = [[b]]ι )
+             ι
+                                                                                    [[∀ p]]is    = (∀x.[[p]]x·is )
+                                           [[a dvd b]]is = ([[a]]is
+                                                                 ι dvd [[b]]ι )
+                                                                               is
+
+
+
+                                      Fig. 1. Semantics of the shadow syntax
+
+
+
+    The interpretation functions ([[.]] .ι and [[.]]. ) in Fig. 1 map the repre-
+sentations back into logic. They are parameterized by an environment is
+which is a list of integer expressions. The de Bruijn index v n picks out
+the nth element from that list.
+    The definition of ι-terms is too liberal since it allows to express non-
+linear terms. Hence we will impose conditions during verification which
+guarantee that terms have certain syntactic shapes.
+
+
+3      Quantifier elimination
+
+A generic quantifier elimination function is implemented by qelim φ (Fig. 2).
+Its parameter qe is supposed to eliminate a single ∃ and qelim φ applies
+qe to all quantified subformulae in a bottom-up fashion. We allow quan-
+tifier elimination to fail, i.e. return ⊥. This is necessary in case the input
+                qelimφ qe (∀ p)   = ¬⊥ (qe⊥ (¬⊥ (qelimφ qe p)))
+                qelimφ qe (∃ p)   = qe⊥ (qelimφ qe p)
+                qelimφ qe (p ∧ q) = (qelimφ qe p)∧⊥ (qelimφ qe p)
+                qelimφ qe (p ∨ q) = (qelimφ qe p)∨⊥ (qelimφ qe p)
+                qelimφ qe (p → q) = (qelimφ qe p)→⊥ (qelimφ qe p)
+                qelimφ qe (p = q) = (qelimφ qe p)=⊥ (qelimφ qe p)
+                qelimφ qe p       = bpc
+
+
+                    Fig. 2. Quantifier elimination for φ-formulae
+
+
+
+formula is not linear, i.e. involves multiplication by more than just a con-
+stant. To deal with failure we define two combinators for lifting arbitrary
+nary functions f to f ⊥ and f⊥ :
+                       f ⊥ bx1 c . . . bxn c = f x1 . . . xn
+                       f⊥ bx1 c . . . bxn c = bf x1 . . . xn c
+
+If any of the arguments are ⊥, f ⊥ and f⊥ return ⊥.
+    Let qfree p (not shown) formalize that p is quantifier-free. We can
+prove by structural induction that if qe takes a quantifier-free formula q
+and returns a quantifier-free formula q 0 equivalent to ∃ q, then qelimφ qe
+is a quantifier-elimination procedure:
+       (∀q, q 0 , is. qfree q ∧ qe q = bq 0 c → qfree q 0 ∧ [[∃ q]]is = [[q 0 ]]is )
+                                                                                       (1)
+                      → qelimφ qe p = bp0 c → qfree p0 ∧ [[p]]is = [[p0 ]]is .
+Note that qe must eliminate the innermost bound variable v 0 , otherwise
+[[∃ q]]is = [[q 0 ]]is will not hold.
+     The goal of 4 is to present cooper, an instance of qe fulfilling the
+premise of (1).
+
+4   Cooper’s algorithm
+Like many decision procedures, Cooper’s algorithm [5] for eliminating one
+∃ follows a simple scheme:
+ – Normalization of input formula (4.1).
+ – Calculation of some characteristic data from the formula (4.2).
+ – Correctness theorem proving that ∃ p is semantically equivalent to a
+   simpler formula p0 involving the data from the previous step (Cooper’s
+   theorem in 4.3).
+ – Construction of p0 (4.4).
+4.1     Normalization
+Normalization goes trough three steps: the N-step puts the formula into
+NNF (negation normal form), the L-step linearizes the formula and the
+U-step sets the coefficients of v0 to b    c
+                                      1 or −1.
+
+The N-step We omit the straightforward implementation of nnf : φ → φ
+and isnnf : φ → bool. Property isnnf p expresses that p is in NNF and
+that all atoms are among ≤, = and dvd and that negations only occur
+in front of dvd or =. We prove that nnf is correct and that it implies
+quantifier-freedom:
+
+            [[p]]is = [[nnf p]]is     isnnf(nnf p)        isnnf p → qfree p
+
+The L-step An ι-term t is linear if it has the form
+
+                          cb1 ∗ vi1 + · · · + cbn ∗ vin + cd
+                                                           n+1
+
+where n ∈ N, i1 < · · · < in and ∀j ≤ n.cj 6= 0. Note that cd
+                                                            n+1 is always
+present even if cn+1 = 0. The implementation is easy:
+
+         islinnι n0 bi           = T rue
+                      b
+         islinnι n0 (i ∗ vn + r) = i 6= 0 ∧ n0 ≤ n ∧ islinnι (n + 1) r
+         islinnι n0 t            = F alse
+         islinι t                = islinnι 0 t
+
+A formula p is linear (islinφ p) if it is in NNF, all ι-terms occurring in it
+are linear, and its atoms are of the form t ≤ b           0 or db dvd t where
+                                                   0, t = b
+d 6= 0. The formal definition is omitted.
+    The goal of the L-step is to transform a formula into an equivalent
+linear one. Due to the unrestricted use of ∗ in the input syntax ι this
+may fail. Function linι (Fig. 3) tries to linearize an ι-term using lin+ , lin∗
+and lin− . These operate on linear ι-terms, preserve linearity and behave
+semantically like addition, multiplication by a constant integer and multi-
+plication by −1 , respectively. This is expressed by the following theorems
+provable by induction:
+
+        islinι a ∧ islinι b → islinι (lin+ a b) ∧ ([[lin+ a b]]is              is
+                                                                ι = [[a + b]]ι )
+                      islinι a → islinι (lin∗ i a) ∧ ([[lin∗ i a]]is    b      is
+                                                                  ι = [[i ∗ a]]ι )
+                         islinι a → islinι (lin− a) ∧ ([[lin− a]]is         is
+                                                                 ι = [[− a]]ι )
+
+      The implementations of lin∗ and lin− are omitted for space limitations.
+  lin+ (bk ∗ vn + r) (bl ∗ vm + s) =
+  if n = m then
+    if k + l = 0 then lin+ r s else k[   + l ∗ vn + lin+ r s
+  else if n ≤ m then b    k ∗ vn + lin+ r (bl ∗ vm + s)
+    else bl ∗ vm + lin+ (b k ∗ vn + r) s
+  lin+ (bk ∗ vn + r) bb=b  k ∗ vn + lin+ r bb
+  lin+ ba (b
+           l ∗ vn + s) = b l ∗ vn + lin+ s b
+                                           a
+  lin+ bkbl = k[+l
+
+  linι cb = bb cc
+  linι vn = b(b   1 ∗ vn + b0)c
+  linι (− a) = lin− ⊥ (linι a)
+  linι (a + b) = lin+ ⊥ (linι a) (linι b)
+  linι (a − b) = lin+ ⊥ (linι a) (linι (− b))
+  linι (a ∗ b) =
+  case (linι a, linι b) of
+     (bbcc, bb0 c) ⇒ blin∗ c b0 c
+     (ba0 c, bb
+              cc) ⇒ blin∗ c a0 c
+     (x, y) ⇒ ⊥
+
+                              Fig. 3. linearization of ι-terms
+
+
+   Linearization of φ-formulae (linφ , not shown) lifts linι . We have proved
+that it also preserves semantics and linearizes its input:
+
+               isnnf p ∧ linφ p = bp0 c → [[p]]is = [[p0 ]]is ∧ islinφ p0
+
+      Since full linearization is not really part of Presburger arithmetic,
+we keep matters simple and do not try to cancel arbitrary monomials:
+linι (v0 ∗ v0 − v0 ∗ v0 ) = ⊥ although one could also return bb    0c. Such
+simplifications could be performed by a specialized algebraic preprocessor.
+
+The U-step The key idea in this step is to multiply the terms occurring
+in atoms by appropriate constants such that the (absolute values of)
+coefficients of v0 are the same everywhere, e.g. the lcm of all coefficients
+of v0 . The equivalence
+
+                       (∃x. P (l·x)) = (∃x. l dvd x ∧ P (x)).               (2)
+
+will allow us to obtain a formula where all coefficients of v 0 are b        c
+                                                                        1 or −1.
+Function lcmφ takes a formula p and computes lcm{c | cb ∗ v 0 occurs in p}.
+Predicate alldvd l p checks if all coefficients of v 0 in p divide l. Both func-
+tions are defined in the following table where lcm computes the positive
+least common multiple of two integers.
+              p                lcmφ p                 alldvd l p
+       b
+       c ∗ v0 + r ≤ zb           |c|                    c dvd l
+       b
+       c ∗ v0 + r = zb           |c|                    c dvd l
+      b
+      d dvd cb ∗ v0 + r          |c|                    c dvd l
+             ¬p                lcmφ p                 alldvd l p
+            p∧q         lcm (lcmφ p) (lcmφ q) (alldvd l p) ∧ (alldvd l q)
+            p∨q         lcm (lcmφ p) (lcmφ q) (alldvd l p) ∧ (alldvd l q)
+                                  1                      True
+
+The correctness of these functions is expressed by the following theorem:
+
+                  islinφ p → alldvd (lcmφ p) p ∧ lcmφ p > 0
+
+    The main part of the U-step is done by the function adjust. It takes a
+positive integer l and a linear formula p (assuming that alldvd l p holds)
+and produces a linear formula p0 s.t. the coefficients of v0 are set to either
+b    c Function unity performs the U-step:
+1 or −1.
+  unity p =
+  let l = lcmφ p ; p0 = adjust l p in
+  if l = 1 then p0 else (b l dvd b
+                                 1 ∗ v0 + b
+                                          0) ∧ p0
+The resulting formula is said to be unified (unified p 0 ). We omit the defi-
+nition of adjust and unified. Note that unified p → islin φ p. We can prove
+that adjust preserves semantics and its result is unified
+
+                islinφ p ∧ alldvd l p ∧ l > 0 →
+                [[p]]i·is = [[adjust l p]](l·i)·is ∧ unified(adjust l p)
+
+and with (2) the correctness of unity follows:
+
+           islinφ p → [[∃ p]]is = [[∃ (unity p)]]is ∧ unified(unity p)      (3)
+
+4.2     Calculation
+In the next subsection we need to compute for a given p a pair of a set
+(represented as a list) of coeffcients in p and a modified version of p.
+More precisely, we need to compute (bset p, p − ) or (aset p, p+ ), which
+are dual to each other. Fig. 4 shows how to perform these computations
+recursively and it should be seen as the definition of four functions bset,
+aset, minusinf and plusinf. We use p − and p+ as shorthands for minusinf p
+and plusinf p. Before we start proving properties about bset and minusinf
+we formalize the duality between (bset p, p − ) and (aset p, p+ ). Theorems
+about bset and minusinf will then yield theorems about aset and plusinf.
+Syntactically the duality is expressed by the function mirror (Fig. 5) which
+negates all coefficients of v0 . The following intuitive relationships between
+a formula and its mirrored version can be proved:
+         unified p → [[p]]i·is = [[mirror p]](−i)·is ∧ unified (mirror p)
+         [[∃ p]]is = [[∃ (mirror p)]]is                                     (4)
+
+
+               p               aset p          bset p       p−      p+
+             q∧r          aset q @ aset r bset q @ bset r q− ∧ r− q+ ∧ r+
+             q∨r          aset q @ aset r bset q @ bset r q− ∨ r− q+ ∨ r+
+       b
+       1 ∗ v0 + a ≤ b0    [− a, − a + b  1]  [− a − b 1]     F       T
+       c ∗ v0 + a ≤ b
+       −1             0       [a − b 1]      [a, a − b1]     T       F
+       b
+       1 ∗ v0 + a = b0       [− a + b 1]     [− a − b 1]     F       F
+       c ∗ v0 + a = b
+       −1             0       [a + b 1]       [a − b 1]      F       F
+      ¬b 1 ∗ v0 + a = b0       [− a]           [− a]         T       T
+        c ∗ v0 + a = b
+      ¬ −1              0        [a]             [a]         T       T
+                                  []              []         p       p
+
+
+                  Fig. 4. Definition of aset p, bset p, p− and p+
+
+
+
+
+                     c ∗ v0 + r ≤ zb)
+             mirror (b                        c ∗ v0 + r ≤ zb)
+                                           = (−c
+                     c ∗ v0 + r = zb)
+             mirror (b                        c ∗ v0 + r = zb)
+                                           = (−c
+             mirror (db dvd bc ∗ v0 + r) = (db dvd −cc ∗ v0 + r)
+             mirror (¬db dvd b c ∗ v0 + r) = (¬db dvd −c
+                                                       c ∗ v0 + r)
+             mirror (¬b c ∗ v0 + r = zb) = (¬−c c ∗ v0 + r ≤ zb)
+             mirror (p ∧ q)                = (mirror l p) ∧ (mirror l q)
+             mirror (p ∨ q)                = (mirror l p) ∧ (mirror l q)
+             mirror p                      = p
+
+                            Fig. 5. Mirroring a formula
+
+
+   Furthermore we have the following dualities:
+          islinφ p → [[plusinf p]]i·is = [[minusinf(mirror p)]](−i)·is
+                unified p → aset p = map lin− (bset (mirror p))             (5)
+
+    We will also need to compute δp = lcm{d | db dvd bc ∗ v0 +r occurs in p}.
+Its definition is very similar to that of lcm φ p. Finally let the predi-
+cate alldvddvd l p be the analogue of alldvd l p which ensures islin φ p →
+alldvddvd δp p. The definition of both functions is obvious and omitted.
+4.3   Cooper’s theorem
+
+Our proof sketch of Cooper’s theorem (10) follows [15]. The conclusion
+of Cooper’s theorem is of the form A = (B ∨ C) and we prove B → A,
+C → A and A ∧ ¬B → C. We first prove (by induction on p) that any
+unified p behaves exactly like minusinf p for values that are small enough,
+cf. (6), and that this behaviour is periodic, cf. (7).
+
+         unified p → ∃z.∀x.x < z → ([[p]]x·is = [[minusinf p]]x·is )                          (6)
+                                                x·is                      (x−k·δp )·is
+         unified p → ∀x, k.[[minusinf p]]              = [[minusinf p]]                       (7)
+
+Using (6) and (7) we can prove the first implication (8), i.e. any witness j
+for p− provides a witness for p. According to (7) we can keep on decreasing
+j by δ until we reach the limit z of (6). This proof is based on induction
+over integers bounded from above. Note also that (8) holds for all d.
+
+             unified p ∧ (∃j ∈ {1..d}.[[minusinf p]] j·js) → [[∃ p]]js                        (8)
+
+    The second implication is trivial: given b ∈ {{bset p}} and j ∈ {1..δ p }
+                       b
+such that [[p]][[i·is]]ι +j we have a witness for p. If there is no such b and j
+then p behaves periodically and hence any witness for p must be a witness
+for p− . Hence (9) proves with (6) and (7) the last implication and Cooper’s
+theorem (10) follows directly using (8).
+                                                                            i·is +j)·is
+       unified p → ∀x.¬(∃j ∈ {{1..δp }}.∃b ∈ {{bset p}}.[[p]]([[b]]ι                      )
+                                                                                              (9)
+                                                        → [[p]]x·is → [[p]](x−δp )·is
+
+ unified p → ([[∃ p]]is = ((∃j ∈ {1..δp }.[[minusinf p]]j·is ) ∨
+                                                                    i·is         (10)
+                          (∃j ∈ {1..δp }.∃b ∈ {{bset p}}.[[p]]([[b]]ι +j)·is )))
+This expresses that an existential quantifier is equivalent with a finite
+disjunction. The latter is still expressed with existential quantifiers, but
+we will now replace them by executable functions.
+
+4.4   The decision procedure
+
+In order to compute the rhs of Cooper’s theorem (10) we need substitution
+for v0 in ι-terms (substι ) and φ-formulae (substφ ) such that
+                                                           i·is ·is
+                           [[substι r t]]i·is
+                                         ι    = [[t]]ι[[r]]ι
+                                                           i·is ·is
+                          [[substφ r p]]i·is = [[p]][[r]]ι
+   Let nov0ι t and nov0φ p express that v0 does not occur in t and p,
+and let decr ι t and decr φ p denote t and p where all variable indices are
+decremented by one. The implementation of subst ι , substφ , nov0ι , nov0φ ,
+decrι and decrφ is simple and omitted. The following properties are easy:
+
+               nov0ι t → nov0ι (substι t r) ∧ nov0φ (substφ t p)
+               nov0ι t → [[t]]i·is
+                              ι    = [[decr ι t]]is
+                                                 ι
+               nov0φ p → [[p]]i·is = [[decrφ p]]is
+
+
+
+  explode∨ [] p = F
+  explode∨ (i · is) p =
+  case (simp (substφ i p), explode∨ is p) of
+    (T , ) ⇒ T
+    (F , pis ) ⇒ pis
+    ( ,T) ⇒ T
+    (pi , F ) ⇒ pi
+    (pi , pis ) ⇒ pi ∨ pis
+
+                            Fig. 6. Generate disjunctions
+
+
+                                 W
+   To generate the disjunction t∈{{ts}} substφ t p we use explode∨ ts p
+(Fig. 6). Function simp evaluates ground atoms and performs simple
+propositionsal simplifications. We prove
+
+ qfree p ∧ (∀t ∈ {{ts}}.nov0 ι t) →
+ nov0φ (explode∨ ts p) ∧ (∃t ∈ {{ts}}.[[subst φ t p]]i·is = [[explode∨ ts p]]i·is )
+
+We implement explode−∞ (Fig. 7) and prove that it computes the right
+hand side of Cooper’s theorem, cf. (11). It uses all + d ts to generate all
+the sums of an element of {{ts}} and of some bi where 1 ≤ i ≤ d, cf. (12).
+
+                                            unified p ∧ {{B}} = {{bset p}}
+                       → ([[∃ p]] = [[decr φ (explode−∞ (p, B))]]is )
+                                      is
+                                                                               (11)
+        ∃i ∈ {1..d}.∃b ∈ {{ts}}.P (lin + b bi) = ∃t ∈ {{all+ d ts}}.P t        (12)
+
+    Let us now look at the implementation of the decision procedure in
+Fig. 8. Function unify performs the U-step but also prepares the applica-
+tion of Cooper’s theorem. For efficiency, both aset and bset are computed.
+Depending on their size, either the unified term and its bset or the mir-
+rored version and its aset are passed to explode −∞ to compute the rhs of
+ explode−∞ (p, B) =
+ case (explode∨ [b  1..δbp ] p− , explode∨ (all+ δp B) p) of
+   (T , ) ⇒ T
+   (F , r2 ) ⇒ r2
+   (r1 , T ) ⇒ T
+   (r1 , F ) ⇒ r1
+   (r1 , r2 ) ⇒ r1 ∨ r2
+
+ all+ d [] = []
+ all+ d (i · is) = (map (lin+ i) [b  b @ (all+ d is)
+                                  1..d])
+
+                          Fig. 7. The rhs of Cooper’s theorem
+
+ unify p =
+ let q = unity p ; (A, B) = (remdups aset q, remdups bset q)
+ in if |B| ≤ |A| then (q, B) else (mirror q, A)
+
+ cooper p = (λf.decrφ (explode−∞ (unify f )))⊥ (linφ (nnf p))
+
+ pa = qelimφ cooper
+
+              Fig. 8. The decision procedure for linearizable φ-formulae
+
+
+
+Cooper’s theorem. Function cooper composes all the normalization steps,
+the elimination of v0 by unify, and the decrementation of the remaining
+de Bruijn indices. Function pa applies generic quantifier elimination to
+Cooper’s algorithm.
+   Using (3), (4) and (5) we can prove
+
+                islinφ p ∧ unify p = (q, B) →
+                [[∃ p]]is = [[∃ q]]is ∧ unified q ∧ {{B}} = {{bset q}}        (13)
+
+and with (11) this implies
+
+             islinφ p → [[∃ p]]is = [[decrφ (explode−∞ (unify p))]]is
+
+which implies the correctness of cooper directly
+
+           qfree q ∧ cooper q = bq 0 c → qfree q 0 ∧ [[∃ q]]is = [[q 0 ]]is
+
+and hence, using (1), the correctness of the whole decision procedure pa:
+
+                    pa p = bp0 c → [[p]]is = [[p0 ]]is ∧ qfree p0 .
+5   Formalization issues
+
+Normal forms Cooper’s decision procedure transforms the input for-
+mula into successively more specialized normal forms, which is typical
+for many decision procedures. In our formalization these different normal
+forms are specified by predicates on the input languages φ and ι. This has
+the advantage that we do not need to define new languages and trans-
+lations between languages. Instead we need to add preconditions to our
+theorems (e.g. islinι a) and end up with more complicated function defini-
+tions (see below). Highly tuned code may require special representations
+of certain normal forms even using special data structures for efficiency.
+(e.g. [9]). For Cooper’s algorithm such optimizations do not promise sub-
+stantial gains.
+
+Recursive functions The advantages of defining recursive functions
+by pattern matching are well known and it is used extensively in our
+work. Isabelle/HOL supports such definitions [19] by lists of equations.
+However, it is not always possible to turn each equation directly into a
+theorem because an equation is only applicable if all earlier equations are
+inapplicable. Hence Isabelle instantiates and possibly duplicates equations
+to make them non-overlapping. In the case of function mirror, the given
+list of 8 equations leads to 144 equations after disambiguation. This blow-
+up is the result of working with the full language φ even when a function
+operates only on a certain normal form. These non-overlapping theorems
+are later exported to ML, which may influence the quality of the code
+generated by the ML compiler.
+
+Tailored induction Isabelle/HOL derives a tailored induction rule [19]
+from a recursive function definition which simplifies proofs enormously.
+This may seem surprising since the induction rule for mirror has 144 cases.
+However, most of the cases are irrelevant if the argument is assumed to
+be linear. These irrelevant cases disappear by simplification.
+
+6   Performance
+
+We tested three implementations on a batch of 64 theorems, where the
+distribution of quantifiers is illustrated by Fig. 9. The 64 formulae contain
+up to five quantifiers and three quantifier alternations. The number n q in
+Fig. 9 represents the number of formulae with q quantifiers. The number of
+quantifier alternations is also given by the n qi ’s. We have nq = nq0 +nq1 +
+nq2 + nq3 , where nqi is the number of formulae containing q quantifiers
+and i quantifier alternation. The column cbmax gives the maximal constant
+occurring in the given set of formulae. Finally the last column gives the
+speed up factor achieved.
+
+                       q nq nq0 nq1 nq2 nq3 cbmax speedup
+                       1 3 3 0 0 0 24                10
+                       2 27 20 7 0 0 13             101
+                       3 21 2 19 0 0 129            420
+                       4 6 1 0 0 5             6     99
+                       5 5 3 0 5 0 12               103
+
+         Fig. 9. Number of quantifiers and speedup in the test-formulae
+
+
+
+
+    The adaptation of Harrison’s implementation [12] (the current oracle
+in Isabelle/HOL) took 3.91 seconds to solve all goals. Our adaptation of
+this implementation to produce full proofs based on inference rules [4]
+took 703.08 seconds. The ML implementation obtained by Isabelle’s code
+generator from the formally verified procedure presented above took 3.48
+seconds, a speed-up of a factor of 200. All timings were carried out on a
+PowerBook G4 with a 1.67 GHz processor running OSX. The reason why
+the hand coded version is slightly slower than the generated one is that
+it operates on a symbolic binary representation of integers whereas the
+generated one uses (arbitrary precision!) ML-integers.
+
+7   Conclusion
+
+We presented a formally verified procedure for quantifier elimination in
+PA. Generating ML code from it we achieved substantial performance
+improvements over an LCF-style implementation. Decision procedures
+developed this way are much easier to maintain and especially to share.
+Other systems supporting reflection should be able to import our work
+fairly directly, especially if they are of the HOL family as well.
+
+References
+1. Andrew W. Appel and Amy P. Felty. Dependent types ensure partial correctness
+   of theorem provers. J. Funct. Program., 14(1):3–19, 2004.
+2. Stefan Berghofer and Tobias Nipkow. Proof terms for simply typed higher order
+   logic. In J. Harrison and M. Aagaard, editors, Theorem Proving in Higher Order
+   Logics, volume 1869 of LNCS, pages 38–52. Springer-Verlag, 2000.
+ 3. Stefan Berghofer and Tobias Nipkow. Executing higher order logic. In In Types
+    for Proofs and Programs (TYPES 2000), volume 2277 of LNCS, pages 24–40.
+    Springer-Verlag, 2002.
+ 4. A. Chaieb and T. Nipkow. Generic proof synthesis for presburger arithmetic.
+    Technical report, TU München, 2003. http://www4.in.tum.de/ ∼ nipkow/pubs/
+    presburger.pdf.
+ 5. D.C. Cooper. Theorem proving in arithmetic without multiplication. In B. Meltzer
+    and D. Michie, editors, Machine Intelligence, volume 7, pages 91–100. Edinburgh
+    University Press, 1972.
+ 6. Pierre Crégut.    Une procédure de décision réflexive pour un fragment de
+    l’arithmétique de Presburger. In Informal proceedings of the 15th journées franco-
+    phones des langages applicatifs, 2004.
+ 7. Fischer and Rabin. Super-exponential complexity of presburger arithmetic. In
+    SIAMAMS: Complexity of Computation: Proceedings of a Symposium in Applied
+    Mathematics of the American Mathematical Society and the Society for Industrial
+    and Applied Mathematics, 1974.
+ 8. Benjamin Grégoire and Xavier Leroy. A compiled implementation of strong reduc-
+    tion. In Int. Conf. Functional Programming, pages 235–246. ACM Press, 2002.
+ 9. Benjamin Grégoire and Assia Mahboubi. Proving equalities in a commutative ring
+    done right in Coq. In J. Hurd, editor, Theorem Proving in Higher Order Logics,
+    TPHOLs 2005, volume ? of LNCS, page ? Springer-Verlag, 2005.
+10. John Harrison. Metatheory and reflection in theorem proving: A survey and cri-
+    tique. Technical Report CRC-053, SRI Cambridge, Millers Yard, Cambridge, UK,
+    1995. http://www.cl.cam.ac.uk/users/jrh/papers/reflect.dvi.gz.
+11. John Harrison. Theorem proving with the real numbers. PhD thesis, University of
+    Cambridge, Computer Laboratory, 1996.
+12. John Harrison’s home page. http://www.cl.cam.ac.uk/users/jrh/atp/OCaml/
+    cooper.ml.
+13. Robert Klapper and Aaron Stump. Validated Proof-Producing Decision Proce-
+    dures. In C. Tinelli and S. Ranise, editors, 2nd Int. Workshop Pragmatics of
+    Decision Procedures in Automated Reasoning, 2004.
+14. Tobias Nipkow, Lawrence Paulson, and Markus Wenzel. Isabelle/HOL — A Proof
+    Assistant for Higher-Order Logic, volume 2283 of LNCS. Springer-Verlag, 2002.
+    http://www.in.tum.de/∼ nipkow/LNCS2283/.
+15. Michael Norrish. Complete integer decision procedures as derived rules in HOL.
+    In D.A. Basin and B. Wolff, editors, Theorem Proving in Higher Order Logics,
+    TPHOLs 2003, volume 2758 of LNCS, pages 71–86. Springer-Verlag, 2003.
+16. Derek C. Oppen. Elementary bounds for presburger arithmetic. In STOC ’73:
+    Proceedings of the fifth annual ACM symposium on Theory of computing, pages
+    34–37, New York, NY, USA, 1973. ACM Press.
+17. Mojzesz Presburger. Über die Vollständigkeit eines gewissen Systems der Arith-
+    metik ganzer Zahlen, in welchem die Addition als einzige Operation hervortritt. In
+    Comptes Rendus du I Congrès de Mathématiciens des Pays Slaves, pages 92–101,
+    1929.
+18. William Pugh. The Omega test: a fast and practical integer programming algo-
+    rithm for dependence analysis. In Proceedings of the 1991 ACM/IEEE conference
+    on Supercomputing, pages 4–13. ACM Press, 1991.
+19. Konrad Slind. Derivation and use of induction schemes in higher-order logic. In
+    TPHOLs ’97: Proceedings of the 10th International Conference on Theorem Prov-
+    ing in Higher Order Logics, pages 275–290, London, UK, 1997. Springer-Verlag.
+

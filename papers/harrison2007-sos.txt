@@ -1,0 +1,808 @@
+     Verifying nonlinear real formulas via sums of squares
+
+                                           John Harrison
+
+                                   Intel Corporation, JF1-13
+                         2111 NE 25th Avenue, Hillsboro OR 97124, USA
+                                johnh@ichips.intel.com
+
+
+
+          Abstract. Techniques based on sums of squares appear promising as a general
+          approach to the universal theory of reals with addition and multiplication, i.e.
+          verifying Boolean combinations of equations and inequalities. A particularly at-
+          tractive feature is that suitable ‘sum of squares’ certificates can be found by so-
+          phisticated numerical methods such as semidefinite programming, yet the actual
+          verification of the resulting proof is straightforward even in a highly foundational
+          theorem prover. We will describe our experience with an implementation in HOL
+          Light, noting some successes as well as difficulties. We also describe a new ap-
+          proach to the univariate case that can handle some otherwise difficult examples.
+
+
+1      Verifying nonlinear formulas over the reals
+Over the real numbers, there are algorithms that can in principle perform quantifier
+elimination from arbitrary first-order formulas built up using addition, multiplication
+and the usual equality and inequality predicates. A classic example of such a quantifier
+elimination equivalence is the criterion for a quadratic equation to have a real root:
+
+     ∀a b c. (∃x. ax2 + bx + c = 0) ⇔ a = 0 ∧ (b = 0 ⇒ c = 0) ∨ a 6= 0 ∧ b2 ≥ 4ac
+
+    The first quantifier elimination algorithm for this theory was developed by Tarski
+[32],1 who actually demonstrated completeness and quantifier elimination just for the
+theory of real-closed fields, which can be characterized as ordered fields where all non-
+negative elements have square roots (∀x. 0 ≤ x ⇒ ∃y. x = y 2 ) and all non-trivial
+polynomials of odd degree have a root. There are several interesting models of these
+axioms besides the reals (e.g. the algebraic reals, the computable reals, the hyperreals)
+yet Tarski’s result shows that these different models satisfy exactly the same properties
+in the first-order language under consideration.
+    However, Tarski’s procedure is complicated and inefficient. Many alternative deci-
+sion methods were subsequently proposed; two that are significantly simpler were given
+by Seidenberg [30] and Cohen [8], while the CAD algorithm [9], apparently the first
+ever to be implemented, is significantly more efficient, though relatively complicated.
+Cohen’s ideas were recast by Hörmander [17] into a relatively simple algorithm. How-
+ever, even CAD has poor worst-case complexity (doubly exponential), and the Cohen-
+Hörmander algorithm is generally still slower. Thus, there has been limited progress on
+ 1
+     Tarski actually discovered the procedure in 1930, but it remained unpublished for many years
+     afterwards.
+applying these algorithms to problems of interest. An interesting alternative, currently
+unimplemented, is described in [4].
+    If we turn to implementation in foundational theorem provers using basic logi-
+cal operations instead of complicated code, the situation is bleaker still. The Cohen-
+Hörmander algorithm has been implemented in Coq [23] and HOL Light [24] in a
+way that generates formal proofs. However, producing formal proofs induces a fur-
+ther significant slowdown. In practice, more successful approaches to nonlinear arith-
+metic tend to use heuristic approaches that work well for simple common cases like
+x > 0 ∧ y > 0 ⇒ xy > 0 but are incomplete (or at least impractical) in general [18,
+33], though in some cases they go beyond the simple algebraic operations [1].
+    But many important problems in practice are purely universally quantified, i.e. are of
+the form ∀x1 , . . . , xn . P [x1 , . . . , xn ] where P [x1 , . . . , xn ] is an arbitrary Boolean com-
+bination of polynomial equations and inequalities. Typical (true) examples are ∀x y.x ≤
+y ⇒ x3 ≤ y 3 , ∀x.0 ≤ 1∧x ≤ 1 ⇒ x2 ≤ 1 and ∀a b c x.ax2 +bx+c = 0 ⇒ b2 ≥ 4ac.
+For this logically restrictive but practically important case, a completely different ap-
+proach is possible based on sums of squares.
+
+
+2    Positivity and sums of squares
+
+We will be concerned with the set of multivariate polynomials R[x1 , . . . , xn ] over the
+reals, and often more specifically the subset Q[x1 , . . . , xn ] with rational coefficients.
+The cornerstone of what follows is the relationship between a polynomial’s taking non-
+negative values everywhere, a.k.a. being positive semidefinite (PSD):
+
+                                ∀x1 , . . . , xn . p(x1 , . . . , xn ) ≥ 0
+
+and the existence of a decomposition into a sum of squares (SOS) of other polynomials:
+                                                     k
+                                                     X
+                             p(x1 , . . . , xn ) =         si (x1 , . . . , xn )2
+                                                     i=0
+
+    Since any square is nonnegative, the existence of a sum-of-squares decomposition
+implies nonnegativity everywhere. The converse is not true without restrictions — for
+example the following [25] is everywhere strictly positive (geometric mean ≤ arith-
+metic mean, applied to x2 y 4 , x4 y 2 and 1), but one can show by quite elementary con-
+siderations that it is not a sum of squares in R[x, y].
+
+                                    1 + x4 y 2 + x2 y 4 − 3x2 y 2
+
+   On the other hand, the positive solution of Hilbert’s 17th problem [3] implies that
+every PSD polynomial is the sum of squares of rational functions. For instance, we
+have:
+
+        1 + x4 y 2 + x2 y 4 − 3x2 y 2 =
+         2 2 2         2  2 2 2           2                 2  2 2 2
+          x y(x +y −2)          xy (x +y −2)      xy(x2 +y 2 −2)
+               2
+              x +y 2        +         2
+                                     x +y 2    +      2
+                                                     x +y  2       + xx2 −y
+                                                                         +y 2
+P We will      consider in what follows a liberal notion of ‘sum of squares’ allowing
+    ai si (x)2 where the ai are nonnegative rational numbers. This amounts to no real
+increase in generality since every nonnegative rational can be written as a sum of four
+rational squares [34]. And the reasoning that SOS ⇒ P SD is almost equally straight-
+forward.
+
+Direct proof of PSD from SOS
+At its simplest, we might seek to prove that a single polynomial is PSD by finding
+a SOS decomposition. We have seen that this approach is in general not complete.
+Nevertheless, in practice it often works for problems of interest, e.g. the following [12]:
+              ∀w x y z. w6 + 2z 2 w3 + x4 + y 4 + z 4 + 2x2 w + 2x2 z+
+                        3x2 + w2 + 2zw + z 2 + 2z + 2w + 1 ≥ 0
+via the sum-of-squares decomposition:
+                    w6 + 2z 2 w3 + x4 + y 4 + z 4 + 2x2 w + 2x2 z+
+                    3x2 + w2 + 2zw + z 2 + 2z + 2w + 1 =
+                    (y 2 )2 + (x2 + w + z + 1)2 + x2 + (w3 + z 2 )2
+    Besides its theoretical incompleteness, finding a direct SOS expansion only works
+for nonnegativity of a single polynomial. However, this can be generalized somewhat
+by a change of variables. For example, instead of proving ∀x. x ≥ 0 ⇒ p(x) ≥ 0 we
+can prove the equivalent ∀x. p(x2 ) ≥ 0. More interesting is certifying nonnegativity
+over a general compact interval [a, b]:
+                            ∀x. a ≤ x ∧ x ≤ b ⇒ p(x) ≥ 0
+   We can likewise prove this equivalent to a simple nonnegativity assertion with a
+change of variable. Note first that
+                                             a + by 2
+                                    x(y) =
+                                             1 + y2
+is a surjection from R to [a, b) with right inverse
+                                              r
+                                                x−a
+                                     y(x) =
+                                                 b−x
+and so
+                                                               a + by 2
+           (∀x. a ≤ x ∧ x < b ⇒ p(x) ≥ 0) ⇔ (∀y ∈ R. p(                 ) ≥ 0)
+                                                               1 + y2
+    Moreover, because polynomials are continuous, this is equivalent to the original
+claim ∀x. a ≤ x ∧ x ≤ b ⇒ p(x) ≥ 0. We can turn the rational function claim into
+purely polynomial nonnegativity by multiplying through by (1 + y 2 )∂(p) where ∂(p) is
+the degree of p, since this is guaranteed to cancel all denominators:
+                                                               a + by 2
+       (∀x. a ≤ x ∧ x ≤ b ⇒ p(x) ≥ 0) ⇔ (∀y. (1 + y 2 )∂(p) p(          ) ≥ 0)
+                                                                1 + y2
+    However, we will now consider a more general and theoretically complete approach
+to verifying universal formulas using SOS.
+3   Important cases of Hilbert’s theorem
+A classic result due to Hilbert [16] shows that there are only a few special classes of
+polynomials where PSD and SOS are equivalent. We just note two of them.
+
+Univariate polynomials
+Every PSD univariate polynomial is a sum of just two real squares. For the proof,
+observe that complex roots always occur in conjugate pairs, and any real roots must
+have even multiplicity, otherwise the polynomial would cross the x-axis instead of just
+touching it. Thus, if the roots are ak ± ibk , we can imagine writing the polynomial as:
+
+
+           p(x) = [(x − [a1 + ib1 ])(x − [a2 + ib2 ]) · · · (x − [am + ibm ])] ·
+                   [(x − [a1 − ib1 ])(x − [a2 − ib2 ]) · · · (x − [am − ibm ])]
+                = (q(x) + ir(x))(q(x) − ir(x))
+                = q(x)2 + r(x)2
+    However, to expand a polynomial with rational coefficients as a sum of squares of
+rational polynomials, a more sophisticated proof is needed. For example Landau [21],
+building on a theorem of Hilbert, shows that every PSD univariate polynomial is the
+sum of 8 squares. This was subsequently sharpened by Pourchet [27] to show that 5
+squares suffice, and indeed that 5 is the best possible in general. However, even the
+more constructive proofs of this and related results [5] do not seem to be very practical,
+and we will return later in this paper to finding such expansions in practice.
+
+Quadratic forms
+Every PSD quadratic form, in any number of variables, is a sum of squares. (A form
+is a polynomial where all monomials have the same [multi-]degree, and in a quadratic
+form that degree is 2. So for example x2 , wz and xy are permissible monomials in a
+quadratic form but not 1, x or y 5 .) The proof is a straightforward elaboration of the ele-
+mentary technique of “completing the square” [10]. We will as usual assume a standard
+representation of a quadratic form
+                                                     n X
+                                                     X n
+                            f (x1 , . . . , xn ) =               aij xi xj
+                                                     i=1 j=1
+
+where aij = aji . We are at liberty to make this symmetry assumption, for given any
+representation we can always choose another symmetric one by setting a0ij = a0ji =
+(aij + aji )/2.
+                                                             Pn Pn
+Theorem 1. Given a quadratic form f (x1 , . . . , xn ) =        i=1 j=1 aij xi xj in vari-
+ables x1 , . . . , xn with the coefficients aij rational and aij = aji , we can construct
+either a decomposition:
+                                                  n
+                                                  X
+                         f (x1 , . . . , xn ) =         bi gi (x1 , . . . , xn )2
+                                                  i=1
+where the bi are nonnegative rational numbers and the gi (x1 , . . . , xn ) are linear func-
+tions with rational coefficients, or particular rational numbers u1 , . . . , un such that
+f (u1 , . . . , un ) < 0.
+
+Proof. By induction on the number of variables. If the form is zero, then it trivially
+has an empty SOS decomposition. Otherwise, pick the first variable x1 (the order is
+unimportant), and separate the monomials into those involving x1 and those not:
+                                                   n
+                                                   X
+               f (x1 , . . . , xn ) = (a11 x21 +         2a1i x1 xi ) + g(x2 , . . . , xn )
+                                                   i=2
+
+    If a11 = 0, then there are two cases to consider. If all the a1i are zero, then we
+effectively have a form in n−1 variables and so the result holds by induction; in the case
+of a witness of non-positive-semidefiniteness, we can assign u1 arbitrarily. Otherwise,
+if any a1i 6= 0, the form is not positive semidefinite and our witness is u1 = aii /2 + 1,
+ui = −a1i and all other uj = 0; we then have f (u1 , . . . , un ) = −2a21i < 0 as
+required.
+    Now if a11 < 0, then again the form is not PSD, and a suitable witness is simply
+u1 = 1 and all other uj = 0, whence all monomials but a11 x21 are zero and that one
+is negative. The more interesting case is when a11 > 0, and here we ‘complete the
+square’. We have:
+                                              Pn
+         f (x1 , . . . , xn ) = a11 (x1 + i=2 (aP             )xi )2 +
+                                                      1i /a11 P
+                                                          n     n
+                                (g(x2 , . . . , xn ) − j=2 k=2 (a1j a1k /a11 )xj xk )
+
+     The second term on the right is a quadratic form in variables x2 , . . . , xn , so by the
+inductive hypothesis we can either find a SOS expansion or  Pan witness of non-positive-
+definiteness. In the former case, we just include a11 (x1 + i=2 (a1i /a11 )xi )2 and ob-
+tain a SOS decomposition for the entire form. In P  the latter case, we take the witness
+                                                       n
+                   augment it by choosing u1 = − i=2 (a1i /a11 )ui , which makes the
+u2 , . . . , un andP
+                    n
+term a11 (x1 + i=2 (a1i /a11 )xi )2 vanish and hence gives a non-PSD witness for the
+whole form. QED
+
+    For example, let us apply the method to the form 6x2 +49y 2 +51z 2 −82yz+20zx−
+4xy, with the variables in the obvious order x, y, z. We obtain a SOS decomposition as
+follows:
+
+
+           6x2 + 49y 2 + 51z 2 − 82yz + 20zx − 4xy
+                                
+                   2       10
+         = 6 x2 − xy + xz + 49y 2 + 51z 2 − 82yz
+                                                      
+                   3       3
+                          2                                2
+                  1     5             2     2
+                                                         1 5
+         = 6 x − y + z + 49y + 51z − 82yz − 6 − y + z
+                  3     3                                 3 3
+                          2                          
+                  1     5          145 2 226       78
+         =6 x− y+ z +                   y −    yz + z 2
+                  3     3           3        3      3
+                    2                
+                1  5    145    2  226      103 2
+           =6 x− y+ z +       y −     yz +       z
+                3  3     3        145        3
+                    2              2
+                1  5    145      113      103 2 12769 2
+           =6 x− y+ z +       y−     z +       z −     z
+                3  3     3       145       3       435
+                    2              2
+                1  5    145      113      722 2
+           =6 x− y+ z +       y−     z +       z
+                3  3     3       145      145
+
+
+4      Quadratic forms and matrices
+
+We can establish a correspondence between quadratic forms and matrices by writing a
+quadratic form in variables x1 , . . . , xn as a vector-matrix-vector product with a vector
+of variables:
+                              X n        Xn              X
+                    xT Ax =          xi      Aij xj =          Aij xi xj
+                                  i=1     j=1           1≤i,j≤n
+
+
+   If we restrict ourselves to symmetric matrices A, then the matrix representation is
+unique, and the matrix elements correspond exactly to the coefficients in the standard
+formulation above. (In an actual implementation we may choose to use an appropriately
+modified upper or lower triangular matrix for efficiency reasons.)
+
+
+Positive semidefinite matrices
+
+Quite generally, a symmetric2 matrix A is said to be positive semidefinite iff xT Ax ≥ 0
+for all vectors x — in other words, precisely if the associated quadratic form is positive
+semidefinite. Two other equivalent characterizations are:
+
+    – There is a factorization A = LT L where L is a triangular matrix and the T signifies
+      transposition.
+    – All eigenvalues of A are non-negative (they are necessarily real because A is sym-
+      metric)
+
+    A proof of the former is straightforward by recasting the “completing the square”
+algorithm (theorem 1) in matrix terms [31]. More precisely, a factorization of the form
+A = LT L is obtained by Choleski decomposition. A direct translation of the ‘com-
+pleting the square’ algorithm gives a decomposition A = LDLT where L, D and LT
+are respectively lower-triangular, diagonal and upper-triangular. This has some advan-
+tages for symbolic applications because it involves only rational operations, whereas
+Choleski decomposition requires square roots.
+
+ 2
+     Or Hermitian if we consider the complex case, which we will not do here.
+5      The universal fragment via SOS
+The Positivstellensatz
+The Artin-Schreier theorem [19] implies that every ordered integral domain can be em-
+bedded in a real-closed field called its real closure. For this reason, a universal formula
+must hold in all real-closed fields (and hence, by Tarski’s completeness result, in R) iff
+it holds in all ordered integral domains:
+
+    – If it holds in all ordered integral domains, it holds in all real-closed fields, since a
+      real-closed field is a kind of ordered integral domain.
+    – If it holds in all real-closed fields, it holds in the real closure of any ordered inte-
+      gral domain, and therefore, since quantifiers are all universal, in the substructure
+      corresponding to that integral domain.
+
+     This already means that a valid formula can in principle be proved without using the
+special axioms about square roots and roots of odd-degree polynomials, based only on
+the axioms for an ordered integral domain. This can be put in a still sharper form. First
+it is instructive to look at the case of the complex numbers, where the classic Hilbert
+Nullstellesatz holds:
+
+Theorem 2. The polynomial equations p1 (x) = 0, . . . , pn (x) = 0 have no com-
+mon solution in C iff 1 is in the ideal generated by p1 , . . . , pn , which we write as
+1 ∈ Id hp1 , . . . , pn i.
+
+   More explicitly, this means that the universally quantified formula ∀x. p1 (x) =
+0 ∧ · · · pn (x) = 0 ⇒ ⊥ holds iff there are ‘cofactor’ polynomials q1 (x), . . . , qn (x)
+such that the following is a polynomial identity:
+
+                            p1 (x) · q1 (x) + · · · + pn (x) · qn (x) = 1
+
+    The analogous property fails over R; for example x2 + 1 = 0 alone has no solution
+yet 1 is not a multiple of x2 + 1 (considering them as polynomials). However, in the
+analogous Real Nullstellensatz, sums of squares play a central role:
+
+Theorem 3. The polynomial equations p1 (x) = 0, . . . , pn (x) = 0 have no common
+solution in R iff there are polynomials s1 (x), . . . , sk (x) such that s1 (x)2 +· · ·+sk (x)2 +
+1 ∈ Id hp1 , . . . , pn i.
+
+    This can be further generalized to so-called ‘Positivstellensatz’ results on the incon-
+sistency of a set of equations, inequations and inequalities.3 Unfortunately these become
+a bit more intricate to state. The particular version we rely on in our implementation,
+following [26], can be stated as follows:
+ 3
+     In principle the simple Nullstellensatz suffices to prove unsatisfiability of any unsatisfiable
+     conjunction of atomic formulas, since in R we have equivalences such as s ≤ t ⇔ ∃x. t =
+     s + x2 , s < t ⇔ ∃x. (t − s)x2 = 1 and s 6= t ⇔ ∃x. (t − s)x = 1. Indeed we could then
+     combine a conjunction of equations into a single equation using s = 0 ∧ t = 0 ⇔ s2 + t2 = 0.
+     However, using a general Positivstellensatz tends to be more efficient.
+Theorem 4. The polynomial formulas p1 (x) = 0, . . . , pn (x) = 0, q1 (x) ≥ 0, . . . ,
+qm (x) ≥ 0, r1 (x) 6= 0, . . . , rp (x) 6= 0 are impossible in R iff there are polynomials P ,
+Q, R such that P +Q+R2 = 0 where P ∈ Id hp          Q1p, . . . , pn i, R is a product of powers of
+the ri (we can if desired assume it’s of the form i=1 rik ) and Q is in the cone generated
+by the qi , i.e. the smallest set of polynomials containing all qi , all squares of arbitrary
+polynomials and closed under addition and multiplication.
+
+    It’s perhaps easier to grasp a simple example. Consider proving the universal half
+of the quadratic root criterion
+
+                       ∀a b c x. ax2 + bx + c = 0 ⇒ b2 − 4ac ≥ 0
+
+by showing the inconsistency of the formulas ax2 + bx + c = 0 and 4ac − b2 > 0. We
+have the following polynomial identity of the form whose existence is guaranteed by
+the Positivstellensatz:
+
+                  (4ac − b2 ) + (2ax + b)2 + (−4a)(ax2 + bx + c) = 0
+
+Given such a “certificate” (i.e. the additional polynomials necessary in such an equa-
+tion), it’s easy to verify the required result by elementary inequality reasoning: (2ax +
+b)2 is a square and hence nonnegative, (−4a)(ax2 + bx + c) is zero since by hypothesis
+ax2 + bx + c = 0, so b2 − 4ac must be nonnegative for the equation to hold.
+
+
+Finding SOS decompositions by semidefinite programming
+
+Although the Nullstellensatz/Positivstellensatz assures us that suitable SOS certificates
+of infeasibility exist, the usual proofs of these results are not constructive. Lombardi
+[22] has proved a constructive form, showing how a refutation using Hörmander’s pro-
+cedure can be used to systematically construct a Nullstellensatz certificate. However,
+given that we know that none of the sophisticated real-closed field axioms are actually
+needed, we might seek a more direct approach.
+     Parrilo [26] pioneered the approach of using semidefinite programming to find SOS
+decompositions. Semidefinite programming is the problem of finding feasible values
+u1 , . . . , um (or more generally, maximizing some linear combination of the ui ) to make
+a matrix linearly parametrized by those values PSD, subject to a set of linear equational
+constraints on the ui . This is a convex optimization problem, and so in principle we
+know it can be solved to a given accuracy in polynomial time, e.g. on the basis of
+the ellipsoid algorithm [2, 11].4 In practice, there are powerful semidefinite program-
+ming tools, e.g. based on primal-dual interior point algorithms or the ‘spectral bundle
+method’. Our experiments have mostly used the system CSDP [6], which we have found
+to be robust and efficient.5
+ 4
+   As [29] notes, convexity rather than linearity is the fundamental property that makes optimiza-
+   tion relatively tractable. Indeed, the first polynomial-time algorithm for linear programming
+   [20] was based on the ellipsoid algorithm for general convex optimization, together with an
+   argument about about the accuracy bound needed.
+ 5
+   See also the CSDP Web page https://projects.coin-or.org/Csdp/.
+    The basic idea of this reduction is to introduce new variables for the possible mono-
+mials that could appear in the squares. For example [26] to express 2x4 +2x3 y −x2 y 2 +
+5y 4 as a SOS, no monomials of degree > 2 can appear in the squares, since their squares
+would then remain uncancelled in the SOS form. With a little more care one can deduce
+that only the following monomials, for which we introduce the new variables zi , need
+be considered:
+                               z1 = x2 , z2 = y 2 , z3 = xy
+    Now we write the original polynomial as a quadratic form in the zi :
+                            T                  
+                              z1     q11 q12 q13     z1
+                            z2   q12 q22 q23   z2 
+                              z3     q13 q23 q33     z3
+
+    Comparing coefficients in the original coefficient, we obtain linear constraints on
+the qij :
+                                  q11 = 2
+                                  q22 = 5
+                                  q33 + 2q12 = −1
+                                  2q13 = 2
+                                  2q23 = 0
+    By introducing the new variables, we have returned to the case of quadratic forms,
+where SOS and PSD are the same. Thus, if we find qij for which the matrix is PSD,
+we can directly read off a sum of squares using the ‘completing the square’ algorithm.
+The price we pay is that only solutions satisfying the linear constraints above will yield
+an SOS expansion for the original polynomial; for our example q33 = 5 and q12 = −3
+give such a solution, from which a SOS decomposition can be read off. SDP solvers
+can solve exactly this problem.
+    When just searching for a direct SOS decomposition as in the example above, we
+were able to place a bound on the monomials we need to consider. However, for gen-
+eral Positivstellensatz certificates, the only bounds known are somewhat impractical.
+Instead of using these, we impose relatively small limits on the degrees of the poly-
+nomials considered (in the squares and in the ideal cofactors) as well as the powers
+used for the product of inequations. For any particular bound, the problem reduces to
+semidefinite programming, and we can keep increasing the bound until it succeeds, at
+least in principle.
+
+
+6   Implementation in HOL and experience
+We have integrated this algorithm into HOL Light, and it is freely available in the latest
+version (2.20) as the file Examples/sos.ml.
+
+How it works
+We rely on all the existing machinery in HOL Light for eliminating various auxiliary
+concepts like the absolute value function, max and min, and reducing the problem to
+a finite set of subproblems that involve just refuting a conjunction of equations, strict
+and nonstrict inequalities. All this is currently used in the simple linear prover of HOL
+Light, and it was designed so that any other core equation/inequality refuter can be
+plugged in. So now the task is just to refute a conjunction of the form:
+                      ^                 ^               ^
+                         pi (x) = 0 ∧ qj (x) ≥ 0 ∧ rk (x) > 0
+                      i               j               k
+
+
+     We do this by systematically searching for certificates of the form guaranteed to
+exist by the Positivstellensatz. We use iterative deepening, so that at stage n we con-
+sider, roughly speaking, polynomials of degree n in the certificate. Symbolically, using
+the underlying programming language OCaml in which HOL Light is implemented,
+we invent parametrized polynomials for the certificate and solve the constraints that re-
+sult from comparing coefficients, to obtain a semidefinite programming problem. The
+semidefinite programming problem is printed to a file and we call a semidefinite pro-
+gramming package to solve it.
+     Then comes a rather tricky aspect. The vector returned by the SDP solver is of
+floating-point numbers, and we need to translate them to rational numbers in HOL. Un-
+fortunately if we map them to the exact rational they denote, we very often find that
+the resulting matrix is not quite PSD, because of the influence of rounding errors (e.g.
+0.33333333333 instead of exactly 1/3). So instead we postulate that the “exact” solu-
+tions probably involve rational numbers with moderate coefficients, and try rounding
+all the values based on common denominators 1, 2, 3, . . . . (Once we reach 32 we start
+to go up by a multiple of 2 each time.) For each attempt we test, using exact rational
+arithmetic in OCaml, whether the resulting matrix is PSD, using the algorithm from
+theorem 1. As soon as we find a case where it is, we extract the SOS decomposition and
+prove the resulting identity in HOL.
+     Generally speaking this seems to work quite well. It is interesting to note that al-
+though we only seek feasible solutions, we tend to do better when rounding if we try
+to optimize something (arbitrarily, we minimize the sum of the diagonal elements of
+the matrix). So it seems that extremal solutions tend to involve nicer rational numbers
+than arbitrary points. We originally attempted to find good ‘simple’ rational approxi-
+mants to the coefficients independently, but the approach of picking a single common
+denominator seems to work better.
+
+
+Examples
+
+The primary interface is REAL_SOS, which attempts to prove a purely universal for-
+mula over the reals. Here is a typical user invocation:
+
+# REAL_SOS
+  ‘a1 >= &0 /\ a2 >= &0 /\
+   (a1 * a1 + a2 * a2 = b1 * b1 + b2 * b2 + &2) /\
+   (a1 * b1 + a2 * b2 = &0)
+   ==> a1 * a2 - b1 * b2 >= &0‘;;
+
+
+and the output from HOL Light:
+Searching with depth limit 0
+Searching with depth limit 1
+Searching with depth limit 2
+Searching with depth limit 3
+Searching with depth limit 4
+Translating proof certificate to HOL
+val it : thm =
+  |- a1 >= &0 /\
+     a2 >= &0 /\
+     a1 * a1 + a2 * a2 = b1 * b1 + b2 * b2 + &2 /\
+     a1 * b1 + a2 * b2 = &0
+     ==> a1 * a2 - b1 * b2 >= &0
+
+
+    The informative messages indicate the iterative deepening of the bounds imposed; at
+each stage the semidefinite programming problem is passed to CSDP for solution. At a
+bound of 4 the underlying semidefinite programming problem involves a 38×38 matrix
+(in 8 block diagonal portions, which SDP solvers can exploit) parametrized by 143
+variables. This problem is solved and HOL Light succeeds in rounding the output vector
+to a certificate and hence proving the original claim. The entire sequence of events takes
+around one second. Numerous similar instances of classic elementary inequalities can
+be proved efficiently, including almost all the examples in [12] and the following:
+
+# REAL_SOS
+   ‘&0 <= x /\ &0 <= y
+    ==> x * y * (x + y) pow 2 <= (x pow 2 + y pow 2) pow 2‘;;
+
+
+    On top of REAL_SOS, we have also implemented analogous functions for Z and
+N, which do some elimination of division and modulus followed by simple-minded and
+incomplete discretization (e.g. translating hypotheses of the form x < y to x ≤ y − 1)
+then call the real version. This is enough to solve a few not entirely trivial properties of
+truncating division on N, e.g.
+
+# SOS_RULE
+  ‘!a b c d. ˜(b = 0) /\ b * c < (a + 1) * d ==> c DIV d <= a DIV b‘;;
+
+
+and
+
+# SOS_RULE ‘0 < m /\ m < n     ==> ((m * ((n * x) DIV m + 1)) DIV n = x)‘;;
+
+
+
+Problems
+
+This approach to verifying nonlinear inequalities, and more generally to nonlinear op-
+timization, has much to recommend it on general grounds [26]. But in the context of
+a foundational theorem prover it is especially appealing, because the “difficult” part,
+finding the certificates, can be done using highly optimized, unverified external pro-
+grams. The theorem prover merely needs to verify the certificate [15]. We have found
+it fast and powerful enough to prove many lemmas that come up in practice as part of
+larger proofs. Quite recently we were happy to use it for the otherwise slightly tedious
+lemmas 0 ≤ a ∧ 0 ≤ b ∧ 0 ≤ c ∧ c(2a + b)3 /27 ≤ x ⇒ ca2 b ≤ x (1.25 seconds) and
+−1 ≤ t ∧ t ≤ 1 ⇒ 0 ≤ 1 + r2 − 2rt (0.06 seconds). However, we have encountered
+two persistent problems that suggest necessary improvements.
+     First, sometimes our naive rounding procedure is not adequate, and even though
+the SDP solver seems to solve the semidefinite program fairly accurately, none of the
+roundings we try results in a PSD matrix. In this case, we end up in an infinite loop,
+exploring more complex certificates without any benefit. It would certainly be desir-
+able to have a more intelligent approach to rounding, but at present we are not sure
+what the best approach is. Indeed, in principle the exact floating-point result can be
+platform-dependent, since the involved numerical algorithms underlying SDP have of-
+ten been optimized in slightly different ways (e.g. a different order of operations when
+multiplying matrices).
+     Second, the treatment of strict inequalities in our Positivstellensatz (considering p >
+0 as p ≥ 0 and p 6= 0) means that the style of exploration of the search space depends
+critically on whether the inequalities are strict or non-strict. This can sometimes have
+tiresome consequences. For example the following example (which I got from Russell
+O’Connor) works quite quickly:
+# REAL_SOS
+  ‘a * a + a * b - b * b >= &0 /\
+   &2 * a + b >= &0 /\
+   c * c + c * d - d * d <= &0 /\
+   d >= &0
+   ==> a * d + c * b + b * d >= &0‘;;
+
+    If we replace a few non-strict (≥) inequalities in the hypotheses by strict ones (>),
+we might expect it to become easier. Yet because of the difference in treatment of strict
+inequalities, the problem is only solved at a much higher depth, and moreover at that
+point the rounding problem has appeared and means that we do not solve it at all!
+
+7   Optimizing the univariate case
+Most floating-point transcendental function implementations ultimately rely on a poly-
+nomial approximation over an interval, and we would like to verify an error bound the-
+orem of the form ∀x.a ≤ x ≤ b ⇒ |f (x)−p(x)| ≤  relating the function f to its poly-
+nomial approximation. By choosing a very accurate Taylor series expansion t(x), one
+can reduce the problem to bounding a polynomial ∀x. a ≤ x ≤ b ⇒ |t(x) − p(x)| ≤ .
+This is a problem that has sometimes preoccupied the present author for some time, and
+formally verified solutions can be quite lengthy to compute [13, 14]. The idea of prov-
+ing such bounds using SOS techniques, even a direct SOS decomposition after change
+of variables, is very attractive.
+    Unfortunately, the numerical difficulties mentioned above are a serious issue here,
+and we have not had much success with SOS methods except on artificially simple
+examples. It is not hard to understand why these cases are numerically difficult. The
+coefficients of p(x) are carefully chosen to minimize the maximum error over the in-
+terval, and are not simple rational numbers. Moreover, by design, the error bounds tend
+to be small relative to the coefficients. (A simple and idealized form of the same phe-
+nomenon is that the Chebyshev polynomials Tn (x) are bounded by 1 over the interval
+[−1, 1] even though their leading coefficient is 2n .)
+    We therefore consider a different approach, where we adapt the simple proof that
+every univariate PSD polynomial is a sum of two real squares to find exact rational
+decompositions. This has not yet been completely automated and integrated into HOL
+Light, but we have a simple script that runs in PARI/GP6 and appears to be promising.
+(We rely on the excellent arbitrary-precision complex root finder in PARI/GP, which
+implements a variant of an algorithm due to Schönhage.) We will explain the algorithm
+in general, as well as tracing a specific example:
+
+
+p(x) = ((x − 1)8 + 2(x − 2)8 + (x − 3)8 − 2)/4
+       = x8 − 16x7 + 126x6 − 616x5 + 1995x4 − 4312x3 + 6006x2 − 4888x + 1768
+
+Elimination of repeated roots
+If a polynomial is ≥ 0 everywhere, then real roots must occur with even multiplicity.
+Therefore, we start out as in squarefree decomposition by taking d = gcd(p, p0 ) and
+writing p = d2 q. The remaining polynomial q must have no real roots, and hence be
+strictly > 0 everywhere. If we can write q as a SOS, we can just multiply inside each
+square by d and get a SOS for p. In our running example, this factors out one repeated
+root x = 2:
+
+
+     p = x8 − 16x7 + 126x6 − 616x5 + 1995x4 − 4312x3 + 6006x2 − 4888x + 1768
+ p0 = 8x7 − 112x6 + 756x5 − 3080x4 + 7980x3 − 12936x2 + 12012x − 4888
+     d=x−2
+     q = x6 − 12x5 + 74x4 − 272x3 + 611x2 − 780x + 442
+    Note that this step requires only rational operations and does not introduce any
+inaccuracy.
+
+Perturbation
+Since all polynomials of odd degree have a real root, the degree of the original p and
+our polynomial q must be even, say ∂(q) = n = 2m. Since it is strictly positive, there
+must be an  > 0 such that the perturbed polynomial
+                               q − (1 + x2 + ... + x2m )
+is also (strictly) positive. To find such an  we just need to test if a polynomial has
+real roots, which we can easily do in PARI/GP; we can then search for a suitable 
+by choosing a convenient starting value and repeatedly dividing by 2 until our goal is
+reached; we actually divide by 2 again to leave a little margin of safety. (Of course, there
+are more efficient ways of doing this.) In this case we get  = 1/32 and the perturbed
+polynomial becomes:
+       31/32x6 − 12x5 + 2367/32x4 − 272x3 + 19551/32x2 − 780x + 14143/32
+We have been assuming that the initial polynomial is indeed PSD, but if it is not, that
+fact will be detected at this stage by checking the  = 0 case.
+ 6
+     http://pari.math.u-bordeaux.fr/
+Approximate SOS of perturbed polynomial
+We now use the basic ‘sum of two real squares’ idea to obtain an approximate SOS
+decomposition of the perturbed polynomial r, just by using approximations of the roots,
+close enough to make the final step below work correctly. Now we have r = ls2 +lt2 +u
+where l is the leading coefficient of r, such that the remainder u is relatively small.
+Using our PARI/GP script on the running example we obtain for this remainder:
+      u = 7/65536x5 − 522851/268435456x4 + 1527705/268435456x3 −
+          655717/536870912x2 − 14239/2097152x + 1913153/536870912
+
+Absorption of remainder term
+We now have q = ls2 + lt2 + (1 + x2 + ... + x2m ) + u, so it will suffice to express
+(1 + x2 + ... + x2m ) + u as a sum of squares. Note that the degree of u is < 2m
+by construction (though the procedure to be outlined would work with minor variations
+even if it were exactly 2m). Let us say u = a0 + a1 x + . . . + a2m−1 x2m−1 . Note that
+
+                             x = (x + 1/2)2 − (x2 + 1/4)
+                           −x = (x − 1/2)2 − (x2 + 1/4)
+and so for any c ≥ 0:
+
+                  cx2k+1 = c(xk+1 + 1/2xk )2 − c(x2k+2 + 1/4x2k )
+                −cx2k+1 = c(xk+1 − 1/2xk )2 − c(x2k+2 + 1/4x2k )
+
+
+Consequently we can rewrite the odd-degree terms of u as
+   a2k+1 x2k+1 = |a2k+1 |(xk+1 + sgn(a2k+1 )/2xk )2 − |a2k+1 |(x2k+2 + 1/4x2k )
+and so:
+                                  Pm−1
+     (1 + x2 + ... + x2m ) + u = Pk=0 |a2k+1 |(xk+1 + sgn(a2k+1 )/2xk )2 +
+                                   m                                     2k
+                                   k=0 ( + a2k − |a2k−1 | − |a2k+1 |/4)x
+where by convention a−1 = a2m+1 = 0. This already gives us the required SOS
+representation, provided each  + a2k − |a2k−1 | − |a2k+1 |/4 ≥ 0, and we can ensure
+this by computing the approximate SOS sufficiently accurately. In the running example,
+our overall expression is
+             31/32(x3 − 25369/4096x2 + 313/64x + 32207/4096)2 +
+             31/32(21757/4096x2 − 90963/4096x + 1271/64)2 +
+             14239/2097152(x − 1/2)2 +
+             1527705/268435456(x2 + 1/2x)2 +
+             7/65536(x3 + 1/2x2 )2 +
+             2041/65536x6 +
+             1582721/67108864x4 +
+             23424925/1073741824x2 +
+             17779073/536870912
+and we can recover a SOS decomposition for the original polynomial by incorporating
+the additional factor x − 2 into each square:
+     31/32(x4 − 33561/4096x3 + 35385/2048x2 − 7857/4096x − 32207/2048)2 +
+     31/32(21757/4096x3 − 134477/4096x2 + 131635/2048x − 1271/32)2 +
+     14239/2097152(x2 − 5/2x + 1)2 +
+     1527705/268435456(x3 − 3/2x2 − x)2 +
+     7/65536(x4 − 3/2x3 − x2 )2 +
+     2041/65536(x4 − 2x3 )2 +
+     1582721/67108864(x3 − 2x2 )2 +
+     23424925/1073741824(x2 − 2x)2 +
+     17779073/536870912(x − 2)2
+
+8     Conclusions and related work
+Our work so far shows that SOS is a very promising approach to this class of problem.
+Despite the implementation in a very foundational theorem-prover, simple problems
+are solved fast enough to be a real boon in practice. However, we have also noted a
+couple of difficulties. The rounding problem seems to be the most pressing. It could
+be avoided given an arbitrary-precision package for semidefinite programming. How-
+ever, replacing ordinary floating-point arithmetic in a semidefinite programming engine
+with something like MPFR7 would be highly non-trivial even for their designers, since
+they are complex programs depending on an infrastructure of linear algebra packages.
+Lacking a high-precision SDP solver, we need to come up with a more ‘intelligent’
+approach to rounding, but this seems non-trivial. As an answer to our problems with
+strict inequalities, there are numerous possibilities, such as directly eliminating strict
+inequalities in terms of equations or using a different form of Positivstellensatz, even a
+radically different one such as Schmüdgen’s [28]. We have already experimented with
+other valuable optimizations, e.g. exploiting symmetry and using Gröbner bases to han-
+dle equations, and these should be pursued and properly integrated into the mainstream
+version.
+
+Acknowledgements
+I want to thank Henri Lombardi for first taking the time to explain some of the basic
+theory of the Real Nullstellensatz to me, so setting me off on a long voyage of discovery.
+The debt to Pablo Parrilo is clear: a large part of this work is just an implementation
+of his key ideas. The ideas for optimizing the univariate case and its implementation
+in PARI/GP were worked out when I was a visitor in the Arenaire group at the ENS in
+Lyon. I am grateful to many people there for stimulating discussions, and in particular to
+Christoph Lauter for help with German translation and for some additional examples. I
+also benefited from the discussion at CMU when I presented SOS at a seminar organized
+by Jeremy Avigad and Ed Clarke. Laurent Théry, besides porting some of the work to
+Coq, persuaded me that I should write things up for publication. I’m also grateful to the
+anonymous referees for their constructive suggestions and for catching several errors.
+ 7
+     http://www.mpfr.org/
+References
+ 1. B. Akbarpour and L. C. Paulson. Towards automatic proofs of inequalities involving el-
+    ementary functions. In B. Cook and R. Sebastiani, editors, Proceedings of PDPAR 2006:
+    Pragmatics of Decision Procedures in Automated Reasoning, pages 27–37, 2006.
+ 2. M. Akgül. Topics in relaxation and ellipsoidal methods, volume 97 of Research notes in
+    mathematics. Pitman, 1984.
+ 3. E. Artin. Über die Zerlegung definiter Funktionen in Quadrate. Hamburg Abhandlung,
+    5:100–115, 1927.
+ 4. J. Avigad and H. Friedman. Combining decision procedures for the reals. To appear in
+    “Logical Methods in Computer Science”. Available online at http://arxiv.org/abs/
+    cs.LO/0601134., 2006.
+ 5. S. Basu. A constructive algorithm for 2-D spectral factorization with rational spectral fac-
+    tors. IEEE Transactions on Circuits and Systems–I: Fundamental Theory and Applications,
+    47:1309–1318, 2000.
+ 6. B. Borchers. CSDP: A C library for semidefinite programming. Optimization Methods and
+    Software, 11:613–623, 1999.
+ 7. B. F. Caviness and J. R. Johnson, editors. Quantifier Elimination and Cylindrical Algebraic
+    Decomposition, Texts and monographs in symbolic computation. Springer-Verlag, 1998.
+ 8. P. J. Cohen. Decision procedures for real and p-adic fields. Communications in Pure and
+    Applied Mathematics, 22:131–151, 1969.
+ 9. G. E. Collins. Quantifier elimination for real closed fields by cylindrical algebraic decompo-
+    sition. In H. Brakhage, editor, Second GI Conference on Automata Theory and Formal Lan-
+    guages, volume 33 of Lecture Notes in Computer Science, pages 134–183, Kaiserslautern,
+    1976. Springer-Verlag.
+10. W. L. Ferrar. Algebra: a text-book of determinants, matrices, and algebraic forms. Oxford
+    University Press, 2nd edition, 1957.
+11. M. Grotschel, L. Lovsz, and A. Schrijver. Geometric algorithms and combinatorial opti-
+    mization. Springer-Verlag, 1993.
+12. Z. Guangxing and Z. Xiaoning. An effective decision method for semidefinite polynomials.
+    Journal of Symbolic Computation, 37:83–99, 2004.
+13. J. Harrison. Verifying the accuracy of polynomial approximations in HOL. In E. L. Gunter
+    and A. Felty, editors, Theorem Proving in Higher Order Logics: 10th International Con-
+    ference, TPHOLs’97, volume 1275 of Lecture Notes in Computer Science, pages 137–152,
+    Murray Hill, NJ, 1997. Springer-Verlag.
+14. J. Harrison. Formal verification of floating point trigonometric functions. In W. A. Hunt
+    and S. D. Johnson, editors, Formal Methods in Computer-Aided Design: Third International
+    Conference FMCAD 2000, volume 1954 of Lecture Notes in Computer Science, pages 217–
+    233. Springer-Verlag, 2000.
+15. J. Harrison and L. Théry. A sceptic’s approach to combining HOL and Maple. Journal of
+    Automated Reasoning, 21:279–294, 1998.
+16. D. Hilbert. Über die Darstellung definiter Formen als Summe von Formenquadraten. Math-
+    ematische Annalen, 32:342–350, 1888.
+17. L. Hörmander. The Analysis of Linear Partial Differential Operators II, volume 257 of
+    Grundlehren der mathematischen Wissenschaften. Springer-Verlag, 1983.
+18. W. A. Hunt, R. B. Krug, and J. Moore. Linear and nonlinear arithmetic in ACL2. In D. Geist,
+    editor, Proceedings of the 12th Advanced Research Working Conference on Correct Hard-
+    ware Design and Verification Methods, CHARME 2003, volume 2860 of Lecture Notes in
+    Computer Science, pages 319–333. Springer-Verlag, 2003.
+19. N. Jacobson. Basic Algebra II. W. H. Freeman, 2nd edition, 1989.
+20. L. G. Khachian. A polynomial algorithm in linear programming. Soviet Mathematics Dok-
+    lady, 20:191–194, 1979.
+21. E. Landau. Über die Darstellung definiter Funktionen durch Quadrate. Mathematischen
+    Annalen, 62:272–285, 1906.
+22. H. Lombardi. Effective real nullstellensatz and variants. In T. Mora and C. Traverso, editors,
+    Proceedings of the MEGA-90 Symposium on Effective Methods in Algebraic Geometry, vol-
+    ume 94 of Progress in Mathematics, pages 263–288, Castiglioncello, Livorno, Italy, 1990.
+    Birkhäuser.
+23. A. Mahboubi and L. Pottier.              Elimination des quantificateurs sur les réels
+    en Coq.        In Journées Francophones des Langages Applicatifs (JFLA), available
+    on the Web from http://pauillac.inria.fr/jfla/2002/actes/index.
+    html08-mahboubi.ps, 2002.
+24. S. McLaughlin and J. Harrison. A proof-producing decision procedure for real arithmetic. In
+    R. Nieuwenhuis, editor, CADE-20: 20th International Conference on Automated Deduction,
+    proceedings, volume 3632 of Lecture Notes in Computer Science, pages 295–314, Tallinn,
+    Estonia, 2005. Springer-Verlag.
+25. T. S. Motzkin. The arithmetic-geometric inequality. In O. Shisha, editor, Inequalities. Aca-
+    demic Press, 1967.
+26. P. A. Parrilo. Semidefinite programming relaxations for semialgebraic problems. Mathemat-
+    ical Programming, 96:293–320, 2003.
+27. Y. Pourchet. Sur la répresentation en somme de carrés des polynômes a une indeterminée
+    sur un corps de nombres algébraiques. Acta Arithmetica, 19:89–109, 1971.
+28. A. Prestel and C. N. Dalzell. Positive Polynomials: From Hilbert’s 17th Problem to Real
+    Algebra. Springer monographs in mathematics. Springer-Verlag, 2001.
+29. R. T. Rockafellar. Lagrange multipliers and optimality. SIAM review, 35:183–283, 1993.
+30. A. Seidenberg. A new decision method for elementary algebra. Annals of Mathematics,
+    60:365–374, 1954.
+31. G. Strang. Linear Algebra and its Applications. Brooks/Cole, 3rd edition, 1988.
+32. A. Tarski. A Decision Method for Elementary Algebra and Geometry. University of Califor-
+    nia Press, 1951. Previous version published as a technical report by the RAND Corporation,
+    1948; prepared for publication by J. C. C. McKinsey. Reprinted in [7], pp. 24–84.
+33. A. Tiwari. An algebraic approach to the satisfiability of nonlinear constraints. In Computer
+    Science Logic, 19th International Workshop CSL 2005, volume 3634 of Lecture Notes in
+    Computer Science, pages 248–262. Springer-Verlag, 2005.
+34. A. Weil. Number Theory: An approach through history from Hammurapi to Legendre.
+    Birkhäuser, 1983.
+

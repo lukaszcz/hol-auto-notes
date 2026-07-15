@@ -1,0 +1,715 @@
+         A Fast Linear-Arithmetic Solver for DPLL(T)
+
+                           Bruno Dutertre and Leonardo de Moura
+
+                        Computer Science Laboratory, SRI International,
+                     333 Ravenswood Avenue, Menlo Park, CA 94025, USA
+                           {bruno, demoura}@csl.sri.com
+
+
+
+         Abstract. We present a new Simplex-based linear arithmetic solver that can be
+         integrated efficiently in the DPLL(T ) framework. The new solver improves over
+         existing approaches by enabling fast backtracking, supporting a priori simplifica-
+         tion to reduce the problem size, and providing an efficient form of theory propa-
+         gation. We also present a new and simple approach for solving strict inequalities.
+         Experimental results show substantial performance improvements over existing
+         tools that use other Simplex-based solvers in DPLL(T ) decision procedures. The
+         new solver is even competitive with state-of-the-art tools specialized for the dif-
+         ference logic fragment.
+
+
+1 Introduction
+Decision procedures for quantifier-free linear arithmetic determine whether a boolean
+combination of linear equalities, inequalities, and disequalities is satisfiable. Several
+tools for solving this problem rely on the DPLL(T ) approach [1]: they combine boolean
+satisfiability solvers based on the Davis-Putnam-Logemann-Loveland (DPLL) proce-
+dure, and arithmetic solvers capable of deciding the satisfiability of conjunctions of lin-
+ear constraints. Results of a first satisfiability modulo theories (SMT) competition, com-
+paring several of these tools, are presented in [2]. Several tools (e.g., Barcelogic [21] or
+Slice [20]) are specialized for the difference-logic fragment of linear arithmetic and rely
+on graph algorithms. For general linear arithmetic, existing tools rely either on Fourier-
+Motzkin elimination [3] (used by CVClite [4], CVC [5], SVC [6]) or on Simplex meth-
+ods [7] (used by MathSat [8], ICS [9], Simplics, Yices, ARIO [10]). Fourier-Motzkin
+elimination explodes on many problems and Simplex is generally superior.
+   The common methods for integrating a Simplex solver with DPLL rely on incre-
+mental versions of Simplex such as described in [11,12,13,14]. A tableau is constructed
+and updated incrementally: rows are added as DPLL proceeds and are later removed
+when DPLL backtracks. These frequent addition and removal of rows and the related
+bookkeeping have a significant cost. For example, backtracking may require pivoting
+operations. This paper presents a simpler and more efficient solver that considerably
+reduces this overhead. The approach relies on transforming the original formula Φ into
+
+    This material is based upon work supported by the Defense Advanced Research Projects
+    Agency (DARPA) under Contract No. NBCHD030010. Any opinions, findings, and conclu-
+    sions or recommendations expressed in this material are those of the authors and do not nec-
+    essarily reflect the views of DARPA or the Department of Interior National Business Center
+    (DOI-NBC).
+
+T. Ball and R.B. Jones (Eds.): CAV 2006, LNCS 4144, pp. 81–94, 2006.
+c Springer-Verlag Berlin Heidelberg 2006
+82         B. Dutertre and L. de Moura
+
+an equisatisfiable Φ such that the satisfiability of Φ is decided by solving a series of
+problems of the form
+
+              find x ∈ Rn such that Ax = 0 and li ≤ xi ≤ ui for i = 1, . . . , n,
+
+where the matrix A is fixed and li and ui are bounds on xi that may vary with each
+problem. Variants of Simplex can efficiently solve problems in this form. Section 4
+presents such a variant designed to be efficient in the DPPL(T ) context, and Section 5
+shows how to extend it to problems with strict inequalities. Since A is fixed, no row
+is ever added or removed from the tableau, and backtracking is very cheap. The new
+solver has additional advantages: it is possible to simplify the problem a priori by elim-
+inating irrelevant variables, and a simple but useful form of theory propagation can be
+implemented cheaply.
+
+
+2 Background
+
+Given a quantifier-free theory T , a T -solver is a procedure for deciding whether a fi-
+nite set of atoms of T is satisfiable. If Φ is a formula built by boolean combination of
+atoms of T , then the satisfiability of Φ can be decided by combining a boolean satis-
+fiability solver and a T -solver. The DPLL(T ) approach is an efficient method for such
+integrations that relies on the DPLL procedure.
+
+2.1 Solvers for DPPL(T )
+
+In the DPLL(T ) framework, a T -solver maintains a state that is an internal representa-
+tion of the atoms asserted so far. This solver must provide operations for updating the
+state by asserting new atoms, checking whether the state is consistent, and backtracking.
+Optionally, the solver may also implement theory propagation, that is, identify atoms
+that are implied by the current state. To interact with the DPLL search, the solver must
+produce explanations for conflicts and propagated atoms. In an inconsistent state S, an
+explanation is any inconsistent subset of the atoms asserted in S. Similarly, an expla-
+nation for an implied atom γ is a subset Γ of the asserted atoms such that Γ |= γ. An
+explanation Γ is minimal if no proper subset of Γ is an explanation.
+   The solver is assumed initialized for a fixed formula Φ and we denote by A the set
+of atoms that occur in Φ. The set of atoms asserted so far is denoted by α. The solver
+also maintains a stack of checkpoints that mark consistent states to which the solver can
+backtrack. We assume that a T -solver implements the following API.1
+
+ – Assert(γ) asserts atom γ in the current state. It returns either ok or unsatΓ  where
+   Γ is a subset of α. In the first case, γ is inserted into α. In the latter case, α ∪ {γ}
+   is inconsistent and Γ is the explanation.
+ – Check() checks whether α is consistent. If so, it returns ok, otherwise it returns
+   unsatΓ . As previously Γ ⊆ α is an explanation for the inconsistency. A new
+   checkpoint is created when ok is returned.
+ 1
+     This is similar to the API proposed in [1].
+                                         A Fast Linear-Arithmetic Solver for DPLL(T)           83
+
+ – Backtrack() backtracks to the consistent state represented by the checkpoint on the
+   top of the stack.
+ – Propagate() performs theory propagation. It returns a set {Γ1 , γ1 , . . . , Γt , γt }
+   where Γi ⊆ α and γi ∈ A \ α. For every pair Γi , γi  produced, γi is an atom not
+   already asserted that is implied by Γi , and Γi is a subset of α.
+   Assert must be sound but is not required to be complete: Assert(γ) may return ok
+even if α ∪ {γ} is inconsistent. Similarly, Propagate must be sound but does not have to
+be exhaustive. On the other hand, function Check is required to be sound and complete:
+if Check() = ok then α must be consistent. This model enables several atoms to be
+asserted in a single “batch”, using several calls to Assert followed by a single call to
+Check. Assert can then implement only inexpensive (and possibly incomplete) consis-
+tency checks while Check implements a complete (and possibly expensive) consistency-
+checking procedure. The state S  after executing Backtrack must be logically equivalent
+to the state S when the checkpoint was created, but S  may be different from S.
+
+2.2 Existing Simplex Solvers for DPLL(T )
+A quantifier-free linear arithmetic formula is a first-order formula whose atoms are
+either propositional variables of equalities, disequalities, or inequalities of the form
+
+                                   a1 x1 + . . . + an xn  b,
+
+where a1 , . . . , an and b are rational numbers, x1 , . . . , xn are real (or integer) variables,
+and  is one of the operators =, ≤, <, >, ≥, or =. In the DPLL(T ) framework, de-
+ciding the satisfiability of such formulas requires a linear-arithmetic solver. A common
+approach is to use incremental forms of Simplex similar to the algorithms described
+in [11,12,13,14]. Tools based on this approach include our own tools, Yices and Sim-
+plics, and others such as MathSat [8].
+   In these algorithms, a solver state includes a Simplex tableau that is derived from all
+equalities and inequalities asserted so far. A tableau can be written as a set of equalities
+of the form                                
+                               xi = bi +         aij xj , xi ∈ B                               (1)
+                                          x j ∈N
+
+where B and N are disjoint sets of variables. Elements of B and N are called basic and
+nonbasic variables, respectively. Additional constraints are imposed on some variables
+of B ∪ N . So-called slack variables are required to be non-negative, and the tableau
+may also contain zero variables, which are all implicitly equal to 0. Zero variables are
+used to generate explanations (cf. [11]).
+   A pivoting operation pivot(xr , xs ) swaps a basic variable xr and a nonbasic variable
+xs such that ars = 0. After pivoting, xs becomes basic and xr becomes nonbasic. The
+tableau is updated by replacing equation xr = br + xj ∈N arj xj with
+
+                                   br    xr                      arj xj
+                          xs = −       +     −                                                (2)
+                                   ars   ars                       ars
+                                                   xj ∈N \{xs }
+
+and then equation (2) is used to eliminate xs from the rest of the tableau by substitution.
+84                           B. Dutertre and L. de Moura
+
+             1000                                                                        1000
+
+
+                  100                                                                          100
+
+
+
+
+                                                                            full propagation
+ no propagation
+
+
+
+
+                   10                                                                           10
+
+
+                    1                                                                            1
+
+
+                   0.1                                                                          0.1
+
+
+                  0.01                                                                         0.01
+                      0.01       0.1       1          10       100   1000                          0.01     0.1       1          10       100   1000
+                                       heuristic propagation                                                      heuristic propagation
+
+                         (a)Heuristic vs. No Propagation                                              (b)Heuristic vs. Full Propagation
+                                              Fig. 1. Impact of theory propagation in Simplics
+
+   Assertion of equalities or inequalities adds new equations to the tableau. For exam-
+ple, let γ be an atom of the form t ≥ 0 where t is an arithmetic term. The operation
+Assert(γ) involves three steps. First, γis normalized by substituting any basic variable
+xi occurring in t with the term bi + xj ∈N aij xj . The solver checks then whether
+the resulting inequality t ≥ 0 is satisfiable. This step uses the Simplex algorithm to
+maximize t subject to the tableau constraints. If t has a maximum M and M is neg-
+ative, then t ≥ 0 is not satisfiable and an explanation is generated. Otherwise, a fresh
+slack variable sk is created and a row of the form sk = t is added to the tableau.
+Some bookkeeping is required to record that sk is nonnegative and is associated with
+atom γ. Processing of equalities and strict inequalities follows the same general princi-
+ples. Backtracking removes rows from the tableau. For example, to retract γ, the solver
+retrieves the slack variable sk associated with γ. If sk is a basic variable in the cur-
+rent state then the corresponding equation is removed from the tableau. Otherwise, a
+pivoting operation is applied first to make sk basic.
+   Disequalities are treated separately since they cannot be incorporated into the
+tableau. When a disequality t = 0 is asserted, it is first normalized as before, and
+then the solver must check whether the current tableau implies t = 0. This can be
+implemented via the zero-detection procedure described in [11] for example.
+
+2.3 Performance
+Assertions and backtracking have a significant cost in solvers based on incremental
+Simplex algorithms. Part of this cost (e.g., the pivoting involved in Assert operations)
+cannot be avoided, but there is also significant overhead in the frequent additions and re-
+movals of rows, creations and deletions of slack variables, and associated bookkeeping.
+The remainder of the paper describes a different type of solver, still based on the Sim-
+plex method, which significantly reduces this overhead. The new approach is simpler
+and more uniform than incremental Simplex. It is also more economical as irrelevant
+variables can be eliminated a priori and fewer slack variables are necessary.
+   Some of the simplifications are based on lessons we learned from experiments with
+our previous tools Simplics and Yices:2
+ 2
+             Both use incremental Simplex and zero detection.
+                                        A Fast Linear-Arithmetic Solver for DPLL(T)          85
+
+ – Minimal explanations are critical. Dramatic improvements were observed when
+   comparing Simplics and Yices, which generate minimal explanations, and their
+   predecessor ICS, which does not.
+ – Theory propagation is useful if it can be done cheaply. Figure 1 compares the re-
+   sults of Simplics on the real-arithmetic subset of the SMT-LIB benchmarks [15]
+   using different levels of theory propagation. By default, Simplics uses a heuristic
+   form of propagation that is relatively inexpensive but incomplete (no pivoting is
+   used). This is compared in Figure 1(a) with Simplics running with no propagation
+   at all, and in Figure 1(b) with Simplics running with complete propagation (where
+   pivoting is used). On these benchmarks, full propagation is just too expensive, but
+   no propagation is also a poor choice. Heuristic propagation is clearly superior.
+ – Zero detection is expensive and can be avoided. On a few examples in the SMT-
+   LIB benchmarks, Simplics spends as much as 30% of its time in the zero-detection
+   procedure. A simpler alternative is to rewrite a disequality t = 0 as the disjunction
+   of two strict inequalities (t < 0) ∨ (t > 0). This transformation may seem wasteful
+   since it may entail additional case splits, but it works well in practice. After this
+   transformation, Simplics can solve six problems of the SMT-LIB benchmarks that
+   it cannot solve otherwise.
+
+
+3 Preprocessing
+Incremental Simplex algorithms can be avoided by rewriting a linear arithmetic formula
+Φ into an equisatisfiable formula of the form ΦA ∧ Φ , where ΦA is a conjunction of lin-
+ear equalities, and all the atoms occurring in Φ are elementary atoms of the form y  b,
+where y is a variable and b is a rational constant. The transformation is straightforward.
+For example, let Φ be the formula
+
+      x ≥ 0 ∧ (x + y ≤ 2 ∨ x + 2y − z ≥ 6) ∧ (x + y = 2 ∨ x + 2y − z > 4).
+
+We introduce two variables s1 and s2 and rewrite Φ to ΦA ∧ Φ as follows.
+
+                          (s1 = x + y ∧ s2 = x + 2y − z) ∧
+                    (x ≥ 0 ∧ (s1 ≤ 2 ∨ s2 ≥ 6) ∧ (s1 = 2 ∨ s2 > 4))
+
+Clearly, this new formula and Φ are equisatisfiable. In general, starting from a formula
+Φ, the transformation introduces a new variable si for every linear term ti that is not
+already a variable and occurs as the left side of an atom ti  b of Φ. Then ΦA is the
+conjunction of all the equalities si = ti and Φ is obtained by replacing every term ti
+by the corresponding si in Φ.
+   Let x1 , . . . , xn be the arithmetic variables of ΦA ∧ Φ , that is, all the variables orig-
+inally in Φ and m-additional variables s1 , . . . , sm introduced by the previous transfor-
+mation (m ≤ n). Then formula ΦA can be written in matrix form as Ax = 0, where
+A is a fixed m × n rational matrix and x is a vector in Rn . The rows of A are linearly
+independent so A has rank m. Checking whether Φ is satisfiable amounts to finding an
+x such that Ax = 0 and x satisfies Φ . In other words, checking the satisfiability of Φ
+in linear arithmetic is equivalent to checking the satisfiability of Φ in linear arithmetic
+86         B. Dutertre and L. de Moura
+
+modulo Ax = 0. Since all atoms of Φ are elementary, this requires a solver for de-
+ciding the consistency of a set of elementary atoms Γ modulo the constraints Ax = 0.
+If Γ contains only equalities and (nonstrict) inequalities, this reduces to searching for
+x ∈ Rn such that
+                         Ax = 0 and lj ≤ xj ≤ uj for j = 1, . . . , n                    (3)
+where lj is either −∞ or a rational number, and uj is either +∞ or a rational number.
+   Since the elementary atoms of Φ are known in advance, we can immediately sim-
+plify the constraints Ax = 0 by removing any variable xi that does not occur in any
+elementary atom of Φ . This is done by Gaussian elimination. In practice, this presim-
+plification can reduce the matrix size significantly (cf. [16]).
+   The variables si introduced during the transformation play the same role as the slack
+variables of standard Simplex. However, the presence of both lower and upper bounds
+is beneficial. For example, incremental Simplex algorithms need two slack variables to
+represent a constraint such as 1 ≤ x + 3y ≤ 4, whereas a single sk is sufficient if the
+general form (3) is used. Overall, rewriting Φ into ΦA ∧ Φ and relying on the general
+form leads to problems with fewer variables than the algorithms discussed previously.
+
+4 Basic Solver
+We first describe a basic solver that handles equalities and nonstrict inequalities with
+real variables. Extensions to strict inequalities and integer variables are presented in the
+next sections. The basic solver decides the satisfiability of problems in form (3) and
+implements the API of Section 2.1 for integration with a DPLL-based SAT solver.
+   The solver state includes a tableau derived from the constraint matrix A. We will
+write such a tableau in the form:
+                                        
+                                xi =          aij xj xi ∈ B,
+                                       x j ∈N
+
+where B and N denote the set of basic and nonbasic variables, respectively.3 Since
+all rows of thistableau are linear combinations of rows of the original matrix A, the
+equality xi = xj ∈N aij xj is satisfied by any x such that Ax = 0.
+    In addition to this tableau, the solver state stores upper and lower bounds li and ui for
+every variable xi and a mapping β that assigns a rational value β(xi ) to every variable
+xi . The bounds on nonbasic variables are always satisfied by β, that is, the following
+invariant is maintained
+                                ∀xj ∈ N , lj ≤ β(xj ) ≤ uj .                              (4)
+Furthermore, β satisfies the constraint Ax = 0. In the initial state, lj = −∞, uj = +∞,
+and β(xj ) = 0 for all j.
+   Figure 2 describes two auxiliary procedures that modify β. Procedure update(xi , v)
+sets the value of a nonbasic variable xi to v and adjusts the value of all basic variables
+so that all equations remain satisfied. Procedure pivotAndUpdate(xi , xj , v) applies piv-
+oting to the basic variable xi and the nonbasic variable xj ; it also sets the value of xi to
+v and adjusts the values of all basic variables to keep all equations satisfied.
+ 3
+     This is the same as (1) with bi = 0 for all xi ∈ B.
+                                      A Fast Linear-Arithmetic Solver for DPLL(T)        87
+
+                   procedure update(xi , v)
+                     for each xj ∈ B, β(xj ) := β(xj ) + aji (v − β(xi ))
+                     β(xi ) := v
+
+                   procedure pivotAndUpdate(xi , xj , v)
+                     θ := v−β(x
+                             aij
+                                 i)
+
+
+                     β(xi ) := v
+                     β(xj ) := β(xj ) + θ
+                     for each xk ∈ B \ {xi }, β(xk ) := β(xk ) + akj θ
+                     pivot(xi , xj )
+
+                                Fig. 2. Auxiliary procedures
+
+4.1 Main Algorithm
+The main procedure of our algorithm is based on the dual Simplex and relies on Bland’s
+pivot-selection rule to ensure termination. It relies on a total order on the variables.
+Assuming an assignment β that satisfies the previous invariants, but where li ≤ β(xi ) ≤
+ui may not hold for some basic variables xi , procedure Check searches for a new β that
+satisfies all constraints. The procedure is shown in Figure 3. It either terminates with a
+new assignment and basis that satisfy all lower and upper bounds (line 4), or finds the
+constraints to be unsatisfiable (lines 8 and 13). The body of the main loop selects a basic
+variable xi that does not satisfyits bounds (line 3). If xi is below li , then it looks for
+a variable xj in the row xi = xj ∈N aij xj that can compensate the gap in xi (lines
+6-7). If no such xj exists the problem is unsatisfiable (line 8) because the value of xi is
+maximal and is below the lower bound li . Otherwise, the procedure pivots xi and xj ,
+and xi is set to li (line 9). The case where xi is above its upper bound (lines 10-14) is
+symmetrical.
+   The following property implies the correctness of Check; a proof is given in [16].
+Theorem 1. Procedure Check always terminates.
+
+4.2 Generating Explanations
+An inconsistency may be detected by Check at line 8 or 13. Let us assume a conflict is
+detected at line 8. There is then a basic variable xi such that β(xi ) < li and for every
+nonbasic variable xj we have aij > 0 ⇒ β(xj ) ≥ uj and aij < 0 ⇒ β(xj ) ≤ lj .
+Let N + = {xj ∈ N | aij > 0} and N − = {xj ∈ N | aij < 0}. Since β satisfies all
+bounds on nonbasic variables, we have β(xj ) = lj for every xj ∈ N − and β(xj ) = uj
+for every xj ∈ N + . It follows that
+                                                                    
+               β(xi ) =          aij β(xj ) =            aij uj +           aij lj .
+                         x j ∈N                 x j ∈N
+                                                       +
+                                                                   x j ∈N
+                                                                          −
+
+
+                     
+The equation xi = xj ∈N aij xj holds for any x such that Ax = 0. Therefore, for any
+such x, we have
+                                                            
+               β(xi ) − xi =            aij (uj − xj ) +           aij (lj − xj ),
+                               x j ∈N                     x j ∈N
+                                      +                          −
+88      B. Dutertre and L. de Moura
+
+        1. procedure Check()
+        2. loop
+        3.     select the smallest basic variable xi such that β(xi ) < li or β(xi ) > ui
+        4.     if there is no such xi then return satisfiable
+        5.     if β(xi ) < li then
+        6.       select the smallest nonbasic variable xj such that
+        7.         (aij > 0 and β(xj ) < uj ) or (aij < 0 and β(xj ) > lj )
+        8.       if there is no such xj then return unsatisfiable
+        9.       pivotAndUpdate(xi , xj , li )
+        10.    if β(xi ) > ui then
+        11.      select the smallest nonbasic variable xj such that
+        12.        (aij < 0 and β(xj ) < uj ) or (aij > 0 and β(xj ) > lj )
+        13.      if there is no such xj then return unsatisfiable
+        14.      pivotAndUpdate(xi , xj , ui )
+        15. end loop
+
+                                    Fig. 3. Check procedure
+
+
+from which one can derive the following implication:
+                                       
+                        xj ≤ uj ∧            lj ≤ xj ⇒ xi ≤ β(xi ).
+               x j ∈N               x j ∈N
+                      +                    −
+
+
+
+
+Since β(xi ) < li , this is inconsistent with li ≤ xi . The explanation for the conflict is
+then the following set of elementary atoms:
+
+            Γ = {xj ≤ uj | j ∈ N + } ∪ {xj ≥ lj | j ∈ N − } ∪ {xi ≥ li }.
+
+It is easy to see that Γ is minimal. Explanations for conflicts at line 13 are generated in
+the same way.
+
+4.3 Assertion Procedures
+
+The Assert function relies on two procedures shown in Figure 4 for updating the bounds
+li and ui . Procedure AssertUpper(xi ≤ ci ) has no effect if ui ≤ ci and returns unsat-
+isfiable if ci < li ; otherwise the current upper bound on xi is set to ci . If variable
+xi is nonbasic, then β is updated to maintain invariant (4). If an immediate conflict is
+detected at line 3 then generating a minimal explanation is straightforward.
+    Procedure AssertLower(xi ≥ ci ) does the same thing for the lower bound. An equal-
+ity xi = ci is asserted by calling both AssertUpper and AssertLower.
+
+4.4 Backtracking
+
+Efficient backtracking is important since the number of backtracks is often very large.
+In our approach, backtracking can be efficiently implemented. We just need to save
+the value of ui (li ) on a stack before it is updated by the procedure AssertUpper (As-
+sertLower). This information is used to restore the old bounds when backtracking is
+performed. Backtracking does not require saving the successive βs on a stack. Only
+                                        A Fast Linear-Arithmetic Solver for DPLL(T)   89
+
+
+             1. procedure AssertUpper(xi ≤ ci )
+             2. if ci ≥ ui then return satisfiable
+             3. if ci < li then return unsatisfiable
+             4. ui := ci
+             5. if xi is a nonbasic variable and β(xi ) > ci then update(xi , ci )
+             6. return ok
+
+             1. procedure AssertLower(xi ≥ ci )
+             2. if ci ≤ li then return satisfiable
+             3. if ci > ui then return unsatisfiable
+             4. li := ci
+             5. if xi is a nonbasic variable and β(xi ) < ci then update(xi , ci )
+             6. return ok
+
+                                 Fig. 4. Assertion procedures
+
+
+
+one assignment β needs to be stored, namely, the one corresponding to the last success-
+ful Check. After a successful Check, the assignment β is a model for the current set of
+constraints and for the set of constraints asserted at any previous checkpoint. Since no
+pivoting or other expensive operation is used, backtracking is very cheap.
+
+4.5 Theory Propagation
+
+Given a set of elementary atoms A from the formula Φ , then unate propagation is very
+cheap to implement. For example, if bound xi ≥ ci has been asserted then any unas-
+signed atom of A of the form xi ≥ c with c < ci is immediately implied. Similarly,
+the negation of any atom xi ≤ u with u < ci is implied. This type of propagation is
+useful in practice. It occurs frequently in several SMT-LIB benchmarks.
+   Another
+       method is based on bound refinement. Given a row of a tableau, such as
+xi = xj ∈N aij xj , one can derive a lower or upper bound on xi from the lower or
+upper bounds on the nonbasic variables xj . These computed bounds may imply unas-
+signed elementary atoms with variable xi . This is a heuristic technique as the computed
+bounds may be weaker than the current bounds asserted on xi (for example, the com-
+puted bounds may be −∞ or +∞). However, bound refinement is quite general. It is
+applicable with any equality a1 x1 + . . . + an xn = 0 derived by linear combination of
+rows of A, not just with rows of a tableau.
+
+4.6 Example
+
+Figure 5 illustrates the algorithm on a small example. Each row represents a state. The
+columns contain the tableaux, bounds, and assignments. The first row contains the ini-
+tial state. Suppose x ≤ −4 is asserted. Then the value of x must be adjusted, since
+β0 (x) > −4. Since s1 and s2 depend on x, their values are also modified. No pivoting
+is required since the basic variables do not have bounds, so A1 = A0 . Next, x ≥ −8
+is asserted. Since β1 (x) satisfies this bound, nothing changes: A2 = A1 and β2 = β1 .
+90      B. Dutertre and L. de Moura
+
+        
+            s1 = −x + y
+ A0 =                                            β0 = (x → 0, y → 0, s1 → 0, s2 → 0)
+            s2 = x + y
+ A1 = A0                         x ≤ −4 β1 = (x → −4, y → 0, s1 → 4, s2 → −4)
+ A2 = A
+      1                    −8 ≤ x ≤ −4 β2 = β1
+        y = x + s1          −8 ≤ x ≤ −4
+ A3 =                                   β3 = (x → −4, y → −3, s1 → 1, s2 → −7)
+        s2 = 2x + s1             s1 ≤ 1
+
+                                        Fig. 5. Example
+
+
+Next, s1 ≤ 1 is asserted. The current value of s1 does not satisfy this bound, so Check
+must be invoked. Check pivots s1 and y to decrease s1 . The resulting state S3 is shown
+in the last row; all constraints are satisfied.
+   If s2 ≥ −3 is asserted in S3 and Check is called then an inconsistency is detected:
+Tableau A2 does not allow s2 to increase since both x and s1 are at their upper bound.
+Therefore, s2 ≥ −3 is inconsistent with state S3 .
+
+
+5 Strict Inequalities
+The previous method generalizes to strict inequalities using a simple observation.
+Lemma 1. A set of linear arithmetic literals Γ containing strict inequalities S =
+{p1 > 0, . . . , pn > 0} is satisfiable iff there exists a rational number δ > 0 such
+that Γδ = (Γ ∪ Sδ ) \ S is satisfiable, where Sδ = {p1 ≥ δ, . . . , pn ≥ δ}.
+This lemma says that we can replace all strict inequalities by nonstrict ones if a small
+enough δ is known. Rather than computing an explicit value for δ, we treat it symbol-
+ically, as an infinitesimal parameter. Bounds and variable assignments now range over
+the set Qδ of pairs of rationals. A pair (c, k) of Qδ is denoted by c+kδ and the following
+operations and comparison are defined in Qδ :
+
+                 (c1 , k1 ) + (c1 , k2 ) ≡ (c1 + c2 , k1 + k2 )
+                            a × (c, k) ≡ (a × c, a × k)
+                 (c1 , k1 ) ≤ (c2 , k2 ) ≡ (c1 < c2 ) ∨ (c1 = c2 ∧ k1 ≤ k2 ),
+
+where a is a rational. Strict bounds in Q are converted to nonstrict bounds in Qδ : in-
+equality xi > li is converted to xi ≥ li + δ, and xi < ui is converted to xi ≤ ui − δ.
+Then all updates to β used in the previous algorithm can be performed in Qδ . The matrix
+A does not change; all its coefficients are rational numbers.
+   By this process, a problem S with strict bounds in the rational is converted into a
+problem S  in the general form (3) but where the bounds li and ui , and the variables xi
+are elements of Qδ . If an assignment β  satisfies S’ then it can be converted into a ra-
+tional assignment β that satisfies S. This relies on substituting the symbolic parameter
+δ with a small enough positive rational number δ0 ∈ Q, which can always be done since
+                                        A Fast Linear-Arithmetic Solver for DPLL(T)          91
+
+there is a finite number of inequalities in S  (cf. [16]). If S  is unsatisfiable in Qδ , then
+by Lemma 1, S is also unsatisfiable in the rationals.
+
+
+6 Extensions
+
+The previous solver is sound and complete for the reals. If some or all of the variables xi
+are required to be integer, the algorithm is not complete. Nothing ensures that the assign-
+ment β constructed by Check gives an integer value to integer variables. To be complete
+in the integer or mixed integer case, we employ a branch and cut strategy, that is, the
+combination of branch-and-bound with a cutting plane generation algorithm [17,18].
+The branch-and-bound algorithm works when problems are solved in Qδ rather than
+Q. In other words, it can be used when strict inequalities are present. The cutting-plane
+method we use is based on mixed integer Gomory cuts. Such a cutting-plane algorithm
+is critical as it dramatically accelerates the convergence of branch-and-cut in several
+cases.
+    Also, it is possible to integrate the linear-arithmetic solver presented in this paper
+with solvers for other theories. The simplest method is to perform case-splits on equal-
+ities between variables that are shared between different theories. In most cases, the
+number of such shared variables is small in comparison with the total number of vari-
+ables and this method is quite efficient. This approach is described in detail at [19]. It
+can be extended with an opportunistic equality-propagation method [16].
+
+
+7 Experiments
+
+Figure 6 compares a prototype SMT solver that uses the previous algorithms with other
+tools that participated in last year’s SMT competition. The comparison uses all the
+SMT-LIB benchmarks in the QF RDL (real difference logic), QF IDL (integer differ-
+ence logic), QF LRA (linear real arithmetic), and QF LIA (linear integer arithmetic)
+divisions. The experiments were conducted on identical PCs, all equipped with a 32bit
+Pentium 4 processor running at 3 GHz. The timeout was set to 1 hour and the memory
+usage was limited to 1 GB. With these timing and memory constraints, running all the
+benchmarks required approximately 60 CPU days.
+   Each point on the graphs represents a benchmark: + denotes a difference logic prob-
+lem and × denotes a problem outside the difference-logic fragment. The axes corre-
+spond to the CPU time taken by the new solver (y-axis) or the other solver (x-axis) on
+each benchmark. CPU times are measured in seconds. Points below the diagonal are
+then SMT-LIB benchmarks where our new solver is faster. Points on the leftmost verti-
+cal edge are problems where a solver aborted, typically by running out of memory. The
+graphs comparing our new solver with Barcelogic and Simplics have fewer points, be-
+cause Barcelogic supports only difference logic and Simplics does not support integer
+problems.
+   Table 1 summarizes the results. For each tool, it lists the number of instances solved
+and unsolved, and the total runtime. As can be seen, the new algorithm largely outper-
+forms the other solvers. It is even faster on problems in the difference logic fragment
+92              B. Dutertre and L. de Moura
+
+   abort                                                     abort
+timeout                                                   timeout
+     1000                                                    1000
+
+     100                                                      100
+
+      10                                                        10
+
+       1                                                         1
+
+      0.1                                                      0.1
+
+     0.01                                                     0.01
+         0.01      0.1    1        10     100    1000             0.01     0.1    1         10        100   1000
+                               ario-1.1                                                   bclt
+                (a)Ario 1.1 vs. New Solver                           (b)BarcelogicTools vs. New Solver
+
+   abort                                                     abort
+timeout                                                   timeout
+     1000                                                    1000
+
+     100                                                      100
+
+      10                                                        10
+
+       1                                                         1
+
+      0.1                                                      0.1
+
+     0.01                                                     0.01
+         0.01      0.1    1       10      100    1000             0.01     0.1    1         10        100   1000
+                                cvcl                                                  mathsat-3.3.1
+            (c)CVC Lite 2.0 vs. New Solver                           (d)MathSAT 3.3.1 vs. New Solver
+
+   abort                                                     abort
+timeout                                                   timeout
+     1000                                                   1000
+
+     100                                                      100
+
+      10                                                       10
+
+       1                                                        1
+
+      0.1                                                     0.1
+
+     0.01                                                    0.01
+         0.01      0.1     1        10     100   1000            0.01     0.1    1        10      100       1000
+                         simplics-smtcomp-05                                     yices-smtcomp-05
+                (e)Simplics vs. New Solver                               (f)Yices vs. New Solver
+
+                                           Fig. 6. Experimental results
+
+
+than tools that are specialized for this fragment. The performance improvement is due
+to efficient backtracking and to the presimplification enabled by our approach, efficient
+theory propagation based on bound refinement also has a big impact.
+                                         A Fast Linear-Arithmetic Solver for DPLL(T)          93
+
+                           Table 1. Experimental results: Summary
+
+                                           sat unsat failed time (secs)
+                       Ario 1.1           186 640 517 1218371
+                       BarcelogicTools    153 417        92    401842
+                       CVC Lite           117 454 772 1193747
+                       MathSAT 3.3.1      330 779 234          739533
+                       Yices              358 756 229          702129
+                       Simplics           240 351 110          476940
+                       New Solver         412 869        62    267198
+
+
+
+8 Conclusion
+We have presented a new Simplex-based solver designed for efficiently solving SMT
+problems involving linear arithmetic. The main features of the new approach include
+the possibility to presimplify the input problem by eliminating variables, a reduction
+in the number of slack variables, and fast backtracking. A simple but useful form of
+theory propagation can also be implemented cheaply. Another result of the paper is a
+simple approach for solving strict inequalities that does not require modification of the
+basic Simplex algorithm. This approach is more generally applicable to other forms of
+solvers, such as graph-based solvers for difference logic.
+   Experimental results show that the new Simplex-based solver outperforms the most
+competitive solvers from SMT-COMP’05, including specialized solvers on difference
+logic problems.
+   Applications for the algorithm presented in this paper go beyond SMT. We are cur-
+rently extending the solver to support a form of weighted MAX-SMT, that is, the search
+for an assignment to an SMT problem that maximizes a linear objective function. This
+MAX-SMT solver will be integrated to SRI’s CALO system4 , as part of a module that
+combines learning and deductive algorithms.
+
+
+References
+ 1. Ganzinger, H., Hagen, G., Nieuwenhuis, R., Oliveras, A., Tinelli, C.: DPLL(T): Fast Deci-
+    sion Procedures. In Alur, R., Peled, D., eds.: Int. Conference on Computer Aided Verification
+    (CAV’04). Volume 3114 of LNCS., Springer (2004) 175–188
+ 2. Barrett, C., de Moura, L., Stump, A.: Design and Results of the 1st Satisfiability Modulo
+    Theories Competition (SMT-COMP 2005). To appear in Journal of Automated Reasoning
+    (2006)
+ 3. Dantzig, G., Curtis, B.: Fourier-Motzkin Elimination and its Dual. Journal of Combinatorial
+    Theory (1973) 288–297
+ 4. Barrett, C., Berezin, S.: CVC Lite: A New Implementation of the Cooperating Validity
+    Checker. In: Int. Conf. on Computer-Aided Verification (CAV). Volume 3114 of LNCS.,
+    Springer (2004)
+ 5. Stump, A., Barrett, C., Dill, D.: CVC: A Cooperating Validity Checker. In: Int. Conference
+    on Computer Aided Verification (CAV’02). Volume 2404 of LNCS., Springer (2002)
+ 4
+     http://caloproject.sri.com/
+94       B. Dutertre and L. de Moura
+
+ 6. Barrett, C., Dill, D., Levitt, J.: Validity Checking for Combinations of Theories with Equality.
+    In: Int. Conference on Formal Methods in Computer-Aided Design (FMCAD). Volume 1166
+    of LNCS. (1996) 187–201
+ 7. Chvatal, V.: Linear Programming. W. H. Freeman (1983)
+ 8. Bozzano, M., Bruttomesso, R., Cimatti, A., Junttila, T., van Rossum, P., Schulz, S., Sebas-
+    tiani, R.: The MathSAT 3 system. In: Int. Conference on Automated Deduction (CADE).
+    Volume 3632 of LNCS., Springer (2005)
+ 9. Filliâtre, J.C., Owre, S., Rueß, H., Shankar, N.: ICS: Integrated Canonization and Solving.
+    In: Proc. of CAV’01. Volume 2102 of LNCS. (2001)
+10. Sheini, H.M., Sakallah, K.A.: A Scalable Method for Solving Satisfiability of Integer Linear
+    Arithmetic Logic. In: SAT’05. Volume 3569 of LNCS., Springer (2005) 241–256
+11. Rueß, H., Shankar, N.: Solving Linear Arithmetic Constraints. Technical Report SRI-CSL-
+    04-01, SRI International (2004)
+12. Detlefs, D., Nelson, G., Saxe, J.B.: Simplify: A Theorem Prover for Program Checking.
+    Technical Report HPL-2003-148, HP Labs (2003)
+13. Necula, G.: Compiling with Proofs. Technical Report CMU-CS-98-154, School of Computer
+    Science, Carnegie Mellon University (1998)
+14. Badros, G., Borning, A., Stuckey, P.: The Cassowary Linear Arithmetic Constraint Solving
+    Algorithm. ACM Transactions on Computer-Human Interaction (TOCHI) 8(4) (2001) 267–
+    306
+15. Ranise, S., Tinelli, C.: The satisfiability modulo theories library (smt-lib) (2006) Available
+    at http://goedel.cs.uiowa.edu/smtib.
+16. Dutertre, B., de Moura, L.: Integrating Simplex with DPLL(T ). Technical report, CSL-06-
+    01, SRI International (2006)
+17. Schrijver, A.: Theory of Linear and Integer Programming. Wiley, New York (1986)
+18. Nemhauser, G., Wosley, L.: Integer and Combinatorial Optimization. Wiley (1999)
+19. Bozzano, M., Bruttomesso, R., Cimatti, A., Junttila, T., van Rossum, P., Ranise, S., Sebas-
+    tiani, R.: Efficient Satisfiability Modulo Theories via Delayed Theory Combination. In: Int.
+    Conf. on Computer-Aided Verification (CAV). Volume 3576 of LNCS., Springer (2005)
+20. Wang, C., Ivancic, F., Ganai, M., Gupta, A.: Deciding Separation Logic Formulae with
+    SAT and Incremental Negative Cycle Elimination. In: Logic for Programming Artificial
+    Intelligence and Reasoning (LPAR). (2005)
+21. Nieuwenhuis, R., Oliveras, A.: DPLL(T) with Exhaustive Theory Propagation and its Appli-
+    cation to Difference Logic. In: Int. Conference on Computer Aided Verification (CAV’05),
+    Springer (2005) 321–334
+

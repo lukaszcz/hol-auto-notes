@@ -1,0 +1,737 @@
+Automating elementary number-theoretic proofs
+             using Gröbner bases
+
+                                   John Harrison
+
+                            Intel Corporation, JF1-13
+                  2111 NE 25th Avenue, Hillsboro OR 97124, USA
+                            johnh@ichips.intel.com
+
+
+
+      Abstract. We present a uniform algorithm for proving automatically a
+      fairly wide class of elementary facts connected with integer divisibility.
+      The assertions that can be handled are those with a limited quantifier
+      structure involving addition, multiplication and certain number-theoretic
+      predicates such as ‘divisible by’, ‘congruent’ and ‘coprime’; one notable
+      example in this class is the Chinese Remainder Theorem (for a specific
+      number of moduli). The method is based on a reduction to ideal mem-
+      bership assertions that are then solved using Gröbner bases. As well as
+      illustrating the usefulness of the procedure on examples, and considering
+      some extensions, we prove a limited form of completeness for properties
+      that hold in all rings.
+
+
+1   Introduction
+Various classes of mathematical problems, when expressed in formal logic, can
+be solved automatically by suitable algorithms. This is often valuable, if only for
+dealing with relatively uninteresting subtasks of larger formal proofs. Some al-
+gorithms implement decision procedures for theories or logical fragments known
+to be decidable, such as Cooper’s algorithm [7] for Presburger arithmetic [17].
+Others are more heuristic in nature, e.g. automated induction proofs employ-
+ing conjecture generalization [4], though many of these can be understood in a
+general framework of proof planning [6].
+    Here we present a new algorithm for a useful class of elementary number-
+theoretic properties. We will introduce and motivate the procedure by focusing
+on the integers Z, though we will see later that the procedure is only complete
+for properties that hold in the class of all rings. (Thus it is perhaps neither a
+heuristic method nor a decision procedure, but rather a heuristic application
+of a decision procedure outside its domain of completeness.) The formulas that
+can be handled are expressed in a first-order language. The terms can be built
+up using integer constants, negation, addition, subtraction and multiplication,
+as well as exponentiation with constant nonnegative exponents. (For example,
+2x2 − y 3 (w − 42z)9 is allowed, but not xy .) The formulas can be built from these
+terms using the equality symbol as well as three ‘divisibility’ relationships, all of
+which we consider as mere shorthands for other formulas using equality as the
+only predicate:
+ – s | t, read ‘s divides t’ abbreviates ∃d. t = sd
+ – s ≡ t (mod u), read ‘s is congruent to t modulo u’, abbreviates ∃d. t − s = ud
+ – coprime(s, t), read ‘s and t are coprime’, abbreviates ∃x y. sx + ty = 1.
+
+    Over the integers, coprime(m, n) holds precisely if m and n have no common
+factors besides ±1. This equivalence is proved in many elementary number theory
+texts [2, 8].
+    We attempt to explain any algebraic terminology as it is used, but a reader
+may find it helpful to refer to an algebra textbook such as [21] for more on rings,
+polynomials and ideals. It is worth noting that we tend to blur the distinction
+between three distinct notions of ‘polynomial’: (i) a first-order formula in the
+language of rings, (ii) a polynomial itself as an algebraic object, and (iii) a
+polynomial function or its evaluation for a specific argument. When we want
+to emphasize the polynomial as a function we tend to write the arguments (so
+p(x) rather than just p), and when treating it as an element of the ring of
+polynomials we tend to omit arguments, and perhaps emphasize that equations
+are to be understood as polynomial identities. Sometimes, however, we write
+the arguments just to emphasize which variables are involved in the polynomial.
+Over an infinite base ring such as Z, two polynomials are equal as algebraic
+objects (p = q) if and only if the associated functions are equal on all arguments
+(∀x. p(x) = q(x)). By contrast, over a 2-element ring the polynomials x2 + x and
+0 are considered distinct even though they determine the same function.
+
+
+2   Example
+
+We will explain the procedure by a typical example first, proving this ‘cancella-
+tion’ property for congruences:
+
+          ∀a n x y. ax ≡ ay (mod n) ∧ coprime(a, n) ⇒ x ≡ y (mod n)
+
+The first step is to expand away the number-theoretic predicates:
+
+                         ∀a n x y. (∃d. ay − ax = nd)∧
+                                   (∃u v. au + nv = 1)
+                                   ⇒ (∃e. y − x = ne)
+
+and we then pull out the existential quantifiers in the antecedent:
+
+         ∀a n x y d u v. ay − ax = nd ∧ au + nv = 1 ⇒ ∃e. y − x = ne
+
+We prove this by proving something related, but in general stronger, namely that
+over the ring Z[a, n, x, y, d, u, v] the polynomial y − x is contained in the ideal
+generated by the polynomials in the antecedent (ay − ax − nd and au + nv − 1)
+and the multiplier (n) for the existentially quantified variable:
+
+                   (y − x) ∈ Id hay − ax − nd, au + nv − 1, ni
+i.e. that there exist ‘cofactor’ polynomials p(a, n, x, y, d, u, v), q(a, n, x, y, d, u, v)
+and r(a, n, x, y, d, u, v) such that the following is a polynomial identity:
+                       y − x = (ay − ax − nd)p(a, n, x, y, d, u, v)+
+                               (au + nv − 1)q(a, n, x, y, d, u, v)+
+                               nr(a, n, x, y, d, u, v)
+    To see that the identity implies the original claim, note that if ay − ax = nd
+and au + nv = 1, the identity reduces to y − x = nr(a, n, x, y, d, u, v), which
+certainly implies ∃e. y − x = ne. In fact, it shows something stronger: there is a
+polynomial expression for the witness e in terms of the other variables.
+    To prove the ideal membership goal, the most natural and straightforward
+technique is to apply Buchberger’s algorithm [5] to find a Gröbner basis for
+the ideal, and then show that y − x reduces to 0 w.r.t. this basis. A suitably
+instrumented version of the algorithm can actually produce the explicit cofactor
+polynomials, giving a simple ‘certificate’ of the result. For our example, one
+natural possibility for the cofactors is:
+                            p(a, n, x, y, d, u, v) = u
+                            q(a, n, x, y, d, u, v) = x − y
+                            r(a, n, x, y, d, u, v) = ud + vy − vx
+
+
+We can then verify the polynomial identity simply by normalizing both sides in
+some reasonable way.
+
+3    Detailed procedure
+We aim to reduce the initial problem to one or more sub-problems of the following
+standard form, where the ei (x), ai (x) and pij (x) are polynomials in variables
+x = x1 , . . . , xl :
+            m
+            ^
+      ∀x.         ei (x) = 0 ⇒ ∃y1 · · · yn . p11 (x)y1 + · · · + p1n (x)yn = a1 (x)∧
+            i=1                               ···∧
+                                              pk1 (x)y1 + · · · + pkn (x)yn = ak (x)
+   We need to test whether this formula holds over the integers, and we do it
+by testing the following ideal membership problem in Z[x1 , . . . , xl , u1 , . . . , uk ],
+where the ui are fresh variables not occurring in the original problem:
+        (a1 u1 + · · · + ak uk )
+        ∈ Id he1 , . . . , em , (p11 u1 + · · · + pk1 uk ), . . . (p1n u1 + · · · + pkn uk )i
+    (Note that we are considering integer polynomials only in the ideal mem-
+bership.) In the common special case k = 1, as in the example of the previous
+section, we do not need to introduce the auxiliary variables, but can use simply:
+                             a1 ∈ Id he1 , . . . , em , p11 , . . . , p1n i
+Incompleteness over the integers
+The standard problem above takes in the degenerate case (n = 0 and k =
+0) ofVproving that a Diophantine equation has no solutions over the integers:
+      m
+∀x. i=1 ei (x) = 0 ⇒ ⊥. Since this is known to be undecidable [16] while ideal
+membership over the integers is decidable [1] it follows that our test based on
+ideal membership cannot be both sound and complete. And indeed, it is not
+hard to find examples of incompleteness, where the existential assertion holds
+over Z but the corresponding ideal membership does not. The following are all
+variations on a theme that x2 + x is always even:
+ – ∀x. ∃a. x2 + x = 2a holds over the integers, yet (x2 + x) 6∈ Id h2i.
+ – ∀x y. y = 1 ⇒ ∃a. x2 + x = (y + 1)a holds over the integers, yet (x2 + x) 6∈
+   Id hy − 1, y + 1i
+ – ∀x y. ∃a b. x2 + x = (y + 1)a + (y − 1)b yet (x2 + x) 6∈ Id hy − 1, y + 1i
+
+   Nevertheless, we will show (i) that our procedure is sound, and (ii) that it is
+complete for properties that hold in all rings, not just in the integers.
+
+Soundness
+Consider first the special case k = 1, when we just test
+
+                             a1 ∈ Id he1 , . . . , em , p11 , . . . , p1n i
+
+   If this ideal membership assertion holds, then concretely there are cofactor
+polynomials f1 , . . . , fm , g1 , . . . , gn such that
+
+               e1 f1 + · · · + em fm + p11 g1 + · · · + p1n gn = a1
+               Vm
+Evaluating when i=1 ei (x) = 0 we get
+
+                       p11 (x)g1 (x) + · · · + p1n (x)gn (x) = a1 (x)
+
+which does indeed show that there exist y1 , . . . , yn such that
+
+                           p11 (x)yn + · · · + p1n (x)yn = a1 (x)
+
+and from the cofactors in the ideal membership, we obtain a simple and ex-
+plicit proof of the original formula, with witnesses for the existentially quantified
+variables that are polynomials in the other variables. In the general case (not
+requiring k = 1), suppose that the ideal membership holds:
+
+       (a1 u1 + · · · + ak uk )
+       ∈ Id he1 , . . . , em , (p11 u1 + · · · + pk1 uk ), . . . , (p1n u1 + · · · + pkn uk )i
+which means explicitly we have a polynomial identity of the form:
+
+       (a1 u1 + · · · + ak uk ) =
+       e1 (x)r1 (x, u) + · · · + em (x)rm (x, u)+
+       (p11 u1 + · · · + pk1 uk )q1 (x, u) + · · · + (p1n u1 + · · · + pkn uk )qn (x, u)
+with the qi and ri polynomials in Z[x1 , . . . , xl , u1 , . . . , uk ]. Let us separate each
+qi (x, u) into:
+                                qi (x, u) = ci (x) + di (x, u)
+
+where ci (x) does not involve any of the ui , and all monomials in di (x, u) contain
+at least one of the ui . Similarly we decompose ri (x, u) into:
+
+                              ri (x, u) = si (x, u) + ti (x, u)
+
+where each monomial in si (x, u) has degree 1 in exactly one of the ui (e.g. 3u1
+or x25 u2 ) and each monomial in ti (x, u) either does not involve any ui , involves
+more than one, or has a degree higher than 1 in one of them (e.g. 42, 7u1 u2 ,
+xu23 ). Now:
+
+       (a1 u1 + · · · + ak uk ) =
+       e1 (x)s1 (x, u) + · · · + em (x)sm (x, u)+
+       e1 (x)t1 (x, u) + · · · + em (x)tm (x, u)+
+       (p11 u1 + · · · + pk1 uk )c1 (x) + · · · + (p1n u1 + · · · + pkn uk )cn (x)+
+       (p11 u1 + · · · + pk1 uk )d1 (x, u) + · · · + (p1n u1 + · · · + pkn uk )dn (x, u)
+
+  Note that all terms on the LHS have degree exactly 1 in just one of the ui .
+Thus all terms on the right that are not of that form must cancel, leaving:
+
+          (a1 u1 + · · · + ak uk ) =
+          e1 (x)s1 (x, u) + · · · + em (x)sm (x, u)+
+          (p11 u1 + · · · + pk1 uk )c1 (x) + · · · + (p1n u1 + · · · + pkn uk )cn (x)
+                    Vm
+Evaluating when       i=1 ei (x) = 0 gives:
+
+
+          (a1 u1 + · · · + ak uk ) =
+          (p11 u1 + · · · + pk1 uk )c1 (x) + · · · + (p1n u1 + · · · + pkn uk )cn (x)
+
+   Successively setting ui = 1 and uj = 0 for all j 6= i, we find that for all
+1 ≤ i ≤ k the following holds:
+
+                         ai = c1 (x)pi1 (x) + · · · + cn (x)pin (x)
+
+which does indeed show that there exist y1 , . . . , yn such that
+
+                         p11 (x)y1 + · · · + p1n (x)yn = a1 (x)∧
+                         ···∧
+                         pk1 (x)y1 + · · · + pkn (x)yn = ak (x)
+
+and once again we obtain explicit polynomials yi = ci (x) as witnesses.
+Completeness over all rings
+We will now prove that the ideal membership assertion is equivalent to the
+validity of the starting formula in all rings (as usual, we mean commutative
+rings with 1). The reasoning in the previous section extends easily from Z to
+an arbitrary ring, showing that the ideal membership implies the validity of the
+starting formula in all rings. To establish the other direction, we first recall that
+a Horn clause is a first-order formula that is either of the form:
+         ∀v1 , . . . , vn . P1 [v1 , . . . , vn ] ∧ · · · ∧ Pn [v1 , . . . , vn ] ⇒ Q[v1 , . . . , vn ]
+including the degenerate case
+                                     ∀v1 , . . . , vn . Q[v1 , . . . , vn ]
+or
+                 ∀v1 , . . . , vn . P1 [v1 , . . . , vn ] ∧ · · · ∧ Pn [v1 , . . . , vn ] ⇒ ⊥
+where Q[v1 , . . . , vn ] and all Pi [v1 , . . . , vn ] are atomic formulas. In particular, the
+axioms for commutative rings with 1 are just (implicitly universally quantified)
+equations, and are therefore Horn clauses. In fact, all truly algebraic axioms are
+just universally quantified equations, and thus Horn clauses. For example, we can
+add the infinite set of axioms xk = 0 ⇒ x = 0 for all k ≥ 1 to axiomatize the class
+of reduced rings (rings without nilpotent elements). However neither the integral
+domain axiom xy = 0 ⇒ x = 0 ∨ y = 0 nor the field axiom ¬(x = 0) ⇒ x−1 x = 1
+is a Horn clause, and so the special results we will note for Horn clause theories
+are not directly applicable, though analogous results can be derived for general
+theories by considering canonical resolution proofs [14].
+    In order to state these special properties of Horn clause theories, it is more
+convenient to consider first-order logic without special treatment of equality. By
+a standard result [13], a formula is valid in first-order logic with equality iff
+it is a general first-order consequence of the set of equivalence and congruence
+properties of equality for the language at issue. In particular, a formula holds in
+all rings iff it is a first-order consequence of the following axioms, all of which
+are Horn clauses:
+                             x+y =y+x
+                             x + (y + z) = (x + y) + z
+                             x+0=x
+                             x + (−x) = 0
+                             xy = yx
+                             x(yz) = (xy)z
+                             x1 = x
+                             x(y + z) = xy + xz
+                             x=x
+                             x=y⇒y=x
+                             x=y∧y =z ⇒x=z
+                             x = x0 ⇒ −x = −x0
+                             x = x0 ∧ y = y 0 ⇒ x + y = x0 + y 0
+                             x = x0 ∧ y = y 0 ⇒ xy = x0 y 0
+    If Γ is a set of Horn clauses and A an atomic formula or ⊥, then Γ ` A if
+and only if there is a ‘Prolog-style’ proof of A from Γ , i.e. a tree whose nodes are
+atomic formulas, with A as the top node, such that for every node B in the tree,
+there is a clause in the axiom set that can be instantiated so its conclusion is
+B and its antecedent atoms are the nodes below B in the tree [10]. This special
+canonical proof format for deductions from Horn clauses allows us to deduce
+some interesting consequences. We start with a theorem due to Simmons [19, 12,
+21]:
+Theorem 1. Let p1 (x), . . . , pr (x) and p(x) be polynomials with integer coeffi-
+cients over the variables x = x1 , . . . , xl . Then the following holds in all commu-
+tative rings with 1:
+                 ∀x1 , . . . , xl . p1 (x) = 0 ∧ · · · ∧ pr (x) = 0 ⇒ p(x) = 0
+iff the following ideal membership holds over Z[x]:
+                                         p ∈ Id hp1 , . . . , pr i
+in other words, if there are cofactor polynomials q1 (x), . . . , qr (x) with integer
+coefficients such that the following is a polynomial identity:
+                           p(x) = p1 (x)q1 (x) + · · · + pr (x)qr (x)
+Proof. (Sketch.) The bottom-to-top direction is immediate, because given that
+identity, the right-hand side collapses to zero when all the pi (x) are zero. Con-
+versely, if the top result holds in all rings, then there is a Prolog-style proof
+from the Horn clause axioms for rings and equality. By induction on this tree,
+for every equation s(x) = t(x) deduced, s(x) − t(x) is in the ideal generated by
+p1 , . . . , p r .                                                              t
+                                                                                u
+    The following is essentially Theorem 7.0.6 (“Horn-Herbrand theorem”) in
+[10]. It states that for deduction from Horn clauses we can strengthen the usual
+classical Herbrand theorem to one with the same ‘existence property’ as in in-
+tuitionistic logic:
+Theorem 2. Let T be a set of Horn clauses and Ai [y1 , . . . , yn ] atomic formulas
+(in a language with at least one individual constant). Then
+                T |= ∃y1 , . . . , yn . A1 [y1 , . . . , yn ] ∧ · · · ∧ Ak [y1 , . . . , yn ]
+(where ‘Γ |= P ’ means ‘P is a first-order consequence of Γ ’) if and only if there
+are ground terms t1 , . . . , tn in the language such that:
+                         T |= A1 [t1 , . . . , tn ] ∧ · · · ∧ Ak [t1 , . . . , tn ]
+Proof. (Sketch.) The bottom-to-top direction is immediate. For the other direc-
+tion, note that the top is equivalent to
+       T ∪ {(∀y1 , . . . , yn . A1 [y1 , . . . , yn ] ∧ · · · ∧ Ak [y1 , . . . , yn ] ⇒ ⊥)} |= ⊥
+    The usual ‘Prolog style’ backchaining proof for Horn clauses can only apply
+the extra clause once, and will give rise to the corresponding instantiation. u
+                                                                              t
+Thus we can deduce a corollary:
+
+Theorem 3. The following formula:
+            m
+            ^
+      ∀x.         ei (x) = 0 ⇒ ∃y1 · · · yn . p11 (x)y1 + · · · + p1n (x)yn = a1 (x)∧
+            i=1                               ···∧
+                                              pk1 (x)y1 + · · · + pkn (x)yn = ak (x)
+
+holds in all rings iff there are terms q1 (x),. . . ,qn (x) in the language of rings (i.e.
+polynomials with integer coefficients) such that the following holds in all rings:
+                  m
+                  ^
+         ∀x.          ei (x) = 0 ⇒ p11 (x)q1 (x) + · · · + p1n (x)qn (x) = a1 (x)∧
+                i=1                ···∧
+                                   pk1 (x)q1 (x) + · · · + pkn (x)qn (x) = ak (x)
+
+Proof. We can replace the variables x by constants, and regard the ei (x) as new
+(Horn) axioms. The result is then an immediate consequence of Theorem 2 and
+the Horn nature of the ring and equality axioms.                               t
+                                                                               u
+
+This leads us to the following:
+
+Theorem 4. The following formula:
+            m
+            ^
+      ∀x.         ei (x) = 0 ⇒ ∃y1 · · · yn . p11 (x)y1 + · · · + p1n (x)yn = a1 (x)∧
+            i=1                               ···∧
+                                              pk1 (x)y1 + · · · + pkn (x)yn = ak (x)
+
+holds in all rings iff there are terms q1 (x),. . . ,qn (x) and r1j (x),. . . ,rmj (x) in
+the language of rings (i.e. polynomials with integer coefficients) such that the
+following is a polynomial identity for each j with 1 ≤ j ≤ k:
+
+  e1 (x)r1j (x) + · · · + em (x)rmj (x) + pj1 (x)q1 (x) + · · · + pjn (x)qn (x) = aj (x)
+
+Proof. Just combine the previous theorem and Theorem 1.                                    t
+                                                                                           u
+
+The case k = 1 takes a particularly simple form, which was used in the motivating
+example of the previous section:
+
+Theorem 5. The formula:
+               m
+               ^
+         ∀x.         ei (x) = 0 ⇒ ∃y1 · · · yn . p1 (x)y1 + · · · + pn (x)yn = a(x)
+               i=1
+
+holds in all rings iff the following ideal membership holds for integer polynomials:
+
+                                a ∈ Id he1 , . . . , em , p1 , . . . , pn i
+
+Proof. Just a special case of the previous theorem.                                        t
+                                                                                           u
+     The conclusion of Theorem 4 for general k is not just a conjunction of inde-
+pendent ideal membership assertions, because we need to constrain the cofactors
+qi (x) to be the same for each one. However, by introducing auxiliary variables
+u1 , . . . , uk we will show:
+
+Theorem 6. The following formula:
+              m
+              ^
+       ∀x.          ei (x) = 0 ⇒ ∃y1 · · · yn . p11 (x)y1 + · · · + p1n (x)yn = a1 (x)∧
+              i=1                               ···∧
+                                                pk1 (x)y1 + · · · + pkn (x)yn = ak (x)
+
+holds in all rings iff the following ideal membership assertion, where the ui are
+fresh variables not occurring in the original problem, holds in Z[x1 , . . . , xl , u1 , . . . , uk ]:
+
+             (a1 u1 + · · · + ak uk )
+             ∈ Id he1 , . . . , em , (p11 u1 + · · · + pk1 uk ), (p1n u1 + · · · + pkn uk )i
+
+Proof. The bottom-to-top direction was dealt with above under ‘soundness’. For
+the other direction, note that by Theorem 4, the initial assertion is equivalent to
+the existence of q1 (x),. . . ,qn (x) and r1j (x),. . . ,rmj (x) such that for all 1 ≤ j ≤ k:
+
+    e1 (x)r1j (x) + · · · + em (x)rmj (x) + pj1 (x)q1 (x) + · · · + pjn (x)qn (x) = aj (x)
+
+     Multiplying this identity by uj and summing over 1 ≤ j ≤ k we obtain
+
+           a1 u1 + · · · + ak uk =
+           e1 (x)(u1 r11 (x) + · · · + uk r1k (x)) + · · · +
+           em (x)(u1 rm1 (x) + · · · + uk rmk (x))+
+           (p11 u1 + · · · + pk1 uk )q1 (x) + · · · + (p1n u1 + · · · + pkn uk )qn (x)
+
+which verifies the claimed ideal membership.                                                   t
+                                                                                               u
+
+
+4     Reduction to standard form
+
+In reducing the initial problem to standard form, we expand the number-theoretic
+predicates into existentially quantified equations. Note that the equivalence as-
+sumed between ∃x y. sx + ty = 1 and coprime(s, t), in the usual sense of having
+no non-unit common factors, does not hold over an arbitrary ring (though it
+does in all principal ideal domains). For example, x + 1 and 2 are coprime over
+the polynomial ring Z[x], but there are no integer polynomials p and q such that
+(x + 1)p(x) + 2q(x) = 1. This means that even though the core reduction is
+complete w.r.t. the class of all rings, the initial processing into standard form
+relies on additional axioms. Moreover, we will sometimes want to exploit the
+integral domain property st = 0 ⇔ s = 0 ∨ t = 0 (see below), which also fails in
+an arbitrary ring (e.g. 2 · 3 = 0 in Z/6 but 2 6= 0 and 3 6= 0). This mismatch be-
+tween a preprocessing step valid only in certain rings and a core procedure sound
+and complete with respect to all rings gives our overall procedure a somewhat
+heuristic flavour.
+    But once we accept the mappings of the basic concepts down to algebraic
+statements, then we can translate a wide variety of assertions into the standard
+form. In particular, any Horn clause built up from the basic number-theoretic
+concepts works, e.g. our first example:
+              ax ≡ ay (mod n) ∧ coprime(a, n) ⇒ x ≡ y (mod n)
+as well as numerous others such as
+      d|a ∧ d|b ⇒ d|(a − b)
+      a|b ⇒ (ca)|(cb)
+      x|y ∧ y|z ⇒ x|z
+      (xd)|a ⇒ d|a
+      a|b ∧ c|d ⇒ (ac)|(bd)
+      coprime(d, a) ∧ coprime(d, b) ⇒ coprime(d, ab)
+      coprime(d, ab) ⇒ coprime(d, a)
+      m|r ∧ n|r ∧ coprime(m, n) ⇒ (mn)|r
+      x ≡ x0 (mod n) ∧ y ≡ y 0 (mod n) ⇒ xy ≡ x0 y 0 (mod n)
+      x ≡ y (mod m) ∧ n|m ⇒ x ≡ y (mod n)
+      coprime(a, b) ∧ x ≡ y (mod a) ∧ x ≡ y (mod b) ⇒ x ≡ y (mod (ab))
+      x2 ≡ y 2 (mod (x + y))
+      x2 ≡ a (mod n) ∧ y 2 ≡ a (mod n) ⇒ n|((x + y)(x − y))
+    It is also clear we can solve problems of the form P ⇔ Q by separating them
+into P ⇒ Q and Q ⇒ P ; more generally we can place a problem in conjunctive
+normal form and split up the conjuncts. For example, this deals with:
+              x ≡ y (mod n) ⇒ (coprime(n, x) ⇔ coprime(n, y))
+              x ≡ 0 (mod n) ⇔ n|x
+              x + a ≡ y + a (mod n) ⇔ x ≡ y (mod n)
+              coprime(xy, x2 + y 2 ) ⇔ coprime(x, y)
+   Additional negated equations can easily be absorbed into the conclusion using
+the integral domain property, passing from ¬(t = 0) ∧ P ⇒ ∃y. s(y) = 0 to
+P ⇒ ∃y. s(y)t = 0, which allows us to handle things like:
+                         ¬(c = 0) ⇒ ((ca)|(cb) ⇔ a|b)
+   Perhaps more interesting is that we can even handle existential quantifiers
+present in the original problem before the algebraic reduction, e.g.
+                      coprime(a, n) ⇒ ∃x. ax ≡ b (mod n)
+    We will treat a somewhat more general version of that problem in detail below
+(‘extension with GCDs’). Here we will run through the basic binary Chinese
+Remainder Theorem, which also has an existential quantifier in the conclusion:
+         ∀a b u v. coprime(a, b) ⇒ ∃x. x ≡ u (mod a) ∧ x ≡ v (mod b)
+If we proceed as usual we obtain the goal:
+
+          ∀a b u v w z. aw + bz = 1 ⇒ ∃x d e. u − x = da ∧ v − x = eb
+
+    Since we have multiple equations under the existential quantifier, the reduc-
+tion to ideal membership introduces two new variables r and s:
+
+                      (ur + vs) ∈ Id haw + bz − 1, r + s, ar, bsi
+
+and this is true since we have
+
+ur+vs = (aw+bz−1)(rv−ru)+(r+s)(v+buz−bvz)+(ar)(uw−vw)+(bs)(vz−uz)
+
+
+5   Extensions
+Although the basic procedure above is already quite powerful, we can extend its
+scope by a number of perhaps ad hoc but quite natural refinements.
+
+Introduction of GCDs
+It is often convenient to express properties using greatest common divisors
+(GCDs). One simple approach for handling gcd(a, b) is to replace it with a vari-
+able g while adding as an additional hypothesis a characterizing theorem:
+
+                          g | a ∧ g | b ∧ (∃u v. au + bv = g)
+
+    This does not characterize g uniquely because of the ambiguity over sign (or
+multiplication by a unit in a general ring), but any divisibility relationships are
+also invariant under such a change, so this is not a severe obstacle. For example,
+consider proving a basic condition for the solvability of a congruence:
+
+                         gcd(a, n) | b ⇒ ∃x. ax ≡ b (mod n)
+
+After the initial augmentation we get:
+
+        g | a ∧ g | n ∧ (∃u v. au + nv = g) ∧ g | b ⇒ ∃x. ax ≡ b (mod n)
+
+and the usual expansion, normalization and prenexing yields:
+
+         gq = a ∧ gr = n ∧ au + nv = g ∧ gs = b ⇒ ∃x y. ax + yn = b
+
+giving the ideal membership question
+
+                 b ∈ Id hgq − a, gr − n, au + nv − g, gs − b, a, ni
+
+which is true since
+
+b = (gq − a)0 + (gr − n)0 + (au + nv − g)(−s) + (gs − b)(−1) + a(su) + n(sv)
+
+    The converse implication ∃x. ax ≡ b (mod n) ⇒ gcd(a, n) | b can be proved
+in a similar way.
+Elimination using linear equations
+For a motivating example here, consider again the binary Chinese Remainder
+Theorem:
+
+          ∀a b u v. coprime(a, b) ⇒ ∃x. x ≡ u (mod a) ∧ x ≡ v (mod b)
+
+If we proceed as before we obtain the goal:
+
+          ∀a b u v w z. aw + bz = 1 ⇒ ∃x d e. u − x = da ∧ v − x = eb
+
+    Earlier, we introduced auxiliary variables to handle the double equation.
+However, in this case it is fairly obvious that we can get an equivalent that just
+eliminates x between the two equations:
+
+                ∀a b u v w z. aw + bz = 1 ⇒ ∃d e. v − u = eb − da
+
+This gives a reduction to the ideal membership goal:
+
+                          (v − u) ∈ Id haw + bz − 1, b, −ai
+
+which is true since
+
+           v − u = (aw + bz − 1)(u − v) + b(zv − zu) + −a(wu − wv)
+
+   This elimination does not help with the ternary Chinese Remainder Theorem,
+whereas the method using auxiliary variables still works perfectly. However, on
+a heuristic level it seems prudent always to eliminate existentially quantified
+variables when there is a simple linear equation that allows us to do so.
+
+Sequential treatment of equations
+Our standard form requires each equation to be linear in the existentially quan-
+tified variables. However, note that linearity is irrelevant to Theorem 2, and only
+appears as a restriction in order to reduce witness-finding to ideal membership.
+So we can consider more general means of finding witnesses by building in tech-
+niques for nonlinearity. Elimination using linear equations, as in the previous
+example, may enable us to get round this restriction in some cases. Otherwise,
+we can at least find witnesses for those equations we can, and hope that they
+will then in turn allow us to solve the overall problem. For example, consider:
+
+    gcd(a, b) 6= 0 ⇒ ∃a0 b0 . a = a0 gcd(a, b) ∧ b = b0 gcd(a, b) ∧ coprime(a0 , b0 )
+
+Proceeding in the usual way, eliminating number-theoretic concepts, we obtain:
+
+a = gx∧b = gy∧g = ua+vb∧¬(g = 0) ⇒ ∃a0 b0 w z.a = a0 g∧b = b0 g∧a0 w+b0 z = 1
+
+and as usual we eliminate the negated equational hypothesis using the integral
+domain property:
+
+a = gx∧b = gy ∧g = ua+vb ⇒ ∃a0 b0 w z.ag = a0 g 2 ∧bg = b0 g 2 ∧a0 wg +b0 zg = g
+   This does not fall into our subset because of the nonlinearity: in a0 wg we have
+two existentially quantified variables a0 and w multiplied together. On the other
+hand, we might heuristically try to find witnesses by considering the equations
+one at a time. First
+
+                a = gx ∧ b = gy ∧ g = ua + vb ⇒ ∃a0 . ag = a0 g 2
+
+gives the ideal membership assertion
+
+                      (ag) ∈ Id gx − a, gy − b, ua + vb − g, g 2
+
+from whose solution
+                              ag = (gx − a)(−g) + g 2 x
+
+we extract the witness a0 = x. Similarly solving the next equation gives us b0 = y.
+After inserting those, two equations in the problem are trivial and everything
+reduces to:
+
+             a = gx ∧ b = gy ∧ g = ua + vb ⇒ ∃w z. xwg + yzg = g
+
+giving the ideal membership
+
+                      g ∈ Id hgx − a, gy − b, ua + vb − g, xg, ygi
+
+which is true since
+
+    g = (gx − a)(−u) + (gy − b)(−v) + (ua + vb − g)(−1) + (xg)u + (yg)v
+
+and in particular we obtain the witnesses w = u, z = v.
+
+
+6   Implementation
+
+We have implemented a simple prototype of the routine, containing fewer than
+100 lines of code, in the HOL Light theorem prover [9]; in version 2.20, it is
+included in the standard release. The implemented version does not yet use the
+extension to multiple equations using auxiliary variables, and some of the initial
+normalization is a little ad hoc. But it does include all the extensions in the
+previous section, and all the examples we have mentioned in this paper can
+be proved automatically by it. Here is a typical interaction, proving a slight
+generalization of the binary Chinese remainder theorem, not assuming that the
+moduli are coprime: if a1 ≡ a2 (mod gcd(n1 , n2 )) then there is an x such that
+x ≡ a1 (mod n1 ) and x ≡ a2 (mod n2 ). The user passes the desired result
+as a parameter to INTEGER_RULE on the first line, and after some informative
+messages, the required theorem is proved automatically:
+# INTEGER_RULE
+   ‘!a1 a2 n1 n2:int.
+          (a1 == a2) (mod (gcd(n1,n2)))
+          ==> ?x. (x == a1) (mod n1) /\ (x == a2) (mod n2)‘;;
+4 basis elements and 1 critical pairs
+5 basis elements and 0 critical pairs
+1 basis elements and 0 critical pairs
+Translating certificate to HOL inferences
+val it : thm =
+  |- !a1 a2 n1 n2.
+         (a1 == a2) (mod gcd (n1,n2))
+         ==> (?x. (x == a1) (mod n1) /\ (x == a2) (mod n2))
+
+
+    We just use the normal Buchberger algorithm for polynomial ideals over Q,
+implemented in HOL via int_ideal_cofactors. Properly speaking, we should
+use a version of Buchberger’s algorithm tailored to the ring Z [11]. For example,
+consider proving just x+y = 0∧x−y = 0 ⇒ x = 0. This does not hold in all rings
+(e.g. set x = y = 1 in the integers modulo 2). The Gröbner basis algorithm over
+the rationals, however, would appear to prove it giving coefficients of 1/2 in the
+cofactors. However, testing ideal membership over Z is in general somewhat more
+difficult [1], and we have found almost no cases where the distinction mattered
+(most problems involve no explicit constants |c| > 1, which helps). Because the
+actual HOL Light proof proceeds rigorously by logical inference, no false result
+could be generated, but the proof construction step will fail if the ideal cofactors
+contain rationals.
+
+
+7    Conclusions and related work
+
+We are not aware of any related work on automating problems involving both
+multiplication and ‘divisibility’ concepts. Indeed, as we have noted, the problem
+is in general unsolvable and our procedure, though remarkably effective, is a
+combination of a preprocessing step tailored to the integers followed by a decision
+procedure complete only over the class of rings in general.
+    There are established results for decidability of universal linear formulas in
+the language of Presburger arithmetic including divisibility by non-constants [3,
+15], though we are not aware of any actual implementation. Allowing a richer
+quantifier structure soon leads to undecidability, even in the linear case; for
+example multiplication can be defined in terms of divisibility, successor and 1
+only [18], so even that theory is undecidable. In contrast, we allow more or less
+unrestricted use of multiplication, which in principle leads to undecidability. But
+the approach of seeking properties true in all rings seems to work very well.
+    We have found the procedure very useful in practice. Just as it is convenient
+to have automated provers for routine facts of linear arithmetic and propositional
+tautologies, being able to generate routine lemmas about divisibility with so little
+effort is a considerable help in proofs. In fact, we were inspired to create this
+procedure during the formal verification of an arithmetic algorithm, when we
+found ourselves repeatedly proving trivialities about divisibility by hand. The
+procedure has also been useful in some HOL proofs in pure mathematics, e.g.
+quadratic reciprocity.
+    In all the examples we have tried, the ideal membership goals are easy: our
+straightforward Gröbner basis algorithm works in a fraction of a second. It might
+be interesting to try some large (even if artificial) problems, such as n-ary Chinese
+remainder theorems for large n. Perhaps in such cases more care would be needed,
+e.g. over the monomial order in the Gröbner basis algorithm. At present we order
+the monomials by total degree then reverse lexicographic order of variables [21],
+ordering the variables themselves alphabetically. Other optimizations might be
+worthwhile, e.g. using reduced Gröbner bases or constructing the basis more
+incrementally when dealing with equations sequentially.
+    Also, it would be more satisfactory to use a Gröbner basis algorithm tailored
+to the integers. This would open up the possibility of dealing with a wider
+range of problems involving specific numbers. It is even conceivable that the
+approach could then be used to reason about machine arithmetic modulo 2n
+in a useful way. Perhaps the results here could also be used in other situations
+where restricted quantifier instantiation is needed, e.g. checking that universally
+quantified polynomial equations are invariant over a program block.
+
+
+Acknowledgements
+
+I am grateful to the anonymous referees for their valuable work; they offered
+everything from thought-provoking general observations to lists of subtle typos
+in doubly indexed variables.
+
+
+References
+ 1. M. Aschenbrenner. Ideal membership in polynomial rings over the integers. Journal
+    of the American Mathematical Society, 17:407–441, 2004.
+ 2. A. Baker. A Concise Introduction to the Theory of Numbers. Cambridge University
+    Press, 1985.
+ 3. A. P. Beltyokov. Decidability of the universal theory of natural numbers with
+    addition and divisibility (Russian). Sem. Leningrad Otd. Mat. Inst. Akad. Nauk
+    SSSR, 40:127–130, 1974. English translation in Journal Of Mathematical Sciences,
+    vol. 14, pp. 1436–1444, 1980.
+ 4. R. S. Boyer and J. S. Moore. A Computational Logic. ACM Monograph Series.
+    Academic Press, 1979.
+ 5. B. Buchberger. Ein Algorithmus zum Auffinden der Basiselemente des Restklassen-
+    ringes nach einem nulldimensionalen Polynomideal. PhD thesis, Mathematisches
+    Institut der Universität Innsbruck, 1965. English translation to appear in Journal
+    of Symbolic Computation, 2006.
+ 6. A. Bundy. A science of reasoning. In J.-L. Lassez and G. Plotkin, editors, Com-
+    putational Logic: Essays in Honor of Alan Robinson, pages 178–198. MIT Press,
+    1991.
+ 7. D. C. Cooper. Theorem proving in arithmetic without multiplication. In B. Melzer
+    and D. Michie, editors, Machine Intelligence 7, pages 91–99. Elsevier, 1972.
+ 8. G. H. Hardy and E. M. Wright. An Introduction to the Theory of Numbers. Claren-
+    don Press, 5th edition, 1979.
+ 9. J. Harrison. HOL Light: A tutorial introduction. In M. Srivas and A. Camilleri,
+    editors, Proceedings of the First International Conference on Formal Methods in
+    Computer-Aided Design (FMCAD’96), volume 1166 of Lecture Notes in Computer
+    Science, pages 265–269. Springer-Verlag, 1996.
+10. W. Hodges. Logical features of Horn clauses. In D. M. Gabbay, C. J. Hogger,
+    and J. A. Robinson, editors, Handbook of Logic in Artificial Intelligence and Logic
+    Programming, volume 1 (logical foundations), pages 449–503. Oxford University
+    Press, 1993.
+11. A. Kandri-Rody and D. Kapur. Algorithms for computing Gröbner bases of poly-
+    nomial ideals over various Euclidean rings. In J. Fitch, editor, EUROSAM 84:
+    International Symposium on Symbolic and Algebraic Computation, volume 174 of
+    Lecture Notes in Computer Science, pages 195–206, Cambridge, England, 1984.
+    Springer-Verlag.
+12. A. Kandri-Rody, D. Kapur, and P. Narendran. An ideal-theoretic approach to word
+    problems and unification problems over finitely presented commutative algebras.
+    In J.-P. Jouannaud, editor, Rewriting Techniques and Applications, volume 202 of
+    Lecture Notes in Computer Science, pages 345–364, Dijon, France, 1985. Springer-
+    Verlag.
+13. G. Kreisel and J.-L. Krivine. Elements of mathematical logic: model theory. Stud-
+    ies in Logic and the Foundations of Mathematics. North-Holland, revised second
+    edition, 1971. First edition 1967. Translation of the French ‘Eléments de logique
+    mathématique, théorie des modeles’ published by Dunod, Paris in 1964.
+14. V. Lifschitz. Semantical completeness theorems in logic and algebra. Proceedings
+    of the American Mathematical Society, 79:89–96, 1980.
+15. L. Lipshitz. The Diophantine problem for addition and divisibility. Transactions
+    of the American Mathematical Society, 235:271–283, 1978.
+16. Y. V. Matiyasevich. Enumerable sets are Diophantine. Soviet Mathematics Dok-
+    lady, 11:354–358, 1970.
+17. M. Presburger. Über die Vollständigkeit eines gewissen Systems der Arithmetik
+    ganzer Zahlen, in welchem die Addition als einzige Operation hervortritt. In Spra-
+    wozdanie z I Kongresu metematyków slowiańskich, Warszawa 1929, pages 92–101,
+    395. Warsaw, 1930. Annotated English version by [20].
+18. J. Robinson. Definability and decision problems in arithmetic. Journal of Symbolic
+    Logic, 14:98–114, 1949. Author’s PhD thesis.
+19. H. Simmons. The solution of a decision problem for several classes of rings. Pacific
+    Journal of Mathematics, 34:547–557, 1970.
+20. R. Stansifer. Presburger’s article on integer arithmetic: Remarks and translation.
+    Technical Report CORNELLCS:TR84-639, Cornell University Computer Science
+    Department, 1984.
+21. V. Weispfenning and T. Becker. Groebner bases: a computational approach to
+    commutative algebra. Graduate Texts in Mathematics. Springer-Verlag, 1993.
+

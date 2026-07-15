@@ -1,0 +1,276 @@
+               Arithmetic Decision Procedures:
+                    a simple introduction
+                                   Michael Norrish
+
+
+                                         Abstract
+         Fourier-Motzkin variable elimination is introduced as a complete method for
+      deciding linear arithmetic inequalities over R. It is then shown how this method
+      can be extended to also work over Z, giving the Omega Test [2].
+
+
+1    Introduction
+All of the techniques described in this note are examples of a technique known as
+quantifier elimination. This technique assumes that the truth or falsity of formulas
+with no quantifiers is easy to determine. For example, 2 < 3 × 4 is true, while 23 <
+1
+4 ∧ 2 + 2 = 4 is false, and these facts are easy to check. If it is possible to transform a
+formula with quantifiers (∀, ∃) into an equivalent formula containing fewer quantifiers,
+then it is clear that this process can be repeated until there are no quantifiers left. The
+result of this transformation will have an easily ascertained truth value, and this will
+also be the truth value (i.e., whether or not it is valid) of the input formula.
+    All of the formulas to be discussed are of the form given in Figure 1. Note that
+formulas can not include multiplication of a variable by another variable. Some of
+this syntax is redundant and can be expressed in terms of other formulas. For exam-
+ple, ≥ and > will always be replaced with equivalent formulas involving ≤ and <
+respectively. Similarly, x = y might be replaced with x ≤ y ∧ y ≤ z (sometimes it makes
+more sense to leave equalities intact). Finally, ∀x. P(x) will always be replaced by
+¬∃x. ¬P(x).
+    The quantifier elimination procedures to be described here work by eliminating the
+quantifier in a formula of the form ∃x. P(x), where P(x) does not include any other
+quantifiers, but may include free variables. Thus, the procedure works by starting
+with the innermost quantifiers and gradually working its way out and up through the
+formula.
+
+
+
+
+                                             1
+    formula ::= formula ∧ formula | formula ∨ formula |
+                ¬formula | ∃var. formula | ∀var. formula |
+                term relop term
+    term    ::= numeral | term + term | − term | numeral ∗ term | var
+    relop   ::= < | ≤ | = | ≥ | >
+    var     ::= x | y | z . . .
+
+
+Figure 1: Grammar defining decidable formulas. Valid values for numeral will depend
+on the domain. For formulas over R, allow any real number; for formulas over Z, allow
+any integer.
+
+
+2     Fourier-Motzkin Variable Elimination
+Over the real numbers R, with a and b positive, non-zero coefficients, the following
+are true:
+
+                           (∃x. c ≤ ax ∧ bx ≤ d)         ≡    bc ≤ ad
+                           (∃x. c < ax ∧ bx ≤ d)         ≡    bc < ad
+                           (∃x. c ≤ ax ∧ bx < d)         ≡    bc < ad
+                           (∃x. c < ax ∧ bx < d)         ≡    bc < ad
+
+
+Proof of the second equivalence (proofs of the other three equivalences are similar):
+Left ⇒ Right: assume there is an x such that c < ax ∧ bx ≤ d. Then cb < abx and
+abx ≤ ad. By transitivity, cb < ad. Right ⇒ Left: assume bc < ad. Then c < a( db ) and
+b( db ) ≤ d. So, db can be taken as the x that satisfies the LHS.
+      Next, extend the results above so that the bodies of the existential formulas need
+not consist of only two constraints:
+
+           ∃x. (   h ch ≤ ah x) ∧ (   i ci < ai x) ∧ (   j b jx ≤ d j) ∧ (
+                V                  V                 V                   V
+                                                                             k bk x < dk )
+                                                   ≡
+                                                                                             (1)
+                        ( h, j b j ch ≤ ah d j ) ∧ ( h,k bk ch < ah dk ) ∧
+                         V                           V
+
+                          ( i, j b j ci < ai d j ) ∧ ( i,k bk ci < ai dk )
+                           V                          V
+
+
+This is the process of taking all possible pairings of lower bounds (c < ax, c ≤ ax)
+with upper bounds and calculating their consequences according to the first set of four
+equivalences. The proof of this equivalence is by induction. (The base case is a formula
+with one inequality of each type. Successive inductions establish that it is possible to
+have any finite number of constraints of a given type.) Note that if there are no upper
+bounds, or no lower bounds, then the formula on the right simplifies to true.
+   This equivalence (1) is the basis of a quantifier elimination procedure over R:
+    1. For any formula ∃x. P(x), where P(x) is quantifier-free, convert P(x) to disjunc-
+       tive normal form.
+
+                                                2
+   2. Using the equivalence (∃x. P(x) ∨ Q(x)) ≡ (∃x. P(x)) ∨ (∃x. Q(x)) “push” the
+      quantifier down over all of the disjunctions.
+   3. Each quantifier now has scope over a set of conjunctions. If any of these con-
+      juncts doesn’t mention the bound variable x “move” it to the side by applying the
+      equivalence (∃x. P(x) ∧ Q) ≡ (∃x. P(x)) ∧ Q.
+   4. Convert all of the relational operators under each quantifier so that only < and
+      ≤ remain.
+   5. Isolate x in each conjunct and ensure it has a positive coefficient.
+   6. Apply the elimination theorem above to each quantifier.
+
+2.1      Efficiency
+This procedure is not efficient. Having to convert to DNF introduces potentially ex-
+ponential cost, and the presence of alternating quantifiers will require repeated conver-
+sions. Consider, ∀x. ∃y. P(x, y). After eliminating y, the formula will be ∀x. P0 (x), and
+P0 (x) will be in DNF. To then eliminate x, the formula will be converted to ¬∃x. ¬P0 (x).
+Converting ¬P0 (x) to DNF will exhibit worst case behaviour.
+     Ignoring the conversion to DNF (as is reasonable if the problem only involves one
+sort of quantifier, and comes already converted to DNF), eliminating a quantifier can
+                          2
+turn n constraints into n4 constraints. For a problem of m quantifiers, and n constraints,
+the final number of constraints to be checked could be as many as
+                                                  m
+                                                n2
+                                                4m
+
+2.2      Applications
+The method as it stands is easy to adjust so that it returns a satisfying assignment (if
+one exists) for a purely existential problem (i.e., an input of the form ∃~x. P, where
+P includes no other quantifiers). When the problem has been reduced to one of just
+one variable, a satisfying value for this variable is anything between the greatest of its
+lower bounds and the least of its upper bounds. This value can then be substituted back
+into the formula that held at the previous stage of the process (when there were two
+variables). After this substitution, the formula is of just one variable and a value can
+be calculated for that variable also. In this way, all of the existentially bound variables
+can have values found for them.
+    This much provides a simplistic constraint satisfaction solver for linear arithmetic
+problems. Simple optimisation problems can be solved by using alternating quanti-
+fiers. For example, if the problem is to find a satisfying assignment for P(~x, z) while
+maximising z, proceed as follows:
+      • Check ∃~x, z. P(~x, z). If this is not valid, then there is no solution at all.
+
+
+
+
+                                                 3
+   • Otherwise, check ∃z. (∃~x. P(~x, z)) ∧ (∀z0 . z0 ≤ z ∨ ¬∃~x. P(~x, z0 )). If this is invalid,
+     then there is no maximum value for z (it can be made as large as desired). If it
+     is valid, then the same process that finds satisfying assignments for variables in
+     purely existential goals will find one for the outermost z in this formula.
+   • With a maximal value for z found, substitute this into the orignal existential
+     formula, and solve for the remaining ~x.
+     The use of alternating quantifiers ensures that this method will be extremely ineffi-
+cient. This method is not recommended as a solution for optimisation problems. Rather
+it is a demonstration of the expressive power of a language with alternating quantifiers.
+
+
+3 Quantifier Elimination for Z
+Over the integers, things are slightly simpler because x < y is equivalent to x + 1 ≤ y,
+so one need only consider one type of relational operator. Unfortunately, the core
+theorem (1) for eliminating existential quantifiers is not a theorem over Z. This arises
+because of the discreteness of the integers. Consider
+
+                                   ∃x : Z. 5 ≤ 2x < 6
+                                ≡ ∃x. 5 ≤ 2x ∧ 2x + 1 ≤ 6
+                                ≡ ∃x. 5 ≤ 2x ≤ 5
+                                6≡ 10 ≤ 10
+The proofs of the elimination equivalences fail because the RHSes do not imply the
+LHSes. The fact that the LHSes do still imply the RHSes (these arguments were a
+consequence only of transitivity) can be used to implement an incomplete check for
+unsatisfiability.
+     This procedure is for purely existential formulas: act as if the core quantifier elimi-
+nation theorem were true, eliminating quantifiers and reducing the input formula to true
+or false. If the final result is false, then the original formula must have been invalid.
+(If the final result is true, then no conclusion can be drawn.) Because of the negations
+introduced when converting universal quantifiers to existentials, this method can also
+be used to show universal formulas valid.
+     This method is easy to implement and is used in a number of interactive theorem-
+proving systems, such as ACL2, Coq, HOL and Isabelle. This method is also the first
+phase of the Omega Test [2].
+     Phase 1 of the Omega Test exploits the theorem
+
+                           (∃x : Z. c ≤ ax ∧ bx ≤ d) ⇒ bc ≤ ad
+
+Phase 2 exploits the similar (imagine a or b equal to 1)
+
+                 (a − 1)(b − 1) ≤ ad − bc ⇒ (∃x : Z. c ≤ ax ∧ bx ≤ d)                         (2)
+
+This phase uses the theorem above to repeatedly “eliminate” quantifiers (extended, as
+before, to handle multiple constraints at once). If the eventual result of the eliminations
+is true, then the original formula is valid.
+
+                                               4
+     The proof of (2) is by contradiction. If the conclusion of the implication is false,
+then there are no multiples of ab occurring between bc and ad. The antecedent of
+the implication implies that bc ≤ ad (a and b are both positive). Let j be the greatest
+integer such that ab j < bc. Then, ab j < bc ≤ ad < ab( j + 1).
+     Dividing a out of the top constraint leaves d < b( j + 1). This is the same as 1 ≤
+b( j + 1) − d. Multiplying through by a again, conclude a ≤ ab( j + 1) − ad. Similarly,
+b ≤ bc − ab j. Summing the constraints, obtain a + b ≤ ab − ad + bc, equivalently
+ad − bc ≤ ab − a − b. But this contradicts the antecedent, (a − 1)(b − 1) ≤ ad − bc.
+
+    Phase 1 can show an existential formula to be false, and Phase 2 can show it to be
+true. With both phases working in concert, many problems can be decided (Pugh [2]
+claims most of his didn’t need more than these two phases). But the combination of the
+two phases is not complete. It can’t handle alternating quantifier problems at all (both
+phases rely on being able to eliminate quantifiers all the way to true or false), and even
+purely existential formulas may slip through both phases.
+    In the worst case, the following theorem may need to be used:
+Theorem 1 (Pugh, 1992) Let L(x) be a conjunction of lower bounds on x, indexed by
+i, of the form ci ≤ ai x, with ai positive. Similarly, let U(x) be a set of upper bounds on
+x, indexed by j, of the form b j x ≤ d j , with b j positive. Let m be the maximum of all the
+b j s. Then
+
+        (∃x. L(x) ∧U(x)) ≡                      i, j (ai − 1)(b j − 1) ≤ ai d j − b j ci )
+                                             V
+                                         (
+                                                                     ∨
+                                             mai −ai −m
+                                         j                k
+                                                  m
+                                                              ∃x. (ai x = ci + k) ∧ L(x) ∧U(x)
+                                   W W
+                                    i    k=0
+
+
+To prove the equivalence, it suffices to show that:
+    • the first disjunct on the right implies the LHS (done above, as this is the same as
+      the formula used in Phase 2 of the test);
+    • the other disjuncts also imply the LHS (trivial, as any x satisfying a disjunct on
+      the right will also satisfy the original formula); and that
+    • (∃x. L(x) ∧U(x)) ∧ ¬(      i, j (ai − 1)(b j − 1) ≤ ai d j − b j ci )     ⇒
+                               V
+              mai −ai −m
+           j      k
+                   m
+                       ∃x. (ai x = ai + k) ∧ L(x) ∧U(x)
+       W W
+         i   k=0
+      Let x be the witness to the first assumption. The second assumption means that
+      there exist a, b, c and d such that
+                                        ad − bc ≤ ab − b − a                                     (3)
+      These values occur in constraints from L and U, so bx ≤ d and c ≤ ax. Multiply-
+      ing the former through by a gives abx ≤ ad, so in conjunction with (3)
+                                abx       ≤ cb + ab − b − a
+                              ⇒ b(ax − c) ≤ ab − b −a
+                                             ab−b−a
+                              ⇒ ax − c    ≤      b
+
+
+                                                  5
+      All of the b coefficients are ≤ m, so
+                                                         
+                                  ab − b − a     ma − a − m
+                                              ≤
+                                      b              m
+
+      There is now enough information to pick the appropriate disjunct from the RHS.
+      The ai is a and k is ax − a.
+    Though all except the first of the disjuncts on the RHS of Theorem 1 have an exis-
+tential quantifier, this quantifier can be eliminated immediately, thanks to the presence
+of the additional equality constraint (see [2] for details). Thus, Theorem 1 really does
+represent a quantifier elimination result.
+
+
+4    Final Remark
+The decidability of linear arithmetic over Z was proved by Presburger in 1929. For-
+mulas of the form given in Figure 1 constitute the language often called Presburger
+Arithmetic. Presburger’s proof of decidability provides another procedure for deciding
+problems of the sort discussed above. Cooper’s algorithm [1] is a version of his method
+more suited to actual implementation (and one which does not require conversion to
+DNF.)
+
+
+References
+[1] D. C. Cooper. Theorem proving in arithmetic without multiplication. In Machine
+    Intelligence, volume 7, pages 91–99, New York, 1972. American Elsevier.
+[2] William Pugh. The Omega Test: a fast and practical integer programming al-
+    gorithm for dependence analysis. Communications of the ACM, 35(8):102–114,
+    August 1992.
+
+
+
+
+                                           6
+

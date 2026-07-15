@@ -599,30 +599,49 @@ Top risks and mitigations:
 
 ## 13. Bibliography
 
+All papers are archived locally under `.agent-files/papers/` —
+agent-readable text at `papers/<slug>.txt`, original PDFs at
+`papers/pdf/<slug>.pdf`, provenance (source URLs, download dates,
+caveats) in `papers/README.md`.
+
 - L. C. Paulson, *A Generic Tableau Prover and its Integration with
-  Isabelle*, J. UCS 5(3), 1999.
+  Isabelle*, J. UCS 5(3), 1999.  [`paulson1999-blast`]
 - J. Limperg, A. H. From, *Aesop: White-Box Best-First Proof Search for
-  Lean*, CPP 2023.
+  Lean*, CPP 2023.  [`limperg-from2023-aesop`]
 - A. Chaieb, T. Nipkow, *Proof Synthesis and Reflection for Linear
-  Arithmetic*, JAR 41, 2008; *Verifying and Reflecting Quantifier
-  Elimination for Presburger Arithmetic*, LPAR 2005.
+  Arithmetic*, JAR 41, 2008 [`chaieb-nipkow2008-linarith`]; *Verifying
+  and Reflecting Quantifier Elimination for Presburger Arithmetic*,
+  LPAR 2005 [`chaieb-nipkow2005-presburger`].
 - T. Nipkow, *Linear Quantifier Elimination*, JAR 45(2), 2010.
+  [`nipkow2010-linqe`]
 - A. Chaieb, M. Wenzel, *Context Aware Calculation and Deduction: Ring
   Equalities via Gröbner Bases in Isabelle*, Calculemus 2007.
+  [`chaieb-wenzel2007-groebner`]
 - A. Chaieb, *Verifying Mixed Real-Integer Quantifier Elimination*,
-  IJCAR 2006.
+  IJCAR 2006.  (Closed access — no open copy exists; DOI
+  10.1007/11814771_43.  The material is covered by §4.3.3 of Chaieb's
+  PhD thesis, archived as [`chaieb2008-thesis`].)
+- A. Chaieb, *Automated Methods for Formal Proofs in Simple Arithmetics
+  and Algebra*, PhD thesis, TUM 2008.  [`chaieb2008-thesis`]
 - J. Harrison, *Automating Elementary Number-Theoretic Proofs Using
-  Gröbner Bases*, CADE-21, 2007; *Verifying Nonlinear Real Formulas via
-  Sums of Squares*, TPHOLs 2007.
+  Gröbner Bases*, CADE-21, 2007 [`harrison2007-groebner`]; *Verifying
+  Nonlinear Real Formulas via Sums of Squares*, TPHOLs 2007
+  [`harrison2007-sos`].
 - M. Norrish, *Complete Integer Decision Procedures as Derived Rules in
-  HOL*, TPHOLs 2003.
-- R. J. Boulton's arith library (HOL88 lineage), Shostak's SUP-INF
-  (JACM 24(4), 1977).
+  HOL*, TPHOLs 2003 [`norrish2003-integer-dps`]; *Arithmetic Decision
+  Procedures: a Simple Introduction* [`norrish-arithmetic-dps`].
+- R. J. Boulton's arith library (HOL88 lineage; documented in
+  `src/num/arith/` and `help/Docfiles/numLib.ARITH_CONV.smd`);
+  R. E. Shostak, *On the SUP-INF Method for Proving Presburger
+  Formulas*, JACM 24(4), 1977 [`shostak1977-supinf` — scanned original;
+  text layer has minor OCR spacing noise].
 - B. Dutertre, L. de Moura, *A Fast Linear-Arithmetic Solver for
-  DPLL(T)*, CAV 2006; R. Thiemann et al., *Verifying an Incremental
-  Theory Solver for Linear Arithmetic in Isabelle/HOL*, FroCoS 2019.
+  DPLL(T)*, CAV 2006 (extended version)
+  [`dutertre-demoura2006-simplex`]; R. Bottesch, M. W. Haslbeck,
+  R. Thiemann, *Verifying an Incremental Theory Solver for Linear
+  Arithmetic in Isabelle/HOL*, FroCoS 2019 [`thiemann2019-simplex`].
 - S. Böhme, T. Weber, *Fast LCF-Style Proof Reconstruction for Z3*,
-  ITP 2010.
+  ITP 2010.  [`boehme-weber2010-z3`]
 - Isabelle sources — vendored verbatim under `.agent-files/sources/`
   (mirror-isabelle commit `f7e02b7e1f31`, 2026-07-12; provenance and
   per-file purpose table in `sources/README.md`):

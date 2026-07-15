@@ -1,0 +1,1370 @@
+               Proof Synthesis and Reflection
+                   for Linear Arithmetic
+
+                      Amine Chaieb and Tobias Nipkow
+              Institut für Informatik Technische Universität München
+                             {chaieb,nipkow}@in.tum.de
+
+
+
+      Abstract. This article presents detailed implementations of quantifier
+      elimination for both integer and real linear arithmetic for theorem provers.
+      The underlying algorithms are those by Cooper (for Z) and by Ferrante
+      and Rackoff (for R). Both algorithms are realized in two entirely different
+      ways: once in tactic style, i.e. by a proof-producing functional program,
+      and once by reflection, i.e. by computations inside the logic rather than
+      in the meta-language. Both formalizations are generic because they make
+      only minimal assumptions w.r.t. the underlying logical system and theo-
+      rem prover. An implementation in Isabelle/HOL shows that the reflective
+      approach is between one and two orders of magnitude faster.
+
+
+1   Introduction
+
+Decision procedures have become an integral part of most automatic
+and interactive theorem provers. Their implementations come in three
+flavours: those that just say Yes or No, those that accompany their an-
+swer with a proof in some logical system, and those that have been defined
+and verified in a theorem prover. This paper is concerned with decision
+procedures of the latter two flavours for linear arithmetic over Z and R.
+In our discussion we focus on proof-producing procedures first.
+    The obsession with proofs comes from the simple fact that complicated
+decision procedures, just like any tricky piece of software, are error prone.
+This can be a bit of an embarrassment in systems that are meant to raise
+the notion of logical correctness to a new level. Hence many theorem
+provers either produce proofs of some form or another or are based on
+the LCF paradigm, where theorems are an abstract data type whose
+interface are the inference rules of the logic.
+    The implementation of proof-producing decision procedures is very
+subtle because one needs to ensure that when theorems are plugged to-
+gether they really fit together. For example, combining 0 < x + 0 and
+0 < x → 0 < 2·x by modus ponens will not produce the theorem 0 < 2·x
+but will fail, since futher inference is needed to prove that 0 < x + 0 and
+0 < x are equivalent. Such bugs do not endanger soundness but are still
+quite annoying. They may lurk in the code for a long time because they
+are not caught by a standard static type system which cannot express the
+precise form the theorem produced or expected by some function must
+have (but see [32]). This problem is exacerbated by the fact that decision
+procedures are re-implemented time and again for different systems, and
+that in the literature these implementations are only sketched if discussed
+at all because it is not considered scientific enough. If we want to make
+progress we need to increase the amount of sharing in this area drasti-
+cally. Unfortunately the actual implementation level is unsuitable for that
+because it is too intertwined with the specifics of the theorem prover a
+decision procedure is written for.
+     Hence we argue that the field is in need of descriptions of proof-
+producing decision procedures at a level that is abstract enough to be
+sharable across different theorem provers yet close enough to the imple-
+mentation level to be readily implemented. In this paper we give two
+examples of such detailed yet generic descriptions: proof-producing quan-
+tifier elimination procedures for linear arithmetic over Z and R. These
+theories are ubiquitous and tricky to implement. We hope that over time
+a library of such decision procedures will be published. This should be one
+way of bridging the gap between the many different theorem provers cur-
+rently in use, at least by reducing the amount of work that is duplicated
+time and again.
+     Our description of the decision procedures tries to be as abstract as
+possible by using some generic functional programming language and
+assuming only a minimal set of capabilities of the underlying theorem
+prover. Neither are we very specific about the underlying logic, except
+that we assume it is classical. As evidence of the genericity of our code
+we can offer that the procedure for Presburger arithmetic is derived from
+an implementation for Isabelle/HOL [40] by the first author [8], yet is
+quite close to an implementation in the HOL system [25].
+     Producing proofs requires no meta-theory but has many disadvan-
+tages: (a) the actual implementation requires intimate knowledge of the
+internals of the underlying theorem prover; (b) there is no way to check at
+compile type if the proofs will really compose; (c) it is inefficient because
+one has to go through the inference rules in the kernel; (d) if the prover
+is based on proof objects this can lead to excessive space consumption
+(proofs may require (super-) exponential space [20, 43]).
+     These shortcomings can be overcome by defining and verifying the
+decision procedure inside the logic, provided one can perform the compu-
+tations thus expressed in an efficient manner, typically by compiling them
+into some programming language, executing them there, and importing
+the result back into the logic. This is often called reflection. The draw-
+backs are that it requires a logic that contains an executable subset, it
+requires the user to prove the correctness of the decision procedure, and it
+does not yield a proof term (which may or may not be desirable). Hence
+both approaches are common implementation techniques for decision pro-
+cedures. The technical contributions of the paper are the application of
+both techniques to quantifier elimination over Z and R. We provide
+
+ – the first exposition of a generic proof-producing implementation of
+   Cooper’s algorithm;
+ – the first completely reflective implementation of Cooper’s algorithm;
+ – the first proof-producing and reflective implementations of Ferrante
+   and Rackoff’s algorithm.
+
+It should be emphasized that although we are fully aware of the compu-
+tational complexity of especially Cooper’s algorithm, we have refrained
+from optimizing our implementations. They are meant as easy to under-
+stand starting points for other people’s implementations, not as highly
+competitive pieces of code.
+    The paper is structured as follows. After an introduction to the two
+quantifier elimination algorithms (§2) they are first formalized as proof-
+producing functions in the meta-language (§3) and then formalized and
+verified in logic (§4).
+
+
+Related work
+
+Fourier [21] presented an extension of Gauss-elimination to cope with in-
+equalities. His method has been rediscovered several times [17, 37] and
+is today referred to as Fourier-Motzkin elimination. Tarski’s result for
+real closed fields [50] also yields a decision procedure for linear real arith-
+metic. More efficient quantifier elimination procedures have been devel-
+oped by Ferrante and Rackoff [19], the work on which we rely, and later
+by Weispfenning [51] and Loos and Weispfenning [33]. Quantifier elimina-
+tion procedures for Presburger Arithmetic have been discovered by Pres-
+burger [45] and Skolem [49] independently and improved by Cooper [13],
+Reddy and Loveland [47] and extended to deal with parameters by Weispfen-
+ning [52]. Pugh [46] presented an adaptation of Fourier-Motzkin elimina-
+tion to cope with integers. An automata based method is presented in
+[55].
+    Linear arithmetic enjoys exciting complexity results. Fischer and Ra-
+bin [20] proved lower bounds which were later refined [3, 4, 23] using al-
+ternation [11]. Upper bounds can be found in [43, 19, 51, 33]. The com-
+plexity of subclasses of Presburger arithmetic is also well studied [48,
+26]. Weispfenning [53, 52, 51, 33] provides precise bounds for the quanti-
+fier elimination problem allowing (non linear) parameters. A bound on
+the automata size is due to Klaedtke [31].
+    The first implementation of a decision procedure for Presburger arith-
+metic, and in fact the first theorem prover, dates back to 1957 [16]. But
+in the following we mostly focus on those papers that are concerned with
+proof-producing decision procedures.
+    Norrish [41] discusses proof-producing implementations in HOL [25]
+of Cooper’s algorithm (in tactic-style) and Pugh’s algorithm (by reflec-
+tion of a proof trace found on the meta-level). The key difference to
+our paper is that he discusses design principles on an abstract level but
+omits the details of proof synthesis. For that he refers to the actual code,
+which we would argue is much too system specific to be easily portable.
+Crégut [14] presents an implementation of Pugh’s method for Coq [5],
+using the same technique as Norrish. His implementation only deals with
+quantifier-free Presburger arithmetic and is even there incomplete. For
+the reals most theorem provers implement Fourier-Motzkin elimination
+and only deal with quantifier-free formulae. HOL Light [28] includes full
+quantifier-elimination for real closed fields [30, 36]. Verifying the CAD al-
+gorithm [12] is on-going work [34]. An alternative approach already used
+in [38] is based on checking certificates for Farkas’s lemma. This technique
+is very efficient, but is not complete for the integers and does not allow
+quantifier elimination, which is the main focus of this paper.
+    The method of reflection goes back at least to the meta-functions used
+by Boyer and Moore [7] and later became popular in theorem provers
+based on type theory [5]. It has been studied by several researchers [29,
+1]. Our use of reflection is rather computational and has nothing to do
+with “logical reflection” [29]. Laurent Théry verified Presburger’s original
+algorithm in Coq (see the Coq home page). We also verified Cooper’s
+algorithm in Isabelle [10].
+    Finally note that the first-order theory of linear arithmetic over both
+reals and integers also admits quantifier elimination [54]. We verified this
+algorithm in Isabelle [9]. An automata based algorithm [6] has also been
+presented to solve the decision problem (not the quantifier elimination
+problem).
+2     Quantifier elimination for linear arithmetic
+
+This section provides an informal introduction to linear arithmetic over Z
+and R and to their quantifier elimination procedures due to Cooper [13]
+and Ferrante and Rackoff [19] respectively.
+
+
+2.1    Linear arithmetic
+
+We consider Z+ and R+ , the first-order theories of linear arithmetic over
+Z and R respectively. The formulae are defined by means of first order
+logic over the atoms s = t and s < t, where s and t are terms built
+up from variables (x, y, z . . . ), 0, 1 and addition +. To permit quantifier
+elimination Z+ also includes atoms of the form d | t, where d ∈ Z, which
+expresses that d divides t. We also use d - t as a shorthand for ¬(d | t).
+We allow the use of constants c ∈ Z for Z+ and c ∈ Q for R+ respectively,
+and allow multiplication by these constants.
+
+
+2.2    Quantifier elimination and normalized formulae
+
+Both Z+ and R+ admit quantifier elimination [45, 49, 47, 19, 51, 33]. Note
+that if qe is a method for eliminating ∃ from ∃x.P (x), where P (x) is
+quantifier-free, then applying qe recursively to the innermost quantifiers
+first yields a quantifier elimination procedure for the whole theory. In fact
+P (x) has only to be in a representative syntactical subset of quantifier-
+free formulae. Hence in the following we only describe how to eliminate
+one ∃ from ∃x.P (x), for a normalized formula P (x).
+
+
+Normalized formulae
+
+A quantifier-free formula P (x) is x-normalized if it is built up from ∧, ∨
+and atomic formulae of type (A) x = t, (B) x < t, (C) t < x or (N) those
+not depending on x. For Z+ the atoms (D) d | x + t and (E) d - x + t are
+also allowed. The term t, in (A)-(E), does not involve x.
+    In the case of R+ it is easy to see that any quantifier-free formula P (x)
+can be transformed into x-normalized form by means of negation normal
+form (NNF), elimination of negations and multiplication by appropriate
+rational numbers. For Z+ this is performed as follows:
+
+1. Put P (x) in NNF and transform ¬(s < t) into t < s + 1 and ¬(s = t)
+   into t < s ∨ s < t.
+2. Transform every atom according to the coefficient of x into (A’) c·x =
+   t, (B’) c·x < t, (C’) t < c·x, (D’) d | c·x + t, (E’) d - c·x + t or (N),
+   where c > 0, d > 0 and x does not occur in t. Note that d | t = −d | t
+   and d | t = d | −t hold in Z+ .
+3. Compute l = lcm{c | ‘c·x’ occurs in an atom} and multiply every
+   atom containing c·x by cl . Note that the resulting formula Q(x) is
+   equivalent to P (x) and that the coefficient of x is now l everywhere.
+   Hence we can view Q(x) as Q0 (l·x) for an appropriate Q0 .
+4. Return l | x ∧ Q0 (x) according to the generic theorem
+
+                unitcoeff :   (∃x. Q(l·x)) ↔ (∃x. l | x ∧ Q(x))
+See also [18] for good examples of normalization.
+    We restrict the atomic relations to = and > only for the sake of
+presentation. In practice it is important though to include ≤ and 6=,
+which prevent a fatal blow up in normalization such as the reduction of
+s 6= t to s > t ∨ t < s above. It is straightforward to extend the algorithms
+in §2.3 and §2.4 to deal with ≤ and 6= in addition to < and =.
+
+Elimination sets
+An important technical device shared by both algorithms are elimina-
+tion sets [33]. Given an x-normalized formula P (x), Cooper’s algorithm
+computes BP and P−∞ (alternatively AP and P+∞ ) and Ferrante and
+Rackoff’s algorithm computes UP , P−∞ and P+∞ as defined in Fig. 1.
+Note that the table in Fig. 1 is a compact representation of a set of re-
+cursive equations. In more conventional notation we would have written
+U(F ∧ G) = U(F ) ∪ U(G) for the entry under UP and F ∧ G. Note that
+the definitions are recursive and implicitly depend on the bound variable
+x: the final line applies in case the sub-formula under consideration does
+not match any of the previous lines.
+Example 1. Consider the formula P (implicitly depending on the bound
+variable x) x < t ∧ x > 2 ∨ x < t + y ∧ y < 1. Then UP = {t, 2, t + y} is
+the set of all lower and upper bounds of x (considered as a real number).
+Analogously AP = { t, t+y} is the set of all upper bounds of x (considered
+as an integer), and BP = {2} is the set of all lower bounds of x (considered
+as an integer). The formulae P−∞ = True ∧ False ∨ True ∧ y < 1 and
+P+∞ = False ∧ True ∨ False ∧ y < 1 represent the substitution of very
+large negative and positive numbers, respectively, for x in P .
+   Cooper’s algorithm inspired Ferrante and Rackoff [19], which explains
+the similiarities of the computed sets.
+  P     UP       BP      AP      P−∞       P+∞
+F ∧ G UF ∪ UG BF ∪ BG AF ∪ AG F−∞ ∧ G−∞ F+∞ ∧ G+∞
+F ∨ G UF ∪ UG BF ∪ BG AF ∪ AG F−∞ ∨ G−∞ F+∞ ∨ G+∞
+t<x     {t}      {t}      ∅     False      True
+x<t     {t}       ∅      {t}     True     False
+x=t     {t}    {t − 1} {t + 1}  False     False
+         ∅        ∅       ∅       P         P
+
+               Fig. 1. Definition of UP , BP , AP , P−∞ and P+∞
+
+
+    The underlying idea isW to compute a finite set S of terms such that
+∃x.P (x) is equivalent to t∈S P (t). The terms in S are sometimes called
+Skolem terms [51, 33] because they are the concrete witnesses as opposed
+to abstract Skolem functions. The formula P+∞ represents the result of
+substituting “large” potential witnesses for x in an x-normalized formula
+P (x).
+    This completes the exposition of the common basis of the two al-
+gorithms. Now we study their particularities. In both presentations, we
+include proofs for the main theorems. These already outline the general
+strategies for the proof-procedures and are important for subsequent de-
+tails.
+
+2.3   Cooper’s algorithm
+The input to Cooper’s algorithm is a formula ∃x.P (x), where P (x) is an
+x-normalized Z+ -formula. Besides AP , BP , P−∞ and P+∞ , cf. Fig. 1, the
+algorithm computes
+                   δ = lcm{d | ‘d | x + t’ occurs in P }.               (1)
+The result is obtained by applying either (2) or (3) in Cooper’s Theorem:
+Theorem 1 (Cooper [13]) If P (x) is an x-normalized Z+ formula then
+       ∃x.P (x) ↔ ∃j ∈ [δ].P−∞ (j) ∨ ∃j ∈ [δ], b ∈ BP .P (b + j)        (2)
+       ∃x.P (x) ↔ ∃j ∈ [δ].P+∞ (j) ∨ ∃j ∈ [δ], b ∈ AP .P (a − j)        (3)
+The right-hand side is quantifier-free, since ∃ ranges over finite sets: BP
+and [δ] = {1..δ}. The choice of which of the two equivalences to apply,
+(2) or (3), is normally determined by the relative size of AP and BP .
+Proof. We give a simpler version of the proof by Norrish [41]. We only
+show the proof of (2). The proof of (3) is analogous.
+   Obviously, if ∃j ∈ [δ], b ∈ BP .P (b + j) holds then ∃x.P (x) trivially
+holds. Hence to finish the proof we only need to prove ∃j ∈ [δ].P−∞ (j) →
+∃x.P (x) and (∃x.P (x)) ∧ ¬(∃j ∈ [δ], b ∈ BP .P (b + j)) → ∃j ∈ [δ].P−∞ (j).
+1. ∃j ∈ [δ].P−∞ (j) → ∃x.P (x) To prove this, we need the following
+properties of P−∞ :
+
+                          ∃z.∀x < z.P (x) ↔ P−∞ (x)                       (4)
+                     ∀x, k.P−∞ (x) ↔ P−∞ (x − k·δ).                       (5)
+
+These properties are proved by induction on P : (4) states that P (x) and
+P−∞ (x) coincide over arguments that are small enough ; (5) states that
+P−∞ (x) is unaffected by the substraction of any number of multiples of
+δ, i.e. {x | P−∞ (x)} is a periodic set. Note that only divisibility relations
+d | x + r occur in P−∞ , where d | δ (cf. (1)).
+     Now assume that P−∞ (j) holds for some 1 ≤ j ≤ δ, then using (5) we
+can substract enough multiples of δ to reach a number below the z from
+(4), and thus obtain by (4) a witness for P .
+
+2. (∃x.P (x)) ∧ ¬(∃j ∈ [δ], b ∈ BP .P (b + j)) → ∃j ∈ [δ].P−∞ (j)
+Again due to (5) and (4), i.e. the argument above of decreasing witnesses
+by multiples of δ, it is sufficient to prove
+
+          ∀x.¬(∃j ∈ [δ], b ∈ BP .x = b + j) → P (x) → P (x − δ).          (6)
+
+The proof of (6) is by induction on P . The cases ∧ and ∨ are trivial. In
+the case x = t we derive a contradiction by taking j = 1, since t − 1 ∈ BP .
+In the cases x < t and d | x + t the claim is immediate since since δ > 0
+and d | δ, respectively. For the case t < x, assume that t + δ ≥ x. Hence
+x = t + j for some 1 ≤ j ≤ δ, which contradicts the assumption since
+t ∈ BP .
+
+2.4   Ferrante and Rackoff ’s algorithm
+The input to Ferrante and Rackoff’s algorithm is a formula ∃x.P (x),
+where P (x) is an x-normalized R+ -formula. The algorithm just applies
+Ferrante and Rackoff’s theorem.
+Theorem 2 (Ferrante and Rackoff [19]) If P (x) is an x-normalized
+R+ -formula then
+
+                                                         u + u0
+           ∃x.P (x) ↔ P−∞ ∨ P+∞ ∨ ∃(u, u0 ) ∈ U2P .P (          ).
+                                                           2
+Proof. Although the proof in [19] is mathematically clear we give a more
+formal proof, which is suitable in a theorem prover setting.
+                                                                         0
+    First we show the “←”-direction. Obviously ∃(u, u0 ) ∈ U2P .P ( u+u
+                                                                     2 )→
+∃x.P (x) holds. The cases P−∞ → ∃x.P (x) and P+∞ → ∃x.P (x) follow
+directly from (4) and and its dual (7) for P+∞ , i.e. the fact that P+∞
+simulates the behavior of P for arbitrarily large positive real numbers.
+
+                          ∃y.∀x > y.P (x) ↔ P+∞                               (7)
+
+     For the “→”-direction assume P (x) for some x and ¬P−∞ and ¬P+∞ ,
+i.e. x is neither “too large” nor “too small” a witness for P . We first prove
+that x must lie between two points in UP , a trivial consequence of (8)
+and (9), both proved by induction.
+
+                    ∀x.¬P−∞ ∧ P (x) → ∃l ∈ UP .l ≤ x                          (8)
+                   ∀x.¬P+∞ ∧ P (x) → ∃u ∈ UP .x ≤ u                           (9)
+
+Now we conclude that either x ∈ UP , in which case we are done since
+  2 = x, or we can find the smallest interval with endpoints in UP con-
+x+x
+
+taining x, i.e. lx < x < ux ∧ ∀y.lx < y < ux → y 6∈ UP for some
+(lx , ux ) ∈ U2P . The construction of this smallest interval is simple since
+UP is finite and reals are totally ordered.
+      Now we prove P (y) for all y ∈ (lx , ux ), and hence finish the proof by
+taking u = lx and u0 = ux . This property shows the expressive limitations
+of R+ : P does not change its truth value over smallest intervals with
+endpoints in UP , i.e.
+
+           ∀x, l, u.(∀y.l < y < u → y 6∈ UP ) ∧ l < x < u ∧ P (x)
+                                                                             (10)
+                   → ∀y.l < y < u → P (y)
+
+The proof of (10) is by induction on P . If P is of type (A) the result holds
+because the premise is contradictory. For the case x < t, fix an arbitrary
+y and assume l < y < u. Note that y 6= t since t ∈ UP . Hence y < t, i.e.
+P (y), for if y > t then l < t < u, which contradicts the premises since
+t ∈ UP . The x > t case is analogous and the ∧ and ∨-cases are trivial.
+
+
+3   Proof synthesis
+
+This section introduces an abstract generic framework for describing de-
+cision procedures as functional programs in a meta-language for manip-
+ulating theorems. Then the algorithms by Cooper and by Ferrante and
+Rackoff are described in this meta-language.
+3.1    Notation
+
+Logic Terms and formulae follow the usual syntax of predicate calculus.
+However, there are two levels that we must distinguish. On the program-
+ming language level, i.e. the implementation level, the type of formulae is
+an ordinary first-order recursive datatype. In particular, the formula ∃x.A
+can be decomposed (e.g. by pattern matching) into the bound variable x
+and the formula A, which may contain x. On the logic level, we assume
+that our language allows predicate variables, as is the case in all higher-
+order systems. On this level ∃x.A is a formula where A does not depend
+on x, whereas P in ∃x.P (x) is a predicate variable, i.e. a function from
+terms to formulae, which is applied to x, thus expressing the dependence
+on x. One advantage of the higher-order notation is that substituting x
+by t is expressed by moving from P (x) to P (t).
+    Theorems can only be proved with a fixed set of functions which we
+discuss now. If there is no danger of confusion we identify a theorem with
+the formula it proves. But in order not to blur the distinction too much,
+we usually display theorems in an inference rule style
+
+                               JA1 ; . . . ; An K =⇒ A                            (11)
+
+where the Ai are the premises and A is the conclusion. Logically this is
+equivalent to A1 → · · · → An → A but it emphasizes that it is a theorem.
+       We will now discuss the interface of the theorem data type which of-
+fers the following functions: a generalized form of modus ponens (fwd ),
+instantiation of free variables, generalization (gen), and some basic arith-
+metic capabilities.
+       If th is (11), and th1 , . . . , thn are theorems that match the premises
+A1 ,. . . , An , then fwd th [th1 , . . . , thn ] produces the corresponding instance
+of A. That is, if B1 ,. . . , Bn are the formulae proved by the theorems th1 ,
+. . . , thn , and if θ is a matching substitution for the set of equations
+A1 = B1 , . . . , An = Bn , i.e. θ(Ai ) = Bi , then fwd th [th1 , . . . , thn ] yields
+the theorem θ(A).
+       The free variables in a theorem th can be instantiated from left to
+right with terms t1 , . . . , tn by writing th[t1 , . . . , tn ]. For example, if th is
+the theorem m ≤ m + n·n then th[1, 2] is the theorem 1 ≤ 1 + 2·2.
+       Function gen performs ∀-introduction: it takes a variable x and a
+theorem P (x) and returns the theorem ∀x.P (x).
+       Note that we assume that fwd performs higher-order matching, but
+only of a very simple kind. Its first argument th may be a theorem con-
+taining a predicate variable P . In this case there must be one occurrence
+of P (x) among the premises of th such that x is a bound variable. This
+guarantees that there is at most one matching substitution because it is
+a special case of pattern-unification [39]. Further occurrences of P among
+the premises cannot lead to further matching substitutions but can only
+rule some out. Hence it is justified to speak of the matcher. Furthermore
+this kind of higher-order matching is straightforward to implement.
+
+Programming language All algorithms are expressed in generic func-
+tional programming notation. We assume the following special features.
+Lambda-abstraction uses a bold λ (in contrast to the ordinary λ on the
+logic level) and permits pattern-matching (where most uses are of the
+form λ[].t, where [] is the empty list). Because formulae (a concrete recur-
+sive type) and theorems (some abstract type) are quite distinct, we need a
+way to refer to the formula proved by some theorem. This is done by pat-
+tern matching: a theorem can be matched against the pattern th as ‘f ’,
+where th is a theorem variable and f a formula pattern, thus binding the
+formula variables in f . For example, matching the theorem 0 = 0 ∧ 1 = 1
+against the pattern th as ‘A ∧ B’ binds th to the given theorem, A to the
+term 0 = 0 and B to the term 1 = 1.
+    Patterns may be guarded by boolean conditions as in Haskell: p | b1 , b2
+is the pattern p that is guarded by the conditions b1 and b2 .
+
+3.2   The theorem extraction model
+Many of our proofs are performed by the following generic function:
+
+   thm decomp t =
+   let
+     (ts,recomb) = decomp t
+   in recomb (map (thm decomp) ts)
+It takes a problem decomposition function of type α → α list × (β list →
+β) and a problem t of type α, decomposes t into a list of subproblems ts
+and a recombination function recomb, solves the subproblems recursively,
+and combines their solution into an overall solution.
+    In our applications, problems are formulae to be proved, solutions are
+theorems, and termination will be guaranteed because all decompositions
+yield smaller terms. This style of theorem proving was invented with the
+LCF system [24, 44], where decomp is called a tactic. Hence we refer to
+it as tactic-style theorem proving. Note that the interface of our theorem
+data type is quite abstract. Theorems may be implemented as full-blown
+proof terms, where the whole derivation is stored, or as in LCF, where
+only the proved formula is retained.
+
+Example 2. As a first example we present a generic function qelim which
+eliminates all quantifiers from a first-order formula provided it is given a
+function qe which can eliminate a single existential quantifier. That is, if
+qe applied to a formula ∃x.P , where P is quantifier free, yields a theorem
+(∃x.P (x)) ↔ Q, where Q is quantifier free, then qelim qe applied to any
+first-order formula F yields a theorem F ↔ F 0 , where F 0 is quantifier
+free. Elimination proceeds from the innermost quantifier to the outermost
+one. The function is theory independent. It uses the following predicate
+calculus tautologies:
+
+ cong♦ : JP ↔ P 0 ; Q ↔ Q0 K =⇒ P ♦ Q ↔ P 0 ♦ Q0 , for ♦ ∈ {∧, ∨, →, ↔
+    }
+ cong¬ : JP ↔ P 0 K =⇒ ¬P ↔ ¬P 0
+ cong∃ : J∀x.P (x) ↔ Q(x)K =⇒ ∃x.P (x) ↔ ∃x.Q(x)
+ qe ∀ : J(∃x.¬P (x)) ↔ RK =⇒ (∀x.P (x)) ↔ ¬R
+ trans: JP ↔ Q; Q ↔ RK =⇒ P ↔ R
+ refl : P ↔ P
+
+   The actual function definition is straightforward:
+  decomp qe qe P =
+  case P of
+    F ♦ G | ♦ ∈ {∧, ∨, →, ↔} ⇒ ([F, G], fwd cong♦ )
+    ¬F ⇒ ([F ], fwd cong ¬ )
+    ∃x.F ⇒ ([F ], λ[th as ‘ ↔ G’]. let lift = fwd cong ∃ [gen x th]
+                                    in fwd trans [lift, qe x G])
+    ∀x.F ⇒ ([∃x.¬F ], fwd qe ∀ )
+      ⇒ ([], λ[]. fwd refl[P ])
+
+   qelim qe = thm (decomp qe qe)
+    As an example, assume that we have a quantifier elimination function
+g to perform Gauß-elmination and consider the formula P = (∃z.3·x =
+z ∧ 2·z = 5). The call qelim g P becomes thm (decomp qe g) P . By
+definition of thm we first compute decomp qe g P. Because P starts
+with ∃, this yields ([F ], f ) where F = (3·x = z ∧ 2·z = 5) and f is
+the recombination function given in the ∃-case of decomp qe. By defini-
+tion of thm this yields f (map (thm(decomp qe g)) [F ]). The expression
+thm (decomp qe g) F performs elimination of all quantifiers inside F : F
+is split in two subformulae 3·x = z and 2·z = 5 which lead to the triv-
+ial theorems 3·x = z ↔ 3·x = z and 2·z = 5 ↔ 2·z = 5 (via the last
+case in decomp qe) which are then combined via cong∧ into the theo-
+rem F ↔ F . Thus the call f (map (thm(decomp qe g)) [F ]) has become
+f (F ↔ F ). Now the f from the ∃-case in decomp qe kicks in to eliminate
+the topmost quantifier ∃z. Because f is defined by pattern matching, G
+becomes F . First F ↔ F is generalized to ∀z.F ↔ F which cong∃ turns
+into lif t = (∃z.F ) ↔ (∃z.F ). The subterm g z G calls Gauß-elmination
+and yields the theorem (∃z.F ) ↔ 3·x = 52 . By transitivity with lif t, the
+same theorem is produced and the evaluation of f (F ↔ F ) (and thus of
+qelim g P ) terminates.
+
+
+Example 3. As a second example we use thm to implement the normal-
+ization step, see §2.2.
+
+ nnf → : J¬P ↔ P1 ; Q ↔ Q1 K =⇒ ((P → Q) ↔ (P1 ∨ Q1 ))
+ nnf ↔ : J(P ∧ Q) ↔ (P1 ∧ Q1 ); (¬P ∧ ¬Q) ↔ (P2 ∧ Q2 )K
+   =⇒ (P ↔ Q) ↔ (P1 ∧ Q1 ) ∨ (P2 ∧ Q2 )
+ nnf ¬¬ : JP ↔ QK =⇒ ¬¬P ↔ Q
+ nnf ¬∧ : J¬P ↔ P1 ; ¬Q ↔ Q1 K =⇒ ¬(P ∧ Q) ↔ (P1 ∨ Q1 )
+ nnf ¬∨ : J¬P ↔ P1 ; ¬Q ↔ Q1 K =⇒ ¬(P ∨ Q) ↔ (P1 ∧ Q1 )
+ nnf ¬→ : JP ↔ P1 ; ¬Q ↔ Q1 K =⇒ ¬(P → Q) ↔ (P1 ∧ Q1 )
+ nnf ¬↔ : J(P ∧ ¬Q) ↔ (P1 ∧ Q1 ); (¬P ∧ Q) ↔ (P2 ∧ Q2 )K
+   =⇒ ¬(P ↔ Q) ↔ ((P1 ∧ Q1 ) ∨ (P2 ∧ Q2 ))
+
+    With these predicate calculus tautologies we obtain decomposition for
+NNF:
+  decomp nnf lf P =
+  case P of
+     F ♦ G | ♦ ∈ {∧, ∨, →, ↔} ⇒ ([F, G], fwd cong♦ )
+     ¬¬F ⇒ ([F ], fwd nnf¬¬ )
+     ¬(F ∧ G) ⇒ ([¬F, ¬G], fwd nnf¬∧ )
+     ¬(F ∨ G) ⇒ ([¬F, ¬G], fwd nnf¬∨ )
+     ¬(F → G) ⇒ ([F, ¬G], fwd nnf¬→ )
+     ¬(F ↔ G) ⇒ ([F ∧ ¬G, ¬F ∧ G], fwd nnf¬↔ )
+       ⇒ ([], λ[]. lf P )
+Literals are taken care of by parameter lf which, when applied to a literal
+L returns a theorem L ↔ F , where F should be in NNF. In our case
+we pass the function proveL as argument for lf. It takes a variable x and
+a literal L and returns the theorem L ↔ F where F is in NNF and
+its atoms are of type (A)-(C) or (N) if x is a real variable and of type
+(A’)-(E’) or (N) if x is an integer variable (see page 5 for (A), (A’) etc).
+This requires the manipulation of individual (in)equalities between linear
+terms. How this is best handled depends on the infrastructure of the
+underlying theorem prover: rewriting or quantifier-free linear arithmetic
+are possible implementation tools. Details are explained in the reflective
+approach. Hence we refrain from giving a generic solution for proveL. The
+normalization for R+ is hence simply defined by
+
+           normalizeR+ x P = thm (decomp nnf (proveL x)) P.
+
+Normalization for Z+ is performed by normalizeZ+ and it proceeds as in
+§2.2: the first and second step are performed by decomp nnf and proveL.
+The third step, adjusting the coefficient of x, is performed by decomp ac:
+
+ ac ./ : Jk > 0K =⇒ (c·x ./ t) ↔ (k·c·x ./ k·t), for ./ ∈ {=, <, >}
+ ac ./ : Jk > 0K =⇒ (d | c·x + t) ↔ (k·d | k·c·x + k·t), for ./ ∈ {|, -}
+
+   decomp ac x ldiv> P =
+   case P of
+     F ♦ G | ♦ ∈ {∧, ∨} ⇒ ([F, G], fwd cong♦ )
+     c·y ./ t | y = x, ./{=, <, >} ⇒ ([], (fwd ac./ [ldiv> c])[c, x, t])
+     d ./ c·y + t | ./ ∈ {|, -}, y = x ⇒ ([], (fwd ac./ [ldiv> c])[d, c, x, t])
+       ⇒ ([], λ[].refl[P ])
+The argument ldiv> is a function that, given c, returns the theorem ‘k >
+0’, where k is numeral representing cl and l = lcm{c | as ‘c·x’ occurs in P }.
+The final step takes place in normalizeZ+ :
+   normalize Z+ x P =
+   let
+     nnf as ‘P ↔ Q’ = thm (decomp nnf (proveL x)) P
+     ac as ‘Q ↔ R’ = thm (decomp ac x (termlcm x Q)) Q
+   in fwd trans [fwd cong ∃ [gen x (fwd trans [nnf, ac])], unitcoeff [R, l]]
+    The auxiliary function termlcm computes l the lcm of all coefficients
+of x in Q and returns a function ldiv> , which given c returns a theorem
+k > 0, where k is the result of dividing l by c. Its implementation is trivial
+and thus not shown.
+    In the last line of normalizeZ+ we cheat a bit to avoid excessive techni-
+calities. For a start, we assume that in R all occurrences of the quantified
+variable are l·x, whereas in reality they are k·c·x, where k·c = l is easily
+proved. As a result, x is indeed multiplied by l everywhere. The sec-
+ond cheat is that we have taken the liberty to employ a simple form of
+higher-order matching: matching the pattern R(l·x), where x is consid-
+ered bound, against a formula f succeeds if and only if all occurrences
+of x in f are of the form l·x, in which case function R is the result of λ-
+abstracting over all the occurrences of l·x. Although on the programming
+language level formulae are a first-order data type and do not directly
+support higher-order matching, this simple instance of it is readily imple-
+mented.
+
+3.3   Proof synthesis for Cooper’s algorithm
+The first step to prove (2) is to generalize it from the specific δ, P−∞ and
+BP to arbitrary ones subject to certain assumptions:
+
+  cooper −∞ : J 0 < δ;
+                ∃z.∀x < z.P (x) ↔ Q(x);
+                ∀x, k.Q(x) ↔ Q(x − k·δ);
+                ∀x.¬(∃j ∈ [δ], b ∈ B.x = b + j) → P (x) → P (x − δ) K
+              =⇒ ∃x.P (x) ↔ (∃j ∈ [δ].Q(j) ∨ ∃j ∈ [δ], b ∈ B.P (b + j))
+
+For the synthesis of the premises we use two functions:
+delta computes δ as in (1) and returns δ, a theorem 0 < δ and a function
+    dvdδ that, given a divisor d of δ, returns the theorem d | δ.
+bset computes BP and returns B, its representation, and a function inB
+    that, given a term t ∈ BP returns a theorem t ∈ B.
+The implementations of delta and bset are simple and omitted. But there
+is one optimization that is worth pointing out. For this we focus on dvdδ .
+Let δ = lcm{d1 , . . . , dn }. For each occurrence of one of the di we need the
+theorem di | δ. To avoid recomputation, delta creates a mapping from the
+di to the theorems di | δ and dvdδ simply looks up the relevant theorem.
+We have applied the same optimization to various functions throughout
+the paper.
+    Now we show how to prove the last three premises of cooper −∞ , which
+correspond to (4),(5) and (6) respectively.
+
+Derivation of ∃z.∀x < z.P (x) ↔ P−∞ (x) First we prove the fol-
+lowing theorems:
+ (4)♦ : J∃z1 .∀x < z1 .P1 (x) ↔ P2 (x); ∃z2 .∀x < z2 .Q1 (x) ↔ Q2 (x)K
+   =⇒ ∃z.∀x < z.(P1 (x) ♦ Q1 (x)) ↔ (P2 (x) ♦ Q2 (x)), for ♦ ∈ {∧, ∨}
+ (4)= : ∃z.∀x < z.(x = t) ↔ False (4)> : ∃z.∀x < z.t < x ↔ False
+ (4)< : ∃z.∀x < z.x < t ↔ True (4)(N ) : ∃z.∀x < z.P ↔ P
+ (4)./ : ∃z.∀x < z.(d ./ x + t) ↔ (d ./ x + t), for ./ ∈ {|, -}
+Instances of (4) are derived by prove (4) :
+  decomp(4) x P =
+  case P of
+     F ♦ F | ♦ ∈ {∧∨} ⇒ ([F, G], fwd (4)♦ )
+     t < y | y = x ⇒ ([], λ[]. (4)> [t])
+     y < t | y = x ⇒ ([], λ[]. (4)< [t])
+     y = t | y = x ⇒ ([], λ[]. (4)= [t])
+     d ./ y + t | y = x, ./ ∈ {|, -} ⇒ ([], λ[]. (4)./ [t])
+       ⇒ ([], λ[]. (4)(N ) [P ])
+
+  prove (4) x P = thm (decomp(4) x) P
+
+Derivation of ∀x, k.P−∞ (x) ↔ P−∞ (x − k·δ) First we prove the
+following theorems:
+ (5)♦ : J∀x, k.P (x) ↔ P (x − k·δ); ∀x, k.Q(x) ↔ Q(x − k·δ)K
+   =⇒ ∀x, k.(P (x) ♦ Q(x)) ↔ (P (x − k·δ) ♦ Q(x − k·δ)) for ♦ ∈ {∧, ∨}.
+ (5)./ : d | δ =⇒ ∀x, k.(d ./ x + t) ↔ (d ./ x − k·δ + t), for ./ ∈ {|, -}
+ (5)(N ) : ∀x, k. P ↔ P
+Instances of (5) are derived by prove (5) :
+  decomp (5) x dvdδ P =
+  case P of
+     F ♦ G | ♦ ∈ {∧, ∨} ⇒ ([F, G], fwd (5)♦ )
+     t < x ⇒ ([], λ[]. (5)(N ) [False])
+     c < t ⇒ ([], λ[]. (5)(N ) [True])
+     x = t ⇒ ([], λ[]. (5)(N ) [False])
+     d ./ x + t | ./ ∈ {|, -} ⇒ ([], λ[]. (fwd (5)./ [dvdδ d])[t])
+       ⇒ ([], λ[]. (5)(N ) [P ]);
+
+  prove (5) x dvdδ P = thm (decomp(5) x dvdδ ) P
+
+Derivation of ∀x.¬(∃j ∈ [δ], b ∈ BP .x = b + j) → P (x) →
+P (x − δ) First we prove the following theorems:
+ (6)♦ : J∀x.¬(∃j ∈ [δ], b ∈ B.x = b + j) → P (x) → P (x − δ);
+         ∀x.¬(∃j ∈ [δ], b ∈ B.x = b + j) → Q(x) → Q(x − δ)K
+        =⇒ ∀x.¬(∃j ∈ [δ], b ∈ B.x = b + j)
+                → (P (x) ♦ Q(x)) → (P (x − δ) ♦ Q(x − δ)), for ♦ ∈ {∧, ∨}
+ (6)(N ) : ∀x.¬(∃j ∈ [δ], b ∈ B.x = b + j) → F → F
+ (6)< : J0 < δK =⇒ ∀x.¬(∃j ∈ [δ], b ∈ B.x = b + j) → x < t → x − δ < t
+ (6)> : Jt ∈ BK =⇒ ∀x.¬(∃j ∈ [δ], b ∈ B.x = b + j) → t < x → t < x − δ
+         J0 < δ; t − 1 ∈ BK
+ (6)= :
+         =⇒ ∀x.¬(∃j ∈ [δ], b ∈ B.x = b + j) → x = t → (x − δ) = t
+         Jd | δK =⇒
+ (6)./ :
+         ∀x.¬(∃j ∈ [δ], b ∈ B.x = b + j) → d ./ x + t → d ./ (x − δ) + t, for ./ ∈ {|, -}
+   Instances of (6) are derived by prove (6) :
+  decomp(6) x (δ, δ> , dvdδ ) (B, inB) P =
+  case P of
+    F ♦ G | ♦ ∈ {∧, ∨} ⇒ ([F, G], fwd (6)♦ )
+    t < y | y = x ⇒ ([], λ[]. fwd ((6)> [t, B, δ]) [inB t])
+    y < t | y = x ⇒ ([], λ[]. fwd ((6)< [δ, B, t]) [δ> ])
+    y = t | y = x ⇒ ([], λ[]. fwd ((6)= [δ, t, B]) [δ> , inB t − 1])
+    d ./ y + t | y = x, ./ ∈ {|, -} ⇒ ([], λ[]. fwd ((6)./ [d, δ, B, t]) [dvdδ d])
+      ⇒ ([], λ[]. (6)(N ) [δ, B, P ])
+
+  prove (6) x (δ, δ> , dvdδ ) (B, inB) P =
+    thm (decomp(6) x (δ, δ> , dvdδ ) (B, inB)) P
+
+The overall proof Quantifier elimination for Z+ is finally implemented
+by qelimZ+ .
+  proveδ∞B x P =
+  let
+    (δ, δ> , dvdδ ) = delta x P
+    (B, inB) = bset x P
+    th(4) = prove (4) x P
+    th(5) = prove (5) x dvdδ P
+    th(6) = prove (6) x (δ, δ> , dvdδ ) (B, inB) P
+  in [δ> , th(4) , th(5) , th(6) ]
+
+  cooper ∃x.P =
+  let
+    nth as ‘∃x.P ↔ ∃x.Q’ = normalizeZ+ x P
+    cpth = fwd cooper −∞ (proveδ∞B x Q)
+  in fwd trans [nth, expand ∃ cpth]
+
+  qelimZ+ = qelim cooper
+   The function proveδ∞B returns exactly the list of premises of cooper −∞ .
+For efficiency it should traverse the formula only once and synthesize (4),
+(5) and (6) at once. This is easy to achieve by “merging” the different
+decomp (.) functions. At the end we apply a function expand ∃ which takes
+some theorem and returns an equivalent one where all occurrences of
+∃x ∈ I, where I is some finite set, have been expanded into finite dis-
+junctions. Typically this is performed by rewriting and we do not discuss
+the details. We assume that at the same time rewriting also evaluates all
+ground arithmetic and logical expressions.
+
+3.4     Proof synthesis for Ferrante and Rackoff ’s algorithm
+To derive an instance of Theorem 2 we first generalize it from the specific
+UP , P−∞ and P+∞ to arbitrary ones subject to certain assumptions:
+
+
+fr :Jfinite U ; ∃y.∀x < y.P (x) ↔ Q ; ∃y.∀x > y.P (x) ↔ R ;
+   ∀x.¬Q ∧ P (x) → ∃l ∈ U.l ≤ x ; ∀x.¬R ∧ P (x) → ∃u ∈ U.x ≤ u ;
+   ∀x, l, u.(∀y.l < y < u → y 6∈ U ) ∧ l < x < u ∧ P (x) → ∀y.l < y < u → P (y)K
+                                                    u + u0
+      =⇒ ∃x.P (x) ↔ (Q ∨ R ∨ ∃(u, u0 ) ∈ U 2 .P (          ))
+                                                      2
+    In order to prove the premises of fr, we use a function uset, analogous
+to bset, which computes the set UP and returns a theorem finite U and a
+function inU which, given a t ∈ UP , returns a theorem t ∈ U , where U
+represents UP .
+    The derivation of the premises follows Cooper’s algorithm. In fact the
+second premise is derived by prove(4) , the third by its (omitted) dual
+prove(7) . The derivation of the fourth and the fifth premise are dual and
+we only show the synthesis of ∀x.¬P−∞ ∧ P (x) → ∃l ∈ UP .l ≤ x, which
+is the result of prove(8) . First we prove a few easy lemmas:
+ (8)♦ : J∀x.¬P 0 ∧ P (x) → ∃l ∈ U.l ≤ x; ∀x.¬Q0 ∧ Q(x) → ∃l ∈ U.l ≤ xK
+   =⇒ ∀x.¬(P 0 ♦ Q0 ) ∧ (P (x) ♦ Q(x)) → ∃l ∈ U.l ≤ x, for ♦ ∈ {∧, ∨}
+ (8)< : ∀x.¬True ∧ x < t → ∃l ∈ U.l ≤ x
+ (8)./ : Jt ∈ U K =⇒ ∀x.¬False ∧ t ./ x → ∃l ∈ U.l ≤ x, for ./ ∈ {=, >}
+ (8)(N ) : ∀x.¬F ∧ F → ∃l ∈ U.l ≤ x.
+Function prove(8) performs the derivation:
+  decomp(8) x inU P =
+  case P of
+    F ♦ G | ♦ ∈ {∧, ∨} ⇒ ([F, G], fwd (8)♦ )
+    y < t | y = x} ⇒ ([], λ[].(8)< [t])
+    y ./ t | y = x, ./ ∈ {=, >} ⇒ ([], λ[].fwd (8)./ [inU t])
+        ⇒ ([], λ[].(8)(N ) [P ])
+
+    prove(8) x inU P = thm (decomp(8) x inU ) P
+   The derivation of the last premise of fr is the result of prove(10) , which
+uses the following theorems:
+    (10)♦ : J∀x, l, u.(∀y.l < y < u → y 6∈ U ) ∧ l < x < u ∧ P (x)
+            → ∀y.l < y < u → P (y);
+            ∀x, l, u.(∀y.l < y < u → y 6∈ U ) ∧ l < x < u ∧ Q(x)
+            → ∀y.l < y < u → Q(y)K =⇒
+            ∀x, l, u.(∀y.l < y < u → y 6∈ U ) ∧ l < x < u ∧ P (x) ♦ Q(x)
+              → ∀y.l < y < u → P (y) ♦ Q(y), for ♦ ∈ {∧, ∨}
+    (10)./ : t ∈ U =⇒ ∀x, l, u.(∀y.l < y < u → y 6∈ U ) ∧ l < x < u ∧ x ./ t
+                → ∀y.l < y < u → y ./ t, for ./ ∈ {=, <, >}
+(10)(N ) : ∀x, l, u.(∀y.l < y < u → y 6∈ U ) ∧ l < x < u∧ P → ∀y.l < y < u → P
+
+    decomp(10) x inU P =
+    case P of
+      F ♦ G | ♦ ∈ {∧, ∨} ⇒ ([F, G], fwd (10)♦ )
+      y ./ t | y = x, ./ ∈ {=, <, >} ⇒ ([], λ[].fwd (10)./ [inU t])
+        ⇒ ([], λ[].(10)(N ) [P ])
+
+  prove(10) x inU P = thm (decomp(10) x inU ) P
+   We merge all the functions that derive the premises into prove±∞U ,
+which returns a 6-element list corresponding to the premises of fr. The
+overall quantifier elimination procedure for R+ is implemented by qelimR+ .
+
+    ferrack ∃x.P =
+    let nth as ‘∃x.P ↔ ∃x.Q’ = normalizeR+ x P
+    in expand ∃ (fwd trans [nth, fwd fr (prove±∞U x Q)])
+
+    qelimR+ = qelim ferrack
+
+4     Reflection
+
+After a simplified explanation of reflection we show its application to both
+Cooper’s algorithm and the one by Ferrante and Rackoff. The content of
+this section is a minimally revised version of [9] and [10].
+4.1   An informal introduction to reflection
+Reflection means to perform a proof step by computation inside the logic
+rather than inside some external programming language. The latter is
+traditionally referred to as a meta-language (ML) and is what we have
+relied on so far. Inside the logic it is not possible to write functions by pat-
+tern matching over the syntax because two syntactically distinct formulae
+may be logically equivalent. Hence the relevant fragment of formulae must
+be represented (reflected ) inside the logic as a datatype. Sometimes this
+datatype is called the shadow syntax [30]. We call it rep, the representa-
+tion.
+    The two levels of formulae must be connected by two functions:
+ interp, a function in the logic, maps an element of rep to the formula it
+    represents, and
+ reify, a function in ML, maps a formula to its representation.
+The two functions should be inverses of each other. Informally interp(reify P ) ↔
+P should hold. More precisely, taking the ML representation of a formula
+P and applying reify to it yields an ML representation of a term p of type
+rep such that interp p ↔ P holds.
+   Typically, the formalized proof step is some equivalence P ↔ P 0 where
+P is given and P 0 is some simplified version of P (e.g. the elimination of
+quantifiers). This transformation is now expressed as a recursive function
+simp of type rep → rep. We prove (typically by induction on rep) that
+simp preserves the interpretation:
+
+                          interp p ↔ interp(simp p)
+
+To apply this theorem to a given formula P we proceed as follows:
+1. Create a rep-term p from P using reify. This is the reification step
+   which must be performed in ML.
+2. Prove P ↔ interp p. Usually this is trivial by rewriting with the
+   definition of interp.
+3. Instantiate simp’s correctness theorem above, compute p0 = simp p
+   and obtain the theorem interp p ↔ interp p0 . This is the evaluation
+   step.
+4. Simplify interp p0 , again by rewriting with the definition of interp,
+   yielding a theorem interp p0 ↔ P 0
+The final theorem P ↔ P 0 holds by transitivity.
+    The evaluation step is crucial for efficiency as all other steps are typ-
+ically linear-time. In our work we employ Isabelle’s built-in ground term
+evaluator [2] which generates executable code from the definition of simp
+and “runs” simp p. The fact that the executable code is again ML is a
+coincidence. A similar approach is adopted in PVS [15] and in ACL2 [7].
+Other approaches include the the use of an internal λ-calculus evaluator
+[27] as in Coq [5]. One could also perform the evaluation step by rewrit-
+ing inside the theorem prover, but the performance penalty is usually
+prohibitive.
+    There is also the practical issue of where reify comes from. In general,
+the implementor of the reflected proof procedure must program it in ML
+and link it into the above chain of deductions. But because reify must be
+the inverse of interp, it is often possible to automate this step. Isabelle
+implements a sufficiently general inversion scheme for interp (which even
+covers bound variables represented by de Bruijn indices) such that for all
+of the examples in this paper, reify is dealt with automatically.
+
+4.2     Reflecting linear arithmetic
+In this section we represent linear arithmetic formulae inside the logic. We
+also give a generic quantifier elimination, sketch normalization of formulae
+and present the common parts of both algorithms.
+
+Terms and Formulae We define the syntax of terms and formulae as
+follows:
+      datatype τ = αb | vnat |− τ | τ + τ | τ − τ | α ∗ τ
+      datatype φ = T | F | τ < τ | τ ≤ τ | τ = τ | τ 6= τ | int | τ | int - τ
+                  | ¬ φ | φ∧φ | φ∨φ | φ→φ | φ↔φ | ∃φ | ∀φ
+In the logic, datatypes are declared using datatype. Lists are built up from
+the empty list [] and consing ·; the infix @ appends two lists. For a list l,
+{{l}} denotes the set of elements of l, and l!n denotes its nth element. For
+a finite set S, |S| denotes the cardinality of S.
+     The constant c in the logic is represented by the term b
+                                                            c. Constants are
+integers for Z+ , i.e. α = int, and rational numbers for R+ , i.e. α = rat.
+That is, τ and φ are really parameterized by type α. Bound variables are
+represented by de Bruijn indices: vn represents the bound variable with
+index n (a natural number). Hence quantifiers need not carry variable
+names. The bold symbols +, ≤, ∧ etc are constructors and reflect their
+counterparts +, ≤, ∧ etc in the logic. We use ./ (resp. ./) as a place-
+holder for =, 6=, ≤ or < (resp. =, 6=, ≤ or <). We also use ♦ (resp. ♦) as
+place-holder for ∧, ∨, → or ↔ (resp. ∧, ∨, →, ↔). In the following p and
+q (resp. s and t) are of type φ (resp. τ ).
+                              LT Mvs    = True
+ cMvs
+   τ        =c
+                              LF Mvs
+Lb
+                                        = False
+Lvn Mvs
+     τ      = vs!n
+                              Lt./sMvs = (LtMvs      vs
+                                              τ ./LsMτ )
+L− tMvsτ    = −LtMvs
+                   τ               vs           vs
+                                        = (¬LpM )
+Lt + sMvs     LtMvs      vs   L¬pM
+          τ =    τ + LsMτ
+                              Lp ♦ qMvs = (LpMvs ♦LqMvs )
+Lt − sMvs τ =    vs
+                 τ  −    vs
+                         τ
+                              L∃ pMvs = (∃x.LpMx·vs )
+              LtM     LsM
+Lc ∗ tMvsτ  = c·LtMvs
+                   τ
+                              L∀ pMvs = (∀x.LpMx·vs )
+
+                         Fig. 2. Semantics of the shadow syntax
+
+
+     The interpretation functions (L.M.τ and L.M. ) in Fig. 2 map the repre-
+sentations back into logic. They are parameterized by an environment vs
+which is a list of integer expressions for Z+ , and a list of real expressions
+for R+ . The de Bruijn index vn picks out the nth element from that list.
+Since Z+ includes divisibility relations, we define Li | tMvs = (i | LtMvs
+                                                                        τ ) and
+       vs        vs
+Li - tM = i - LtMτ .
+Example 4.
+                                  0)M[] ↔ (∀x.∃y, z.3·z + 5·y − x = 0)
+    L∀ ∃ ∃(3 ∗ v0 + 5 ∗ v1 − v2 = b
+              L3 ∗ v0 + 5 ∗ v1 ≤ v2 M[x,y,z] ↔ (3·x + 5·y ≤ z)
+
+
+
+                      qelim qe (∀ p) = ¬qe¬(qelim qe p)
+                      qelim qe (∃ p) = qe(qelim qe p)
+                      qelim qe (p ♦ q) = (qelim qe p) ♦ (qelim qe p)
+                      qelim qe p       = p
+
+                      Fig. 3. Quantifier elimination for φ-formulae
+
+
+Generic quantifier elimination Assume we have a function qe, that
+eliminates one ∃ in front of quantifier-free φ-formulae. The function qelim
+in Fig. 3 applies qe to all quantified sub-formulae in a bottom-up fashion.
+Let qfree p formalize that p is quantifier-free . We automatically prove
+the main property (12) of qelim by structural induction on p: if qe takes
+a quantifier-free formula q and returns a quantifier-free formula q 0 equiv-
+alent to ∃ q, then qelim qe is a quantifier-elimination procedure:
+            (∀vs, q. qfree q → qfree (qe q) ∧ (Lqe qMvs ↔ L∃ qMvs ))
+                                                                          (12)
+             → qfree (qelim qe p) ∧ (Lqelim qe pMvs ↔ LpMvs ).
+   The implementation of qelim in Fig. 3 is naive and only used for the
+sake of presentation. In reality, the definition involves several simplifica-
+tions such as distribution of ∃ over ∨, lazy evaluation of ∧, ∨, → and ↔,
+etc.
+    In §4.3 and §4.4 we present cooper and ferrack, two instances of qe
+satisfying the premise of (12) for Z+ and R+ , respectively.
+
+Normalized formulae and elimination sets Normalized φ-formulae
+are defined via predicates isnormZ+ and isnormR+ for Z+ and R+ respec-
+tively. The definition of isnormZ+ is as follows:
+
+isnormZ+ (p ♦ q)       = (isnormZ+ l p) ∧ (isnormZ+ l q) for ♦ ∈ {∧, ∨}
+isnormZ+ (v0 ./t)      = unboundτ t
+isnormZ+ (t ./ v0 )    = unboundτ t                      for ./ ∈ {<, ≤}
+isnormZ+ (d ./ v0 + t) = d > 0 ∧ unboundτ t              for ./ ∈ {|, -}
+isnormZ+ p             = unboundφ p
+
+The predicates unboundτ and unboundφ formalize that a τ -term and a
+φ-formula, respectively, do not involve v0 . The definition of isnormR+ just
+excludes the | and - atoms. Normalization is performed as explained in
+§2.2 by the functions normZ+ and normR+ satisfying (13) and (14).
+
+      qfree p → isnormZ+ (normZ+ p) ∧ L∃(normZ+ p)Mvs ↔ L∃ pMvs               (13)
+                                                             vs          vs
+      qfree p → isnormR+ (normR+ p) ∧ L∃(normR+ p)M                ↔ L∃ pM    (14)
+
+    Fig. 4 shows the reflected counterparts of the functions defined in
+Fig. 1. If P is reflected by p then P−∞ and P+∞ are reflected by p− and
+p+ , and UP , BP and AP are reflected by the lists U p, B p and A p.
+
+
+   p      Up        Bp        Ap       p−      p+
+ q ♦ r U q @ U r B q @ B r A q @ A r q− ♦ r− q+ ♦ r+
+t < v0     [t]       [t]        []      F       T
+v0 < t     [t]        []       [t]      T       F
+t ≤ v0     [t]    [t − b 1]     []      F       T
+v0 ≤ t     [t]        []    [t + b 1]   T       F
+v0 = t     [t]    [t − b 1] [t + b 1]   F       F
+v0 6= t    [t]       [t]       [t]      T       T
+            ∅         ∅         ∅       p       p
+
+                  Fig. 4. Definition of U p, B p, A p, p− and p+
+
+
+    Our reflective implementation represents all sets by lists. Because the
+complexity of both algorithms depends highly on the size of the elimina-
+tion sets (see Theorems 1 and 2), our implementation removes duplicate
+elements from the elimination sets via function remdups. This function
+compares terms for semantic equality by linearizing them first. We ex-
+plain this process in some detail.
+    A τ -term t is linear (islinτ t) if it has the form
+
+                     c1 ∗ vi1 + · · · + cn ∗ vin + cd
+                                                    n+1
+
+where n ∈ N, i1 < · · · < in and ∀j ≤ n.cj 6= 0.
+
+       islin’τ n0 bi           = True
+       islin’τ n0 (i ∗ vn + r) = i 6= 0 ∧ n0 ≤ n ∧ islin’τ (n + 1) r
+       islin’τ n0 t            = False
+       islinτ t                = islin’τ 0 t
+An arbitrary τ -term t is linearized by function linτ t (definition omitted),
+which replaces every +, −, ∗ and − by −l , +l , −l , ∗l and −l . The inter-
+pretation of linear terms is preserved by this process (theorems for −l
+and −l are omitted):
+
+
+      islinτ t ∧ islinτ s → ((Lt +l sMvs         vs
+                                      τ = Lt + sMτ ) ∧ islinτ (t +l s))      (15)
+                        islinτ t → (Lc ∗l tMvs       vs
+                                            τ Lc ∗ tMτ ) ∧ islinτ (c ∗l t)   (16)
+
+The proofs and definitions of +l and ∗l are simple. The key clauses in
+the definition are shown below.
+  (k ∗ vn + r) +l (l ∗ vm + s) =
+  if n = m then
+    if k + l = 0 then r +l s else (k + l) ∗ vn + (r +l s)
+  else if n ≤ m then k ∗ vn + (r +l (l ∗ vm + s)
+    else l ∗ vm + (k ∗ vn + r) +l s
+  (k ∗ vn + r) +l bb = k ∗ vn + (r +l bb)
+  a +l (l ∗ vn + s) = l ∗ vn + (s +l b
+  b                                  a)
+  k +l b
+  b     l = k[+l
+
+  c ∗l bi = c·i
+            c
+  c ∗l (i ∗ vn + r) = if c = 0 then b
+                                    0 else (c·i) ∗ vn + (c ∗l r)
+
+  −l t = −1 ∗l t
+  t −l s = t +l (−l s)
+Using (15) and (16) we automatically prove linτ ’s main property:
+
+                     (Llinτ tMvs     vs
+                              τ = LtMτ ) ∧ islinτ (linτ t).                  (17)
+4.3     Reflecting Cooper’s algorithm
+
+In this section we present a verified implementation of Cooper’s algorithm
+which differs only slightly from [10].
+
+Cooper’s theorem Now we prove the analogue of cooper −∞ for φ-
+formulae:
+
+isnormZ+ p → (L∃ pMvs ↔ ((∃j ∈ {1..Dp }.Lp− Mj·vs )
+                         ∨ (∃j ∈ {1..Dp }, b ∈ {LtMi·vs
+                                                   τ    | t ∈ {{B p}}}.LpM(b+j)·vs ))).
+                                                                             (18)
+
+Note that the i in LtMi·vs
+                       τ   is free because t does not depend on v0 .
+   In Fig. 5 we define a function Dp to compute the δ in (1) and a
+predicate alldvdφ to express δ’s main property (19), which we prove au-
+tomatically. It is the predicate alldvdφ we use, when during induction we
+need that d | δ for an atom d | v0 + t. Concretely, we prove properties
+involving Dp for a general l satisfying alldvdφ l p.
+
+                     isnormZ+ p → Dp > 0 ∧ alldvdφ Dp p                       (19)
+
+
+
+     p          Dp                  alldvdφ l p
+   q♦r     lcm (D q) (D r) (alldvdφ l q) ∧ (alldvdφ l r)
+d | v0 + t       d                      d|l
+d - v0 + t       d                      d|l
+                 1                     True
+
+                  Fig. 5. Dp and alldvdφ for normalized φ-formulae
+
+
+      As in §3.3 we prove the (reflected) premises of cooper −∞ :
+
+ isnormZ+ p → ∃z.∀x.x < z → (LpMx·vs = Lp− Mx·vs )                            (20)
+                             x·vs           (x−k·Dp )·vs
+ isnormZ+ p → ∀x, k.Lp− M           = Lp− M                                   (21)
+ isnormZ+ p → ∀x.¬(∃j ∈ {{1..Dp }}.∃b ∈ {LtMi·vs
+                                               τ | t ∈ {{B p}}}.LpM(b+j)·vs )
+                       x·vs         (x−δp )·vs
+                       → LpM        → LpM                                     (22)
+
+All these theorems are proved by structural induction on p just as in
+§2.3, but now once and for all rather than for each instance. With these
+theorems and cooper −∞ we easily prove Cooper’s theorem for φ-formulae.
+         mirror (p ♦ q)       = (mirror l p) ♦ (mirror l q) for ♦ ∈ {∧, ∨}
+         mirror (v0 ./ t)     = v0 ./ (− t)                 for ./ ∈ {=, 6=}
+         mirror (v0 ./ t)     = (− t) ./ v0                 for ./ ∈ {<, ≤}
+         mirror (t ./ v0 )    = v0 ./ (− t)                 for ./ ∈ {<, ≤}
+         mirror (d ./ v0 + r) = d ./ v0 + (− r)             for ./ ∈ {|, -}
+         mirror p             = p
+
+                     Fig. 6. Duality principle for φ-formulae.
+
+
+A duality principle We formalize the duality principle (P−∞ and BP
+vs. P+∞ and AP ) using a function mirror defined in Fig. 6. The idea behind
+mirror is simple: if p reflects P (x) then mirror p reflects P (−x). This,
+among other properties, is expressed below and is proved by induction on
+p. In §4.3, we use mirror to optimize cooper.
+
+ isnormZ+ p → isnormZ+ (mirror p) ∧ (Lmirror pM−i·vs ↔ LpMi·vs )
+                    ∧ {LtMvs                      vs
+                          τ | t ∈ {{A p}}} = {−LtMτ | t ∈ {{B (mirror p)}}}
+
+
+An implementation The first step in the implementation of cooper is to
+normalize the formula and to choose the smaller elimination set, possibly
+mirroring the formula to compensate for this:
+  choose p =
+  let q = normZ+ p; (A, B) = (remdups (A q), remdups (B q))
+  in if |B| ≤ |A| then (q, B) else (mirror q, A)
+The main property of choose is that it reduces the +∞ case to the −∞
+case:
+            qfree p ∧ (choose p = (q, S)) →
+                                                                               (23)
+            isnormZ+ q ∧ (L∃ pMvs ↔ L∃ qMvs ) ∧ ({{S}} = {{B q}})
+
+    For (q, S), we generate the right-hand side of (18) and expand the
+finite quantifiers into disjunctions:
+
+        explode(q, S) = eval∨ (λi.q− [bi]) [1..Dq ]
+                        ∨ eval∨ (λt.q[t]) [t + bi | t ∈ S, i ∈ [1..Dq ]]
+
+The function call eval∨ f [x1 , .., xn ] returns the disjunction f x1 ∨ .. ∨ f xn
+lazily evaluated: as soon as the disjunct T turns up, the whole expression
+becomes T ; F is omitted. The substitution of a term t for v0 in a formula
+p is performed by p[t]. Substitution also simplifies the formula: it evalu-
+ates ground terms and relations and performs some logical simplification.
+Finally we decrease the de Bruijn indices of the remaining variables using
+function decr; its definition is obvious and omitted.
+   The composition of decr and explode preserves the interpretation:
+
+      isnormZ+ p ∧ {{S}} = {{B p}} →
+      (L∃ pMvs ↔ Ldecr(explode (p, B))Mvs ) ∧ qfree(decr(explode (p, B))).
+
+      Finally we can define cooper and qeZ+ :
+
+                        cooper = decr ◦ explode ◦ choose
+                          qeZ+ = qelim cooper
+
+Their correctness follows easily:
+
+            qfree q → qfree (cooper q) ∧ (Lcooper qMvs ↔ L∃ qMvs )
+                             qfree (qeZ+ p) ∧ (LqeZ+ pMvs ↔ LpMvs )
+
+
+4.4     Reflecting Ferrante and Rackoff ’s algorithm
+
+In this section we present a verified implementation of Ferrante and Rack-
+off’s algorithm, which differs only slightly from §4 in [9].
+
+
+Ferrante and Rackoff ’s theorem Let U denote {LtMτz·vs ) | t ∈ {{U p}}}
+and assume isnormR+ p. The analogue of Theorem 2 for φ-formulae is
+
+                                                                 u+u0
+               L∃ pMvs ↔ Lp− ∨ p+ Mx·vs ∨ ∃(u, u0 ) ∈ U 2 .LpM    2
+                                                                      ·vs
+                                                                            .   (24)
+
+      We prove the (reflected) premises of fr, cf. §3.4. Then we have:
+
+      finite U p
+      ∃y.∀x < y.LpMx·vs ↔ Lp− Mx·vs
+      ∃y.∀x > y.LpMx·vs ↔ Lp+ Mx·vs
+      ¬Lp− Mx·vs ∧ LpMx·vs → ∃l ∈ U.l ≤ x
+      ¬Lp+ Mx·vs ∧ LpMx·vs → ∃u ∈ U.x ≤ u
+      (∀y.l < y < u → y 6∈ U ) ∧ l < x < u ∧ LpMx·vs → ∀y.l < y < u → LpMy·vs
+
+All of the above lemmas are proved by induction on p. The proof of the
+final lemma follows exactly the proof given in §2.4. Using fr we obtain
+(24).
+ferrack q = let p = normR+ q
+               U = remdups(map (λ(s, t). b21 ∗ (s + t)) (allpairs(U p)))
+               D = eval∨ (λt.p[t]) U
+            in decr(p− ∨ p+ ∨ D)
+
+qeR+     = qelim ferrack
+
+                              Fig. 7. An implementation
+
+
+
+An implementation Figure 7 shows an implementation of ferrack. It
+first normalizes the input (to p) and computes p− and p+ and U p to return
+the disjunction justified by (24). The de Bruijn indices in the result are
+decreased via decr. The function call allpairs S returns a list of all the
+pairs (s, t) such that (s, t) ∈ {{S}}2 or (t, s) ∈ {{S}}2 .
+     The main correctness theorems for ferrack and qeR+ are:
+
+           qfree q → qfree (ferrack q) ∧ (Lferrack qMvs ↔ L∃ qMvs )
+                              qfree (qeR+ p) ∧ (LqeR+ pMvs ↔ LpMvs )
+
+
+5     A short comparison of the presented methods
+
+5.1    Implementation
+
+In the tactic-style implementation one does not need to formalize meta-
+theoretic notions like the syntax of formulae in a particular normal form,
+e.g. isnormZ+ above. One just goes ahead and writes the tactics. But it
+is precisely this lack of explicitness that makes tactic writing so tedious
+and error prone: time and again one finds that tactics fail because the
+proofs they produce do not fit together as expected, a problem already
+mentioned in §1. This is where a reflection-based implementation wins: it
+is developed within the logic and its correctness is proved, i.e. there are
+no more surprises at runtime. The explicitness of reflection pays off even
+more during maintenance, where tactics can be awkward to modify.
+    Due to the progress in sharing theorems with other theorem provers
+[35, 42], reflected decision procedures are ultimately shared for free. A
+final advantage of reflection is that it allows to formalize notions like
+duality, cf. §4.3, which reduces the size of the background theory.
+    A disadvantage of reflection is that we may need to formalize notions
+again that are already present on the tactic level. For example, many theo-
+rem provers already provide linearization of arithmetic terms as discussed
+on page 24.
+5.2   Efficiency
+Efficiency is often considered the key advantage of reflection, since the
+resulting implementation is exported to ML, where execution is much
+faster. Coq for instance uses an internal λ-calculus evaluator [27] to per-
+form these computations efficiently.
+
+q nq nq0 nq1 nq2 nq3 b
+                     cmax speedup
+1 40 40 0 0 0 24             20
+2 27 20 7 0 0 13             50
+3 21 2 19 0 0 129           400
+4 6 1 0 0 5            6    103
+5 5 3 0 5 0 12               50
+
+      Fig. 8. Number of quantifiers and speedup in the test formulae for Z+
+
+
+
+
+q nq nq0 nq1 nq2 nq3 b
+                     cmax speedup
+2 10 5 5 0 0 500             43
+3 15 5 5 5 0 100             44
+4 20 5 5 5 5 1200            64
+
+      Fig. 9. Number of quantifiers and speedup in the test formulae for R+
+
+
+     Our implementations in Isabelle/HOL confirms the efficiency advan-
+tage: on average, the reflection-based decision procedure for Z+ is 130
+times faster that the tactic-based one, for R+ the speedup is still 60. The
+formulae we tested are either from the literature or encoutered subgoals in
+Isabelle theories. The details of our measurements are shown in figures 8
+and 9. Each line describes a sample set. Column 1, q, gives the number of
+quantifiers in each sample formula. The formulae contain up to five quan-
+tifiers and three quantifier alternations. The number nq represents the
+number of formulae with q quantifiers. We have nq = nq0 +nq1 +nq2 +nq3 ,
+where nqi is the number of formulae containing q quantifiers and i quanti-
+fier alternations. The column bcmax gives the maximal constant occurring
+in the given set of formulae. The last column gives the speedup. The tac-
+tic style methods presented in §3.3 and §3.4 needed 463 and 378 seconds,
+to solve all the problems by inference. The ML implementations obtained
+by Isabelle’s code generator from the formally verified procedures pre-
+sented in §4.3 and in §4.4 took 3.48 and 5.96 seconds, a speedup of 133
+and 63. All timings were carried out on a PowerBook G4 with a 1.67 GHz
+processor running OSX.
+Acknowledgement
+We thank John Harrison and Michael Norrish for useful discussions and
+comments.
+
+References
+ 1. H. Barendregt and E. Barendsen. Autarkic computations in formal proofs. J.
+    Autom. Reasoning, 28(3):321–336, 2002.
+ 2. S. Berghofer and T. Nipkow. Executing higher order logic. In In Types for Proofs
+    and Programs (TYPES 2000), volume 2277 of Lect. Notes in Comp. Sci., pages
+    24–40. Springer-Verlag, 2002.
+ 3. L. Berman. Precise bounds for Presburger arithmetic and the reals with addition:
+    Preliminary report. In FOCS, pages 95–99. IEEE, 1977.
+ 4. L. Berman. The complexitiy of logical theories. Theoretical Compututer Science,
+    11:71–77, 1980.
+ 5. Y. Bertot and P. Castéran. Coq’Art: The Calculus of Inductive Constructions,
+    volume XXV of Text in theor. comp. science: an EATCS series. Springer, 2004.
+ 6. B. Boigelot, S. Jodogne, and P. Wolper. An effective decision procedure for linear
+    arithmetic over the integers and reals. ACM Trans. Comput. Log., 6(3):614–633,
+    2005.
+ 7. R. S. Boyer and J. S. Moore. Metafunctions: Proving them correct and using them
+    efficiently as new proof procedures. In The Correctness Problem in Computer
+    Science, pages 103–84. Academic Press, New York, 1981.
+ 8. A. Chaieb. Isabelle trifft Presburger Arithmetik. Master’s thesis, TU München,
+    2003.
+ 9. A. Chaieb. Verifying mixed real-integer quantifier elimination. In Furbach and
+    Shankar [22], pages 528–540.
+10. A. Chaieb and T. Nipkow. Verifying and reflecting quantifier elimination for Pres-
+    burger arithmetic. In G. Stutcliffe and A. Voronkov, editors, Logic for Program-
+    ming, Artificial Intelligence, and Reasoning, volume 3835 of Lect. Notes in Comp.
+    Sci. Springer-Verlag, 2005.
+11. Ashok K. Chandra, Dexter C. Kozen, and Larry J. Stockmeyer. Alternation. J.
+    ACM, 28(1):114–133, 1981.
+12. George E. Collins. Quantifier elimination for real closed fields by cylindrical al-
+    gebraic decomposition. In H. Barkhage, editor, Automata Theory and Formal
+    Languages, volume 33 of LNCS, pages 134–183. Springer, 1975.
+13. D.C. Cooper. Theorem proving in arithmetic without multiplication. In B. Meltzer
+    and D. Michie, editors, Machine Intelligence, volume 7, pages 91–100. Edinburgh
+    University Press, 1972.
+14. Pierre Crégut.     Une procédure de décision réflexive pour un fragment de
+    l’arithmétique de Presburger. In Informal proceedings of the 15th journées franco-
+    phones des langages applicatifs, 2004.
+15. Judy Crow, Sam Owre, John Rushby, N. Shankar, and Dave Stringer-Calvert.
+    Evaluating, testing, and animating PVS specifications. Technical report, Computer
+    Science Laboratory, SRI International, Menlo Park, CA, March 2001.
+16. M. Davis. A computer program for Presburger’s algorithm. In Summaries of
+    talks presented at the Summer Inst. for Symbolic Logic, Cornell University, pages
+    215–233. Inst. for Defense Analyses, Princeton, NJ, 1957.
+17. L. Dines. Systems of linear inequalities. Annals of Math., 20:191–199, 1919.
+18. Herbert Enderton. A Mathematical Introduction to Logic. Academic Press, 1972.
+19. J. Ferrante and C. Rackoff. A decision procedure for the first order theory of real
+    addition with order. SIAM J. Comput., 4(1):69–76, 1975.
+20. M. Fischer and M. Rabin. Super-exponential complexity of Presburger arithmetic.
+    In SIAMAMS: Complexity of Computation: Proceedings of a Symposium in Applied
+    Mathematics of the American Mathematical Society and the Society for Industrial
+    and Applied Mathematics, 1974.
+21. J. Fourier. Solution d’une question particulière du calcul des inégalités. Nouveau
+    Bulletin des Sciences par la Société Philomatique de Paris, pages 99–100, 1823.
+22. Ulrich Furbach and Natarajan Shankar, editors. Automated Reasoning, Third In-
+    ternational Joint Conference, IJCAR 2006, Seattle, WA, USA, August 17-20, 2006,
+    Proceedings, volume 4130 of Lect. Notes in Comp. Sci. Springer, 2006.
+23. M. Fürer. The complexity of Presburger arithmetic with bounded quantifier alter-
+    nation depth. Theor. Comput. Sci., 18:105–111, 1982.
+24. M.C.J. Gordon, Robin Milner, and C.P. Wadsworth. Edinburgh LCF: a Mechanised
+    Logic of Computation, volume 78 of Lect. Notes in Comp. Sci. Springer-Verlag,
+    1979.
+25. M.J.C. Gordon and T.F. Melham, editors. Introduction to HOL: a theorem-proving
+    environment for higher order logic. Cambridge University Press, 1993.
+26. E. Grädel. Subclasses of Presburger arithmetic and the polynomial-time hierarchy.
+    Theor. Comput. Sci., 56:289–301, 1988.
+27. B. Grégoire and X. Leroy. A compiled implementation of strong reduction. In Int.
+    Conf. Functional Programming, pages 235–246. ACM Press, 2002.
+28. J. Harrison. HOL Light Tutorial (for version 2.20), September 2006.
+29. John Harrison. Metatheory and reflection in theorem proving: A survey and cri-
+    tique. Technical Report CRC-053, SRI Cambridge, Millers Yard, Cambridge, UK,
+    1995. http://www.cl.cam.ac.uk/users/jrh/papers/reflect.dvi.gz.
+30. John Harrison. Theorem proving with the real numbers. PhD thesis, University of
+    Cambridge, Computer Laboratory, 1996.
+31. F. Klaedtke. On the automata size for Presburger arithmetic. In Proceedings of
+    the 19th Annual IEEE Symposium on Logic in Computer Science (LICS 2004),
+    pages 110–119. IEEE Computer Society Press, 2004.
+32. R. Klapper and A. Stump. Validated Proof-Producing Decision Procedures. In
+    C. Tinelli and S. Ranise, editors, 2nd Int. Workshop Pragmatics of Decision Pro-
+    cedures in Automated Reasoning, 2004.
+33. R. Loos and V. Weispfenning. Applying linear quantifier elimination. Comput. J.,
+    36(5):450–462, 1993.
+34. Assia Mahboubi. Contributions à la certification des calculs sur R : théorie,
+    preuves,programmation. PhD thesis, Université de Nice Sophia-Antipolis, 2006.
+35. S. McLaughlin. An interpretation of isabelle/hol in hol light. In Furbach and
+    Shankar [22], pages 192–204.
+36. S. McLaughlin and J. Harrison. A Proof-Producing Decision Procedure for Real
+    Arithmetic. In Robert Nieuwenhuis, editor, CADE-20: 20th International Confer-
+    ence on Automated Deduction, proceedings, volume 3632 of Lect. Notes in Comp.
+    Sci., pages 295–314. Springer-Verlag, 2005.
+37. T. S. Motzkin. Beiträge zur Theorie der linearen Ungleichungen. PhD thesis,
+    Universität Zürich, 1936.
+38. G. Nelson. Techniques for program verification. Technical Report CSL-81-10, Palo
+    Alto Research center, 1981.
+39. T. Nipkow. Functional unification of higher-order patterns. In 8th IEEE Symp.
+    Logic in Computer Science, pages 64–74. IEEE Computer Society Press, 1993.
+40. T. Nipkow, L. Paulson, and M. Wenzel. Isabelle/HOL — A Proof Assistant for
+    Higher-Order Logic, volume 2283 of Lect. Notes in Comp. Sci. Springer-Verlag,
+    2002. http://www.in.tum.de/∼nipkow/LNCS2283/.
+41. M. Norrish. Complete integer decision procedures as derived rules in HOL. In D.A.
+    Basin and B. Wolff, editors, Theorem Proving in Higher Order Logics, TPHOLs
+    2003, volume 2758 of Lect. Notes in Comp. Sci., pages 71–86. Springer-Verlag,
+    2003.
+42. S. Obua and S. Skalberg. Importing hol into isabelle/hol. In Furbach and Shankar
+    [22], pages 298–302.
+43. D. C. Oppen. Elementary bounds for presburger arithmetic. In STOC ’73: Pro-
+    ceedings of the fifth annual ACM symposium on Theory of computing, pages 34–37,
+    New York, NY, USA, 1973. ACM Press.
+44. L. C. Paulson. Logic and Computation. Cambridge University Press, 1987.
+45. M. Presburger. Über die Vollständigkeit eines gewissen Systems der Arithmetik
+    ganzer Zahlen, in welchem die Addition als einzige Operation hervortritt. In
+    Comptes Rendus du I Congrès de Mathématiciens des Pays Slaves, pages 92–101,
+    1929.
+46. W. Pugh. The Omega test: a fast and practical integer programming algorithm
+    for dependence analysis. In Proceedings of the 1991 ACM/IEEE conference on
+    Supercomputing, pages 4–13. ACM Press, 1991.
+47. C. R. Reddy and D. W. Loveland. Presburger arithmetic with bounded quantifier
+    alternation. In STOC ’78: Proceedings of the tenth annual ACM symposium on
+    Theory of computing, pages 320–325, New York, NY, USA, 1978. ACM Press.
+48. B. Scarpellini. Complexity of subclasses of Presburger arithmetic. Trans. AMS,
+    284:203–218, 1984.
+49. T. Skolem. Über einige Satzfunktionen in der Arithmetik. In Skrifter utgitt av
+    Det Norske Videnskaps-Akademi i Oslo, I. Matematisk naturvidenskapelig klasse,
+    volume 7, pages 1–28. , Oslo, 1931.
+50. A. Tarski. A Decision Method for Elementary Algebra and Geometry. University
+    of California Press, 2d edition, 1951.
+51. V. Weispfenning. The complexity of linear problems in fields. J. Symb. Comput.,
+    5(1/2):3–27, 1988.
+52. V. Weispfenning. The complexity of almost linear diophantine problems. J. Symb.
+    Comput., 10(5):395–404, 1990.
+53. V. Weispfenning. Complexity and uniformity of elimination in Presburger arith-
+    metic. In ISSAC, pages 48–53, 1997.
+54. V. Weispfenning. Mixed real-integer linear quantifier elimination. In ISSAC ’99:
+    Proceedings of the 1999 international symposium on Symbolic and algebraic com-
+    putation, pages 129–136, New York, NY, USA, 1999. ACM Press.
+55. P. Wolper and B. Boigelot. An automata-theoretic approach to presburger arith-
+    metic constraints (extended abstract). In SAS ’95: Proc. of the Second Int. Symp.
+    on Static Analysis, pages 21–32, London, UK, 1995. Springer-Verlag.
+

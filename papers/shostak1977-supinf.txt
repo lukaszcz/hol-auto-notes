@@ -1,0 +1,825 @@
+On the SUP-INF Method for Proving Presburger Formulas
+
+ROBERT E. SHOSTAK
+
+Stanford Research Instttute, Menlo Park, Cahfornta
+
+
+ABSTRACT This article presents an improved version of Bledsoe's SUP-INF method for proving theorems in
+a subclass of Presburger arithmetic The improved method is able to determine mvahdRy as well as vahdlty,
+and provides counterexamples for formulas determined to be mvahd A proof of correctness is given for the
+algorithms on which the method is based Implementation results are discussed, as is an apphcation to linear
+programming
+
+KEY WORDS AND PHRASES theorem proving, program venficaUon, deduction, Presburger arlthmeoc,
+automatic theorem prowng, SUP-INF, hnear programming
+
+CR CATEGORIES       5 21, 5 41
+
+
+
+ 1. Introduction
+In his paper, "The SUP-INF Method m Presburger ArithmeUc" [1, 2], Bledsoe
+presents a method for proving certain theorems in a class of logical formulas that arise
+frequently in program v e r i f i c a t i o n - P r e s b u r g e r formulas with universally quantified
+variables. At the heart of the method are algorithms (SUP and INF) intended to
+calculate the maximum and minimum values, respectively, that a real variable can take
+subject to a set of linear constraints It is proved in that paper that the two algorithms
+are conservative m the sense that SUP never computes a value too small and INF never
+computes a value too large. That the two algorithms are conservative is sufficient to
+guarantee that the SUP-INF method is consistent, i.e. that a formula determined by the
+method to be valid is indeed valid. In this article it is shown that SUP and INF are not
+only conservative, but exact in determining the maximum and minimum real values a
+variable can take subject to a set of satisfiable constraints. This result gives rise to an
+improved method of applying the SUP and INF algorithms that is able to determine
+invalidity as well as validity, and that automatically finds counterexamples for formulas
+determined to be invalid.
+  The first few sections of this paper describe the original method and discuss its
+completeness. The next sections introduce the improved method and describe its
+relation to other methods and to linear programming. Implementation results are
+described as well. The last sections give a proof of correctness of the SUP and | N F
+algorithms, justifying the new method.
+
+2. The SUP-INF Method
+Bledsoe's SUP-INF method operates on a subclass of formulas m Presburger arithmetic.
+Roughly speaking, Presburger formulas are those that can be built up from integers,
+integer variables, addition, multiplication by constants, the usual arithmetical relations,
+and the first-order logical connectives. The formula (Vx) (3y) 3x + y = 2 D x < y, for
+example, falls within this class.
+  The class was first shown to be d e o d a b l e by Presburger [9] in 1929. The most widely
+
+Copyright © 1977, Association for Computing Machinery, lnc General permission to repubhsh, but not for
+profit, all or part of this material is granted provided that A C M ' s copyright notice Is given and that reference
+is made to the pubhcatmon, to its date of issue, and to the fact that reprinting privileges were granted by
+permission of the Association for Computing Machinery
+Author's address. Stanford Research Institute, Menlo Park, C A 94025
+
+
+Journal of the Associationfor ComputingMachinery,Vol 24, No 4, October 1977, pp 529-543
+530                                                                                                     ROBERT E.         SHOSTAK
+
+known decision algorithm for it (described by Kreisel and Krevine [6], among others) is
+based on a method of elimination of quantifiers. In its raw form, the algorithm tends to
+produce a tremendous combinatorial expansion, and is therefore not practical for
+nontrivial problems. More efficient versions of the method of elimination have since
+been given by Cooper [3, 4]. Cooper's latest algorithm [4] is the most efficient known
+procedure for the full theory. Recent studies by Oppen [8], in fact, have suggested that
+Cooper's algorithm is the best that one can possibly do in the worst case (time
+                                2~
+complexity on the order of 2~ in the length of the formula). Fortunately, formulas that
+exhibit worst-case behavior do not seem to arise often in practical contexts.
+   Bledsoe's SUP-INF method is intended for the subclass of Presburger formulas that,
+when placed in prenex form, contain only universal quantifiers. The decision complexity
+of this subclass is bounded above by 2 ~, making it substantially easier to decide, in
+theory, than full Presburger? Moreover, although the class of universal Presburger
+formulas is admittedly small in comparison with the full class, it turns out to include a
+remarkable proportion of the formulas (or parts of formulas) one tends to encounter in
+program verification and related applications.
+   The SUP-INF method is carried out in t~vo stages. In the first stage the formula F to be
+proved is reduced to a set of integer linear programming problems (ILPs) with the
+property that F is valid if and only if none of the problems has a solution. In the second
+stage the ILPs are tested (one by one) for solvability.
+   The reduction to the set of ILPs consists of expanding the negation of F into a
+disjunctwe normal form:
+                                            ~ F -=GI V G2 V . . . V Gp,
+where each G, is a conjunction of linear inequahties of the form A -< B. During the
+expansion, terms of the form A = B are replaced by (A _< B A B -< A). Similarly, A >- B
+is replaced by B -< A, A < B is replaced b y A + 1 -< B, --7 (A _< B) is replaced by B + 1
+-< A, and so on. The conjunctions G~, G z " " Gp m the expanded form comprise the set of
+ILPs. Suppose, for example, that
+                                      F = - ( x < 3 y + 2) A x            = 1Dx         =y.
+Then
+  ~F~[x<3y+2/kx=           1Dx=y]
+     =-x < 3y + 2 A x = 1/~ -q(x = y )
+            ~ x _< 3y + 1 A x _< l A x _> l A (x + l _<y X/ y + l_<x)
+            --= (x _< 3y + l /~ x _< l /~ x _> l A x + l _<y )
+               V(x_<3y + lAx<-                   lAx_>        lAy       + l_<x),
+
+so that
+                                Gl = {x -< 3y + l , x -< l , x >- l , x                 + l ~- y}
+
+and     /
+                               G2 = {x _< 3y + l , x -< l , x -> l , y + l -< x}.
+"7 F is satisfiable if and only if either G~ or G2 has a solution in integers, and so F is
+valid if and only if neither Gi nor G~ has such solutions.
+  The second part of the SUP-INF method is concerned with testing each of the
+problems G, for solvability. The testing involves the use of two recursive algorithms,
+SUP and INF. For a set of inequalities S and a variable v occurring in S, SUP computes
+the maximum value v can take in real solutions of S, and INF computes the minimum
+value. For example, if S = {0 --< y, x <- y, x -< 1 - y}, then SUPs(x) = ~, INFs(x) =
+-0% SUPs(y) = 0% INFs(y ) -- 0.
+ In a personal c o m m u m c a t ~ o n , D e r e k O p p e n has n o t e d that ex~stentml P r e s b u r g e r , the c o m p l e m e n t
+problem, ~s NP-complete
+O n the S U P - I N F Method for Proving Presburger Formulas                                                  531
+
+   The two algorithms are used to test w h e t h e r or not a set S has integer solutions as
+follows First, each inequality in S that contains no variables (e.g. 2 -< 3) is evaluated.
+If o n e Is found to be false, it can be c o n c l u d e d i m m e d i a t e l y that S is infeasible. If all
+are found to be true and if S has n o inequalities c o n t a i n i n g variables, it can be
+concluded that S is feasible. Otherwise, for each variable x occurring in S, SUPs(x) a n d
+INFs(x) are c o m p u t e d . If for some x it is found that the closed interval [INFs(x),
+SUPs(x)] contains n o integers, S has n o integer solutions. Otherwise (as wdl be
+discussed in Section 3) no conclusions can be drawn.
+   For e x a m p l e , if S = {1 <-- 3x, 0 <-- y, x <- y, x _< 1 - y}, we have SUPs(x) = ½, INFs(x)
+= ~. Since the closed interval [§, ½] contains no integers, S must have n o integer solutions.
+   The definitions of S U P and I N F we have given here (Figures 1, 2, 3) are modified
+(though equivalent) verstons of the originals. T h e chief difference is that the n e w
+versions assume that their a r g u m e n t s have b e e n canonicalized using the S I M P r o u t i n e 2
+described m [1]. We have i m p l e m e n t e d the n e w versions, a n d have m fact f o u n d them
+to be more efficient than the origmals.
+   The definition of I N F F (an auxiliary function called by INF) has also b e e n changed, so
+as to be perfectly symmetrical with its c o u n t e r p a r t SUPP. T h e a s y m m e t r y in the original
+versions reflects an implicit constraint requiring all variables to take only n o n n e g a t i v e
+values in solutions of S. We have r e m o v e d the constraint so as to m a k e S U P a n d I N F
+perfect duals and to m a k e certain definitions cleaner. Of course, o n e can r e i n c o r p o r a t e
+the restriction by adding new inequalities of the form 0 <- x to S.
+   As can be seen from their definitions, S U P and I N F actually take two a r g u m e n t s
+rather than one. The first formal a r g u m e n t J is b o u n d to the variable whose m a x i m u m
+(or m i n i m u m ) value is to be c o m p u t e d ; the second a r g u m e n t H is b o u n d to the e m p t y set
+0 . O n internal recursive calls, J is b o u n d to expressions that m a y revolve + , *, M A X ,
+and M I N , and H is b o u n d to sets of variables occurring in S.
+   In addition to the auxiliary functions S U P P a n d I N F F , S U P a n d I N F m a k e use of
+functions U P P E R s ( x ) and L O W E R s ( x ) defined as follows: Let x be a variable occurring
+in S and let {x -< U1, x -< U2 . . . . . x -< Un, L~ -< x , Lz -< x, ... , Lm --< x} be o b t a i n e d
+from S by solving each inequality in S that m e n t i o n s x for x. T h e n
+                                               M I N ( U , , U2, . . . , U,)   i f n > 1,
+                          UPPERs(x ) =         Ut                              l f n = 1,
+                                                                               else,
+and
+                                             [ M A X ( L 1 , L~, ... , Lm)      i f m > 1,
+                        LOWERs(x) = IL~                                         else.ifm= 1,
+
+   R e t u r n i n g to the example S = {0 -< y, x -< y, x -< 1 - y}, we have
+                UPPERs(x ) = MIN(y, 1 -y),                    L O W E R s ( x ) = -0%
+                U P P E R s ( y ) = 1 - x,                    L O W E R s ( y ) = M A X ( 0 , x).
+Then
+SUPs(x, Q~) =
+        SUPP(x, SIMP(SUPs(UPPERs(x), {x})))                                             (step 2 2)
+     = SUPP(x, SIMP(SUPs(MIN(y, 1 - y), {x})))
+    = SUPP(x, SIMP(MIN(SUPs(y, {x}), SUPs(1 - y, {x}))))                                (step 5)
+              SUPs(y, {x}) =
+                      SUPP(y, SIMP(SUPs(UPPERs(y), {x, y})))                            (step 2.2)
+                   = SUPP(y, SIMP(SUPs (1 - x, {x, y})))
+                             SUPs(1 - x, (x, y}) =
+                                Let B' = SUPs(l, {x, y})
+                                 =l                                                     (step 1)
+2 In essence, the SIMP routine dlstrtbutes * over + and pulls MAX's and MIN's out to the front. The
+SIMPed version of 4 * (3 + MAX(2, X)), for example, is MAX(20, 12 + 4 * A).
+532                                                                                            ROBERT     E.   SHOSTAK
+
+
+                                       = SUPs(-X, {x, y}) + 1                                (step 4 2)
+                                       =  - INFs(x, {x, y}) + 1                              (step 3.1)
+                                       =  -x + 1                                             (step 2.1)
+                         = SUPF(y, - x + 1)
+                         = -x+    1                                           (step 4,2 m SUPP)
+              SUPs(1 - y, {x}) =
+                        Let B' = SUPs(l, {x, y})
+                          = 1                                                 (step 1)
+                     = SUPs(-y, {x}) + 1                                     (step 4 2)
+                      = -INFs(y, {x}) + 1                                     (step 3 1)
+                                INFs(y, {x}) =
+                                      INFF(y, SIMP(INFs(LOWERs(y),{x}))) (step 2 2)
+                                    = INFF(y, SIMP(INFs(MAX(0, x), {x})))
+                                             INFs(MAX(0, x), {x}) =
+                                               MAX(INFs(0, {x}), INFs(x, {x}))
+                                            = MAX(0, INFs(x, {x}))            (step 1)
+                                            = MAX(0, x)                       (step 2 1)
+                                    = INFF(y, MAX(0, x))
+                                    = MAX(INFF(y, 0), INFF(y, x))
+                                    = MAX(0, INFF~, x))                       (step 1 in INFF)
+                                    = MAX(0, x)                               (step 4 2 m INFF)
+      = SUPP(x, SIMP(MIN(-x +1, -(MAX(0, x)) + 1)))
+      = SUPP(x, MIN(1 - x, 1, 1 + x))
+      = MIN(SUPP(x, 1 - x), SUPP(x, 1), SUPP(x, 1 + x))                      (step 3 m SUPP)
+            SUPP(x, 1 - x) = ½                                                (step 4.2 m SUPP)
+            SUPP(x, 1) = 1                                                   (step 1 m SUPP)
+            SUPP(x, 1 + x) = 00                                              (step 4 3 3 m SUPP)
+      = MIN(½, 1, oo)
+      =½
+
+    It might b e n o t e d that the internal calls to S U P and I N F in the e x a m p l e s o m e t i m e s
+p r o v i d e a r g u m e n t s J o t h e r than variables and a r g u m e n t s H o t h e r than the e m p t y set.
+N o t e also that the two a l g o r i t h m s s o m e t i m e s return values o t h e r than n u m b e r s . In
+g e n e r a l , S U P and I N F r e t u r n expressions involving the variables in H . N o t e , for
+e x a m p l e , that S U P s ( y , {x}) = - x + 1. W e show later on ( L e m m a 15) that if J is a
+v a r i a b l e and H is an arbitrary set of variables, the expression E r e t u r n e d by SUPs(J, H)
+can be i n t e r p r e t e d as follows: If real n u m e r i c a l values are assigned to the variables in
+H , and E is e v a l u a t e d for t h o s e values, the result is the m a x i m u m real v a l u e that J can
+have m solutions of S w h e n the variables in H are fixed at their assigned values. F o r
+e x a m p l e , letting J = y and H = {x}, we h a v e E = S U P s ( y , {x}) = - x + 1. If we assign
+- 2 to x, E b e c o m e s 3. Thus, 3 is the m a x i m u m v a l u e y can h a v e in solutions of S w h e n
+x is fixed at - 2 . T h e dual r e m a r k s , of course, apply in I N F .
+
+3. Completeness
+In his original p a p e r describing the S U P - I N F m e t h o d , B l e d s o e p r o v e d that the S U P
+and I N F algorithms are c o n s e r v a t i v e in the sense that SUPs(x, 0 ) always c o m p u t e s a
+n u m b e r g r e a t e r than or e q u a l to the m a x i m u m real value x can h a v e in solutions of S,
+and INFs(x, O) always c o m p u t e s a v a l u e less than or e q u a l to the m i n i m u m real value.
+T h e s e p r o p e r t i e s are t o g e t h e r sufficient to p r o v e that the S U P - I N F m e t h o d is s o u n d -
+that is, if for s o m e variable x, [INFs(x), SUPs(x)] contains no integers, the original
+f o r m u l a must i n d e e d be v a h d
+     If, on the o t h e r hand, the interval [INFs(x), SUPs(x)] d o e s contain an integer for
+e a c h variable x occurring m S, the original f o r m u l a F may or may not be valid.
+C o n s i d e r , for e x a m p l e , the two f o r m u l a s
+
+               F~ = VxVy-'7(2x + 3y = 1)                  and     F2= VxVy~(2x              +2y     = 1).
+The f o r m u l a F1 is clearly not valid since l f x = - 1 a n d y = 1, the expression ~ (2x + 3y
+= 1) e v a l u a t e s to false. F2, h o w e v e r , is valid. T o see this, just n o t e that t h e l e f t - h a n d
+side of the equality 2x + 2y = 1 must always be e v e n , while the right-hand side is o d d .
+On the SUP-INF Method for Proving Presburger Formulas                                                                         533
+
+A l g o r i t h m SUPs(J, H)
+                       IF                                     Actaon                                     Return
+1 J is a n u m b e r
+2. J ts a variable
+    21J~H
+    2.2J$H                                       Let Q = UPPERs(J)
+                                                     Z = SUPs(Q, H U {J~)                      S U P P ( J , SIMP(Z))
+3. J = r A w h e r e r as a n u m b e r
+    31r<0                                                                                             r INFs(A,/-/)
+    3.2r_>0                                                                                           r SUPs(a,        1-1)
+4   J = rv + B w h e r e r as a n u m b e r ,
+     v a variable                                L e t B ' = SUPs(B, H t.2 {v})
+  4 1 v occurs in B '                            Let J ' = SIMP(rv + B')                             S U P s ( J ' , I/)
+  4 2 v does not occur m B '                                                                     SUPs(rv, H) + B'
+5 J = MIN(A, B)                                                                        M I N ( S U P s ( A , H), SUPs(B,/-/))
+
+                                                           FIG    1
+A l g o r i t h m INFs(J, H)
+                       IF                                     Action                                      Return
+1 J as a n u m b e r                                                                                           J
+2. J is a variable
+    21J~H                                                                                                      J
+    22Jf~H                                       L e t Q = LOWERs(./)
+                                                       Z = INFs(Q, H U {J})                     INFF(J, SIMP(Z))
+3. J = r A w h e r e r Is a n u m b e r
+    31r<0                                                                                             r S U P s ( A , H)
+    32r_>0                                                                                            r INFs(A, H)
+4. J = rv + B w h e r e r Is a n u m b e r ,
+     v a variable                                Let B ' = INFs(B, H U {v})
+  4 1 v occurs m B '                             Let J ' = SIMP(rv + B')                               I N F s ( J ' , H)
+  4.2 v does not o c c u r m B '                                                                INFs(rv, It) + B'
+5 J = M A X ( A , B)                                                                   M A X ( I N F s ( A , H), INFs(B, H))
+                                                             FIG 2
+
+A l g o r i t h m SUPP(x, y)
+                                    IF                                                       Return
+          1 y is a n u m b e r                                                                  Y
+          2   x=y                                                                               cO
+
+          3   y = MIN(A, B)                                                   MIN(SUPP(x, A ) , SUPP(x, B))
+          4. y = b x + c w h e r e x does not o c c u r m c
+               41b>l                                                                            cO
+
+               42 b<l                                                                       e/1 - b
+               43 b=l
+                   4 . 3 1 c not a n u m b e r                                                  cO
+
+                   4.3.2 c < 0                                                                 ~cO
+
+                   4.33c->0                                                                     cO
+
+
+          A l g o r i t h m INFF(x, y)
+                                    IF                                                       Return
+          1 y ts a n u m b e r                                                                  Y
+          2   x=y                                                                              --CO
+
+          3. y = M A X ( A , B)                                               M A X ( I N F F ( x , a ) , INFF(x, B))
+          4 y = b x + c w h e r e x does not o c c u r m c
+             41b>1                                                                             --CO
+
+             42 b<l                                                                         c/1 - b
+             43 b=l
+                 4 3 . 1 c not a n u m b e r                                                   --co
+
+                 4.32c >0                                                                       co
+
+                 43.3c_<0                                                                      --CO
+
+
+
+                                                           FIG 3
+534                                                                                    ROBERT E.     SHOSTAK
+
+
+   Reducing F1 and Fz to sets of inequalities in accordance with the method, one obtains
+the single set $1 = {2x + 3y ~- 1, 1 -< 2x + 3y} from F1, and the single set $2 = {2x + 2y
+-< 1, 1 -< 2x + 2y} from F2. Applying the SUP and INF algorithms gives:
+                INFsl(x, 0 ) = INFs2(X, 0 ) = INFs,(y, 0 ) = INFs:(y, 0 ) = -0%
+                SUPsl(X, ~5) = SUPsz(X, ~5) = SUPsi(y, ~ ) = SUPsz(y, QS) = oo.
+Thus,      the        intervals   [INFs,(x, O), SUPs;(x, O)], [INFsl(y, O), SUPs~(y, ~5)],
+[INFsz(y, O), SOPs~(y, O)], and [INFsz(X , O), SOPs2(X, 0 ) ] all contain integers, though
+Fz is valid and F~ is not.
+   The difficulty lies in the fact that the application of SUP and INF as described above
+is not by itself sufficient to test whether or not an integer linear programming problem
+has solutions. As we will prove, SUP and INF do find the maximum and minimum real
+values a variable can have subject to a set of linear constraints. (Note, for example,
+that x may indeed have arbitrarily large or small real values in solutions of S~ and $2.)
+However, even though there may be an integer value xo between the two extreme real
+values of some variable x, there may be no integer values Y0, z0, ... of the other
+variables y, z . . . . for which the point (x0, Y0, z0, ...) satisfies the constraints. Such is the
+case for Sz.
+   Fortunately this incompleteness manifests itself only rarely in practice. The reasons
+are twofold. First, the validity of programs encountered in practice almost never
+depends on the sort of Diophantine behavior typified by the above example. Second,
+the method used to reduce formulas to sets of linear inequalities tends to produce sets
+that have integer solutions if and only if they have real solutions. For example, the
+valid formula F -= 3x >- 10 D x >- 4 gives rise to S = {3x -> 10, x -< 3}. S has no solution
+in reals even though F ts not valid in reals. (Note that in obtaining S from F, the
+expression m(x _< 3) is replaced by 4 -< x; this transformation clearly depends on the
+integrality of x.)
+   Unfortunately there is no simple syntactic characterization of the class of formulas
+that evince the incompleteness. If the method fails to find a variable x for which
+[INF(x, O), SUP(x, 0 ) ] contains no integers, one cannot easily tell by examining the
+given formula whether or not tt can be concluded that the formula is mvahd. The SUP-
+INF method, in its ortginal form, is therefore only a semidecision procedure; it can
+demonstrate vahdity, but not invahdity.
+   Section 4 describes an improved method that remedies this madequacy. The new
+method is also incomplete, but is able to identify formulas that fall outside the domain
+of completeness. It can therefore prove both validity and invalidity.
+
+4. The Improved Method
+As described in Section 1, the original method for testing whether or not a given set S
+of inequalities (each of which contains at least one variable) has solutions is as follows:
+A variable v occurring in S is chosen at random, and SUPs(v, O) and INFs(v, O) are
+computed. If the closed interval [INFs(v, O), SUPs(v, 0 ) ] has no integer values, the
+procedure halts, with the conclusion that S has no integer solutions. Otherwise, a new
+variable is chosen, and the procedure is repeated. If all of the variables occurring in S
+have been exhausted, the method fails. 3
+  We propose here a revised method of applying SUP and INF that has a number of
+advantages over the original. First, the new method is complete over a somewhat larger
+domain than the origmal. Much more important, the new method provides a full
+decision procedure over its domain of completeness rather than just a semidecision
+procedure. Finally, and perhaps most important, the new method produces counterex-
+amples for formulas that are found to be invahd.
+
+a The case in which S contains exactly one variable (say v) is excepUonal In this case S is feasible ff and only
+if [INFs(v, 0), SUPs(v, ~7~)]contains an integer
+O n the S U P - I N F M e t h o d f o r P r o v i n g P r e s b u r g e r F o r m u l a s                 535
+
+   The method proceeds by eliminating variables from S one by one until a set of in-
+equalities is obtained that is eather clearly unsat~sfiable, or that has no variables
+occurring. (A set having no variables can, of course, be tested easily by testing each in-
+equality in the set.) A t each step, a variable v is chosen and SUPs(v, O) and INFs(v, O)
+are computed. If INFs(v, 0 ) > SUPs(v, O), it follows from the consistency of the
+original method that S is unfeasible. Otherwise an integer value in between is chosen
+(or a real, if there is no integer in the interval) and substituted for v in all inequalities
+of S. It follows from the main theorem to be proved in Section 12 that the new set is
+satisfiable m reals ff the old one was, and so the process can be repeated.
+   If unsat~sfiabdity has not been detected by the time all variables have been eliminated,
+the set of substituted values provides a real solution to S. In most instances, the real
+solution is also an integer solution, hence a counterexample to the given Presburger
+formula.
+   For example, the formula (3x -> y -> 2) D (x + y > 3) leads to the set S = {3x -> y, y
+>- 2, x + y -< 3}. Selecting x to SUP on first, one obtains SUP(x, O) = 1, INF(x, 0 ) =
+~. The integer value 1 is chosen from the interval [~, 1] and substituted f o r x in S, giving
+{3 -> y, y -> 2, y -< 2}. SUPing on y then gl~es S U P ( y , ~ ) = 2, I N F ( y , O) = 2. The
+value 2 is chosen from the interval [2, 2] and used for y, giving the set {3 -> 2, 2 -> 2, 1
++ 2 <- 3}. This latter is easily seen to be satisfiable; h e n c e x = 1, y = 2 must provide a
+counterexample for the given formula.
+   Consider, as a second example, the formula
+                (y + z < 5 A 3 z - > y           + 8Ax-<y)             D(2+        z > 2yVx   >z-   5).
+Applying the method described earlier, one obtains the set
+                   S = { y + z _< 4, 3z _> y + 8, x -< y , 2 + z --< 2y, x --< z - 5}.
+   Selecting x to SUP on first gives SUP(x, O) = - 3 , INF(x, 0 ) = -o~. Choosing the
+value x = - 3 from the interval [-0% - 3 ] and substituting gives {y + z -< 4, 3z ~ y + 8,
+- 3 -~ y, 2 + z -< 2y, - 3 -< z -5}. Next SUPing on y, one obtains SUP(y, 0 ) = 1,
+INF(y, 0 ) = ~ . Since SUP(y, 0 ) < INF(y, O), S must have no real solution, hence no
+integer solution. The gwen formula is therefore valid.
+   In certain instances the algorithm will return a real solution in which one or more
+variables have nonmteger values If, in particular, the first variable (say x) selected for
+SUPing has a nonmteger value, then it must have been that the interval [INF(x, O),
+SUP(x, 0 ) ] contained no antegers. In this case, S has real solutions but no integer
+solutions.
+   If on the other hand the first varmble selected has an integer value, but some other
+varmble m the solution has a noninteger value, S may or may not have an integer
+solution and so, in this case, the method is inconclusive. Consider, for example, the set
+S = {3x + 5y _< 7, 3x + 5y >- 7}. Selecting x first gwes SUP(x, 0 ) = 0% INF(x, 0 ) =
+-oo. Now ff 0 is chosen from the interval [-oo, oo] and substatuted for x, the noninteger
+solution x = 0, y = z~is found. The set S does, however, have integer solutions, e.g. x
+= - 1 , y = 2. In th~s sort of s~tuation, the new method suffers from the same sort of
+incompleteness as the old.
+   Completness can be obtained, of course, by substituting, m turn, all integer values m
+the closed interval rather than simply choosing one. Since each variable will, m general,
+lead to a number (possibly an infinite number) of such substitutions, the search for a
+solution assumes the form of a tree. Th~s ~dea is further refined m the branch and
+bound methods of integer linear programming. The incompleteness of the basic method
+is of so little practical consequence, however, that schemes for augmenting the method
+in order to obtain completeness are largely a matter of theoretacal interest.
+
+5. C o m p a r t s o n wtth C o o p e r ' s M e t h o d
+The S U P - I N F approach may be viewed as transforming an anteger problem into the
+536                                                                      ROBERT E.   SHOSTAK
+
+
+real domain, solving it in that domain, and then interpreting the result back in the
+integer domain. The success of the method derives at least in part from the fact that the
+real problem is easier to solve than the integer problem. The price paid for thxs ease of
+solution is, of course, the resulting incompleteness.
+   The SUP-INF method's dependence on the properties of reals distinguishes it from
+Cooper's method, which operates completely within the integer domain. In comparing
+the two, one must remember that Cooper's method operates over the full Presburger
+class, rather than just the subclass of universally quantified formulas.
+   The author is not aware of any thorough theoretical or empirical analyses of the
+relative performance of the two methods. One can show fairly easily that the SUP-INF
+method, both m its original and revised forms, is of deterministic complexity on the order
+of 2s in the lengths of the formula. We noted earlier that Cooper's method operates with
+complexity on the order of 2 2~ over the full Presburger class The complexity manifests
+itself as a combinatorial expansion in the lengths of the formula as the method proceeds.
+A large component of this expansion is associated with alternation of quantifiers, which
+does not occur in the universal subclass For this reason, Cooper's method can be
+expected to perform with greater efficiency over the subclass than it does over the full
+class.
+   However, a second component of the e x p a n s i o n - o n e that depends on the least
+common multiple of the coefficients of variables appearing in the f o r m u l a - does mani-
+fest itself in the subclass. This "delta" expansion can be mitigated in certain cases using a
+technique Cooper describes in [4]. In cases where the delta expansion cannot be treated,
+one would expect the SUP-INF method, which is not subject to the expansion, to
+perform more efficiently.
+
+6. Implementatton Results
+The improved SUP-INF method has been implemented in INTERLISPfor the PDP-10
+computer and used extensively in proving verification conditions arising from JOVIAL
+programs. The prover does not require any special initial form, and handles simple
+examples in a second or less of C P U time. Most larger examples are solved many times
+faster than a human could solve them. The counterexample feature has proved quite
+useful in locating bugs in programs submitted to the verification process.
+   We have found it efficient to implement the substitution of values by adding another
+argument to SUP and INF which acts as an A-list retaining substituted values. The
+functions U P P E R ( v ) and L O W E R ( v ) are modified to test whether v is bound on the A-
+list and to return the bound value if it is.
+
+7. Relation to Linear Programming
+As we prove in the next sections, SUPs(v, 0 ) computes the maximum real value a
+variable v can have subject to a set of S of hnear constraints. It is easy to see that SUP can
+be applied to arbitrary real linear programming problems. If a linear objective function L
+is to be maximized subject to a set S of constraints, the inequality x --< L is added to S,
+where x is a new variable. Clearly, maxsL = maxsx, and so SUP(x, O) provides the
+desired answer If L is to be minimized, of course, L -< x is added and INF(x, 0 ) is
+computed.
+   Conversely, one could ask whether a well-known real linear programming algorithm
+might make a good substitute for SUP and I N F in the m e t h o d - o r whether a known
+integer linear programming method could replace the second part of the method. In
+order to answer these questions, the author coded (in INTERLISP) both the Simplex
+algorithm for real linear programming and the Gomory cutting plane algorithm for
+integer linear programming. Surprisingly, neither of these implementations performed
+more efficiently than the SUP-INF implementation on naturally arising formulas. The
+rather poor relative performance of the well-known algorithms stems from the fact that
+typical problems tend to be small (thus emphasizing the overhead necessary to convert
+On the S U P - I N F Method for Proving Presburger Formulas                                 537
+
+the problem to matrix form) and structured in such a way as to produce sparse matrices.
+The Gomory algorithm, moreover, could not be trusted to terminate on u n b o u n d e d
+problems.
+
+8. Preliminary Remarks A b o u t the Mare Theorem
+In the original paper on the SUP-INF method, it was shown that if S is a satisfiable set
+of linear inequahties and if Q is an arbitrary quasilinear4 expression, maxsQ -< S U P s ( Q ,
+0 ) . In other words, it was shown that SUPs(Q, O) always returns a value at least as
+great as the least upper bound of the values Q can take m solutions of S. Experience
+with the algorithm, moreover, suggested that if the set S is in "natural form" 0.e. ff
+U P P E R is defined as described earlier) then the inequality is e x a c t - i . e , maxsQ =
+SUPs(Q, 0 ) . In fact this turns out not to be the case for arbitrary quasilinear forms Q,
+or even for arbitrary hnear forms Q. For example if S = {x -< y, x -< 2 - y} and Q = y
++ 2x, then maxsQ = 3 whereas S U P s ( Q , O) = o0. In order to prove the correctness of
+the improved method, however, it suffices only to show that if v is a variable, then
+maxsv = SUPs(v, Q).
+    Now it follows from Bledsoe's result, maxsv <- SUPs(v, O), that ifv is u n b o u n d e d (can
+have arbitrarily large values) in solutions of S then oo = maxsv = SUPs(v, 0 ) . Thus, it
+will be sufficient to consider only the case in which v is bounded in S, so that maxsv is
+fimte.
+    The proof requires a n u m b e r of elementary results in linear algebra. The next few
+sections wdl be concerned wah developing the definitions and theorems needed to
+support the main argument.
+
+9. Preliminary Definttions
+Throughout our discussion we will assume that V is a finite set of variables.
+   Definition. m linear form in V is an expression of the form rl v~ + rz v~ + ... + rnvn +
+c, where n -> 0, each v, ~ V, each r, is a nonzero real, and c is a real.
+   For convenience, we will not bother writing down unity coefficients and zero traihng
+constants. Thus, we wdl write x + 2y in place of l x + 2y + 0.
+   Definition. A minihnear form m V is either a linear form in V, an expression of the
+form MIN(L1, L2 . . . . . L,) where n -> 1 and each L, is hnear in V, or one of ~ , -oo.
+   In the sequel we assume all linear (mmilinear) forms to be linear (mmilinear) in the set
+V.
+   Definition. A n inequality is an expression of the form A -< B, where A and B are
+linear forms having no variables in common.
+   Definition. A p o m t (with respect to V) is an assignment of reals to the members of V.
+If P is a point and Q is a mindinear form, the value o f Q at P, written Q(P), is the real
+obtained by evaluating Q in the customary way with each variable replaced by its
+assignment in P.
+   Defmition. A point P satisfies an mequality A -< B if A (P) --< B(P) and satisfies a set
+S o f inequahties ff it sahsfies each member of S. S is said to be satisfiable if some point
+sahsfies S and unsattsfiable otherwise.
+   Definition. If r is a real, Q is minilinear, and S is a set of inequalities, we say that Q
+can have the value r in S if there exists a point P satisfying S such that Q(P) = r. We say
+that Q has the unique value r m S if Q can have the value r in S, but no other value.
+   Finally, we define the maxs function as follows:
+   Definttion .
+                            r              if Q can have the real value r in S
+               maxsQ =                        but no greater value,
+                            undefined      otherwtse.
+
+4 Quasdmear expressions are hnear expressions that may have occurrences of MAX or MIN, e g 3 +
+MAX(2y - MIN(4Z, 3), x + y)
+538                                                                          ROBERT E   SHOSTAK
+
+
+  These definitions immediately give rise to the following theorem:
+  THEOREM 1. Let La, L2, ..., Ln be hnear forms having unique values in S. Then
+
+                 max s[ M I N ( Ll . . . . , L,)] = MIN (max sLa, ... , max sLn).
+  PROOF. Let the unique value of each L, be r,. Then
+       maxs[MIN(Li . . . . , L,)] = MIN(rx . . . . , r~) = MIN(maxsL x. . . . , maxsL~).     []
+
+10 Results on Mimmally Bounding Sets
+The first few results given here can be found in books on convex hnear algebra. We will
+omit proofs for some of the more obvious of these.
+  It will be convenient to think of the points defined in Section 9 as points in the
+Euclidean space R n of dimension n , where n is the size of the set V. Conventional vector
+notation will be used.
+  Definttion. A set C of points is said to be convex if
+                             Pi~C       }
+                             Pe ~ C         --->tP~ + (1 - t)Pz ~ C.
+                             0<_t<l
+Thus, C Is convex if for each two points P~, P2 in C, all points on the line segment P~P2
+are in C.
+  THEOREM 2. The set o f points satisfying m inequality A <- B is convex.
+  THEOREM 3. The intersection o f convex sets is again convex.
+  THEOREM 4. The points satisfying a set o f mequalities form a convex set.
+  PROOF. From Theorems 2 and 3.
+  Definition. Suppose S is a set of inequalities in V, R is a linear form in V, and r is a
+real. Then S bounds R at r if maxsR Is defined and equal to r.
+  For example, S = { x - - < y , x < - - 2 - y } b o u n d s R = x + y a t 2
+   Definiuon. S bounds R If for some real r, S bounds R at r
+   Definition. S minimally bounds R at r if S bounds R at r and no proper subset of S
+bounds R at r.
+   Defimtion. S minimally bounds R if S bounds R and no proper subset of S bounds R.
+   It is clear from the definitions that if S minimally bounds R, then S minimally bounds
+R at r, for some r (namely, at r = maxsR). It is not so apparent, however, that the
+converse holds One mzght imagine a situation in which S minimally bounds R at r but
+in which some proper subset of S bounds R at a value greater than r. As we will see,
+this cannot happen. It will turn out that if S minimally bounds R at r, S minimally
+bounds R. Theorem 5 will take us a long way in establishing this fact.
+   THEOREM 5. Let S minimally bound R at r, and let SE denote the set o f equalittes
+obtained from S by replacing -< with =. Then any point P satisfying S such that R(P) = r
+satisfies SE.
+   PROOV. Suppose P satisfies S with R(P) = r but that for some inequality A <- B in
+S, A ( P ) ~ B(P). Since P satisfies S, then A(P) < B(P). Now obtain S' from S by
+removing A --< B. By the minimality of S, there exists a point P ' satisfying S' such that
+R(P') > r. Now consider the line segment PP' between P and P ' . Both P and P' satisfy
+S', so by Theorem 3 and the definition of convexity, all points on PP' satisfy S'. Now
+since P ' cannot satisfy S, A ( P ' ) > B(P'). Then since A(P) < B(P), it is easy to verify
+that there must be a point Q on PP' such that A ( Q ) = B(Q). Since Q satisfies S' and
+A ( Q ) = B(Q), Q must satisfy S. But since R(P) = r and R(P') > r, R(Q) > r, giving a
+contradiction.
+  For example, again letting S = {x -< y , x -< 2 - y} and R = x + y, we see that at each
+point satisfying S at which R achieves its maximum value of 2 (there is only one: x = y
+= 1), x = y a n d x = 2 - y .
+  Now as we noted above, if S minimally bounds R, then S minimally bounds R at r
+where r = maxsR. Theorem 5 then gives us the following corollary:
+On the S U P - I N F Method for Proving Presburger Formulas                                    539
+
+   TaEOREM 6. Suppose S minimally bounds R. Then any point P that satisfies S such
+that R(P) = m a x s R also satisfies S~.
+   We now have enough to prove:
+   THEOREM 7. I f S mimmally bounds R at r, S minimally bounds R.
+   PROOF. Let S' be any p r o p e r subset of S. W e claim that R is u n b o u n d e d in S ' . So
+suppose R is bounded in S'. Let T be a smallest subset of S' in which R is b o u n d e d and
+suppose T bounds R at r ' . Now since S minimally bounds R at r, r ' > r. Let P be a
+point satisfying S such that R(P) = r and P ' a point satisfying T such that R(P') = r'. By
+Theorem 5, P satisfies SE, and by Theorem 6, P ' satisfies TE. Since TE C_ SE, in fact,
+both P and P' satisfy TE. Now it is easy to show (we leave it as an exercise) that if two
+distinct points satisfy a set of linear equalities, all points on the line that they determine
+are also solutions. Since R(P) ~ R(P'), R takes arbitrarily large (or small, for that
+matter) values on the line PP'. Thus, R can acquire arbitrarily large values at points
+satisfying TE and hence T. But this is impossible since R is b o u n d e d by r ' in T, and so
+we have a contradiction. []
+   T h e o r e m 7 gives us the following corollary:
+   THEOREM 8. Suppose S bounds R. Then there extsts a subset T o f S such that T
+ minimally bounds R and m a x s R = maxrR.
+    PROOF. Let T be a smallest subset of S that bounds R at maxsR. Then maxsR =
+ maxrR. Furthermore, by T h e o r e m 7, T minimally bounds R. []
+    Minimal bounding sets have two other properties that will be n e e d e d to prove the
+ mare theorem:
+   TaEORE~a 9. Suppose v ~ V, v <_ R is in S, and S minimally bounds v. Then i f T is
+obtained from S by substttuttng v u = maxsv everywhere for v, R has the unique value vat
+m T.
+    PROOF. Since T contains vu -< R, R cannot take a value smaller than vM in solutions
+ of T. On the other hand, if P satisfies T and VM < R(P), P must satisfy S (with v taking
+ the value VM), contradicting T h e o r e m 6. []
+   For example, suppose S = {x -< y + z, y + z -< 3}. Then maxsx = 3, and T = {3 -< y
+ + z, y + z -< 3}. Clearly R = y + z has the unique value 3 in solutions of T.
+    THEOREM 10. Suppose S mmimally bounds v and v ~ L l , v --< L2, ... , v -~ Ln are
+ inequalities in S. Then there exists a real vo < m a x s V such that i f T is obtained f r o m S by
+ replacing v by vo, maxTL, > vo for 1 <-- i <-- n.
+    PROOF. It will suffice to show that there exists a point P satisfying S such that v(P)
+ < maxsv and for 1 -< i -< n, v(P) < L,(P). For then, letting v0 = v(P), we will have v0 <
+ maxsv and v0 < L,(P) -< maxrL, for each i. So let c > 0 be a real, and obtain S' from S
+ by replacing each v --< L, by v _< L, - c. W e claim that Sk (i.e. S' considered as a set of
+ equalities) has a solution. To see this, first note that SE has (by T h e o r e m 5) a solution.
+ S therefore has no "parallel planes" except possibly pairs of inequalities of the form A
+ -< B, B -< A . Furthermore, S can have no such p a i r s - f o r suppose A _< B, B -< A are
+ members of S. By mmimality, there exist points Pi satisfying S - {A --< B} and P2
+ satisfying S - {B -< A} such that v(PO > maxsv, v(P2) > maxsv. But then by convexity
+ there is a point P3 on the line segment in between satisfying S such that v(P3) > maxsv,
+ giving a contradictton. Thus, the equalities in SE are linearly independent and so S~
+ must have a solution.
+    Now let P be such a solution. P satisfies S ' , hence S. Moreover, v(P) = Li(P) - c and
+ so v(P) < L,(P) for each i. It remains to see that v(P) < maxsv. Since P satisfies S, v(P)
+ -< maxsv. Now if v(P) = maxsv, we would have by T h e o r e m 5 that P satisfies Sr. This
+ cannot be, because P satisfies Sk. Hence v(P) < maxsv, as required. []
+
+11. Some Needed Properties o f S U P and S U P P
+In addition to the results of Section 10, the main argument of the proof requires a
+number of theorems about the algorithms SUP and SUPP.
+540                                                                      ROBERT E. SHOSTAK
+
+  Theorems 12 and 13 are straightforwardly obtained using recursion induction, and so
+we will omit their proofs. In each case S is assumed to be a satisfiable set of linear
+inequalities and A a minilinear form.
+  THEORI~M 11 (Bledsoe). l f S is satisfiable, SUPs(A, 0 ) -< maxs(A).
+  THEOREM 12. S I M P [ S U P s ( A , L)] is a minilinear form in L.
+  THEOREM 13. I f T C S, S U P s ( A , f~) <- S U P r ( A , f~).
+  THI~OREM 14. Suppose z is a minilinear f o r m tn {v} having a fixed point at v = VM
+and such that for some v' < v~, Z(v') > v'. Then SUPP(v, Z) = VM.
+  PROOF. Since Z is mmilinear in {v}, Z can be expressed either as L1, or MIN(L1 . . . . .
+LN), N >- 1, where each L, is linear in {v}. We will assume the latter. The former case is
+handled similarly.
+  By definition of SUPP,
+   SUPP(v, Z) = SUPP(v, MIN(L1, . . . , LN)) = MIN(SUPP(v, Li) "'" suPP(v, LN)).
+Now since Z(vM) = VM, there must be an L, (say Li) such that L,(VM) = VM. Furthermore
+since v' < vu and Z(v') > v', L i must have slope less than 1, and so can be expressed b~v
+ + cl where b~ < 1. By definition of SUPP~ SUPP(v, L~) = c~/(1 - b~). Since VM = b~vu +
+cl, Vu = Cl/(1 - bl) and so SUPP(v, La) = vu. It thus suffices to show that for each/, 2 -<
+i -< N, SUPP(v, L~) -> VM.
+   NOW if we express L, as b y + c,, the condition z(v') > v' requires that either b, = 1
+and c, > 0, or be ~b 1. In the former case SUPP(v, L,) = ~ >- VM as required In the
+latter case either b, > 1 so that once again SUPP(v, L,) = 0% or b~ < 1. In this last case
+supP(v, L , )   -- c , / ( 1   - b,).
+   Now since Z(VM) = VM, L,(vu) --> vm, hence b y ~ + c, ~ VM. b, < 1 then gives that c d
+(1 -    bi) >- VM, SO that SUPP(v, L~) >- vu as needed. []
+   The last, and perhaps most important, theorem explicates the role of the second
+argument to SUP:
+   THEOREM 15. Let v be a variable not occurring in A , let r be a real, and obtain T
+from S by substituting r everywhere for v. Then i f T is sattsfiable, SUPT(A, 0 ) equals
+S U P s ( A , {v}) evaluated at v = r.
+   PROOf. We need to generalize the theorem so that it will carry itself through
+reduction. To this end, we introduce the following notation: If L is a set of variables,
+and <r:L --> Reals is a substitution, we let Scr and Act denote, respectively, the results of
+applying o" to S and to A .
+   The generalized theorem is:
+   THEOREM 16. Say L , L ' are sets o f variables, L ' C L , o':L - L ' ~ Reals, A is
+minilinear, and SUPs~(A~r , L') ~b - ~ . Then SUPs~(A~r, L') = [SUPs(A, L)]cr.
+   To see that this implies Theorem 13 we just let o" = {v/r}, L ' = f~, L = {v}, and T
+= S~r. Note that if T is satisfiable it follows from the conservatweness of SUP that
+SUPs,,(A, ~) ~ - ~ .
+   The proof is as usual, by recursion induction. All nontrivial cases reduce to the one
+in which A is a variable not in L (hence Act = A):
+   (1) SUPs.(A~r, L') = SUPs.(A, L'),
+   (2) = SUPP(A, S U P s . ( U P P E R s . ( A ) , L ' O {A}))
+   Now since SUPs.(A , L ' ) ~ -0% it must be (by inspection of SUPP) that
+S U P s . ( U P P E R ...) ~ -o0. By induction hypothesis, then,
+           SUPs~(UPPERs~(A), L ' U {A}) = S U P s ( U P P E R s ( A ) , L U {A})o-.
+(Note that L U {A} plays the role of L and L ' t3 {A} plays that of L; note also that
+UPPERs.(A) = UPPERs(A)o-.)
+  Thus (2) above becomes
+  (3) SUPP(A, S U P s ( U P P E R s ( A ) , L 0 {A})o').
+  Now, inspection of SUPP will show that for any minflinear Q, ff SUPP(A, Q~r) ~#
+-o% SUPP(A, Q~) = SUPP(A, Q)o'. Thus, (3) becomes
+On the S U P - I N F Method for Proving Presburger Formulas                                    541
+
+   (4) SUPP(A, SUPs(UPPERs(A), L t.J {A}))or,
+   (5) = SUPs(A, L)or
+as desired. []
+12. The Main Theorem
+We now have all the equipment necessary to prove the main result.
+   THEOREM 17. I f v E V and S bounds v, SUPs(v, 0 ) = maxsv.
+   PROOF. The proof ~s by induction on the number n of distinct variables occurring in
+inequalities in S. In order to push the reduction through, we will actually need to prove
+a somewhat stronger result:
+    (i) If v ~ V and S bounds v, SUPs(v, 0 ) = maxsv.
+   (ii) If L is a linear form with a unique value r in S, SUPs(L, O) ~ r.
+   It will also be necessary to carry the corresponding results for I N F as part of the
+induction hypothesis. Since the argument for I N F is the exact dual of the one for SUP,
+it will not be given explicitly.
+   Basts. n = O.
+   In this case S has no variables appearing. Part (i) must therefore hold vacuously. Part
+(ii) holds since L must be the constant r; hence SUPs(L , O) = r.
+   Induction step. n > O.
+   Part (i). Let VM denote maxsv. We need to show that vM = SUPs(v, Q~). By
+Theorem 8, there exists a subset S' of S such that S' minimally bounds v and maxs,v
+VM. Now we know by T h e o r e m 11 that VM <-- SUPs(v, 0 ) . F u r t h e r m o r e , since S' C S,
+we know from Theorem 13 that SUPs(v, 0 ) -< SUPs,(V, 0 ) . Hence, VM "~ SUPs(v, O)
+-< SUPs,(V , ~ ) , and so It will suffice to show that SUPs,(V, Q~) = vat.
+   Now by definition of SUP,
+                                SUPs,(V, O) = SUPP(v, SIMP(Z)),
+where Z = SUPs,(Q, {v}) and Q = UPPERs,(V).
+  Note that by Theorem 12, Z can be considered as a function of v. O u r plan is to
+show that Z(VM) = VU and that for some v' < VM, Z(V') > v'. It will then follow from
+Theorem 14 that SUPP(v, SIMP(Z)) = vM, and hence SUPs,(V, 0 ) = vM.
+   So let T be obtained from S' by substituting VM everywhere for v. Then to show that
+Z has a fixed point at VM, it will suffice, by Theorem 15, to show that SUPT(Q, O) =
+VM. Now Q is expressible either as L~ or as MIN(L~, Lz . . . . , Ln), where for 1 -< i -<
+n, v -< L, is an inequality in S'. We will consider only the latter case; the former is
+handled similarly. By Theorem 9, each L, has the unique value vu in T, and Q
+therefore has that value uniquely as well. Then
+     SUPr(Q, ~ ) = S U P r ( M I N ( L , , L~ . . . . . Ln))
+                 = M I N ( S U P r ( L , , ~ ) , SUPr(L2, ~ ) . . . . . SUPr(LN, (~))
+                 = MIN(maxrL~, . . . , maxrLn) (by induction hypothesis, part (ii))
+                 = maxrQ (by Theorem 1)
+                    =   I, M.
+
+
+Thus VM is a fixed point of Z.
+  It remains to show that for some v' < v~, 'Z(v') > v. Once again writing Q as
+MIN(La, L2 . . . . , L,), it follows from T h e o r e m 10 that there exists a v' < vu such that if
+T is obtained from S' by substituting v' everywhere for v, maxrL, is defined and is
+greater than v' for each i, 1 -< i -< n. Then
+                  Z(v') = SUPr(Q, ~ ) (by Theorem 15)
+                        = SUPr(MIN(L~ . . . . . LN), O )
+                        = M1N(SUPr(L~, 0 ) . . . . . SUPv(LN, O))
+                        -> MIN(maxrL~, . . . , maxrLN) (by Theorem 11)
+                        > MIN(v', . . . . v ') = v '
+as required.
+542                                                                       ROBERT E. SHOSTAK
+
+   Part (ii). We need to show that if L is a linear form with a unique value r in
+S, SUPs(L, O) = r. We distinguish two cases:
+   Case 1. L has at most one variable appearing. In this case L can be expressed by +
+c where v E V and b and c are reals. Now since L has the unique value r in S, either b
+= 0 and c = r in which case SUPs(L, O) = r trivially, or v has the unique value (r -
+c)/b in S. In this latter case,
+                                  maxsv = minsv = (r - c)/b
+and so
+
+                            bbSUPs(v,O)+c          if b > ~ /
+         SUPs(L, 0 ) =        INFs(v, 0 ) + c      If b < vj
+
+                        = { b bmaxsv+cminsv
+                                       + c    ifif bb>00}< by the argument of part (i)
+                        = b(r - c)/b + c = r      as needed.
+  Case 2. L has more than one variable appearing. In this case L can be expressed
+by + L ' where b is a nonzero real, v is a variable not occurring in L ' , and L ' is a linear
+form. Letting Q = SUPs(L', {v}), we have:
+                       ~SUPs(SIMP(bv + Q), 0 )            if v occurs in Q,
+         SUPs(L, 0 ) = [ S U P s ( b v , 0 ) + Q          otherwise.
+
+Now suppose v' is a value that v can take in S, and let T be obtained from S by
+substituting v' everywhere for v. By Theorem 15, if Q is considered as a function of
+v, Q(v') = SUPr(L', 0 ) . Now since L has the unique value r m S, L ' must have the
+unique value r - by' in T. By mducUon hypothesis, then, Q(v') = S U P r ( L ' , O) = r -
+by'. The value Q(v') zs thus the one and only value that L ' can have in S when v is fixed
+at v'. bv' + Q(v') is thus the one and only value L can have in S when v is hxed at v'.
+But since L has the same value r m S regardless of where v is fixed, either v has a
+unique value in S or SIMP(bv + Q) is the constant r. In either case, bv + Q has the
+unique value r in S.
+  Now if v does not occur in Q, SUPs(L, 0 ) = SUPs(bv, 0 ) + Q. By the argument of
+part (i), SUPs(by, 0 ) = maxs(bv). Furthermore, since Q must be a constant in this case,
+                     SUPs(L, 0 ) = maxs(bv) + Q = maxs(bv + Q) = r.
+In the remaimng case, v does occur in Q, and SUPs(L, 0 ) = SUPs(SIMP(bv + Q), 0 ) .
+If SIMP(rv + Q) is the constant r, the result follows immediately. Otherwise, as was
+noted above, v has a umque value in S. Now either SIMP(bv + Q) is linear in {v} in
+which case SUPs(L, 0 ) = SUPs(SIMP(bv + Q), 0 ) = maxs(bv + Q) = r by the
+argument of case 1, or SIMP(bv + Q) can be written MIN(L1 . . . . . L~¢) where each L, is
+hnear in {v}. In this latter case,
+      SUPs(L, 0 ) -- MIN(SUPs(L,, 0 ) , . . . , SUPs(L;v, 0 ) )
+                  = MIN(maxsL~, maxsL,, . . . , maxsL,) (by the argument of case 1)
+                  = maxsMIN(L1, L2 . . . . , L.) (by Theorem 1)
+                  = maxs(bv + Q) = r
+as required.    [3
+
+ACKNOWLEDGMENTS. The author is grateful to W.W. Bledsoe, D.C. Cooper, Robert
+Hill, R. Lipton, and M.W. G r e e n for their suggestions and patient readings of the proof.
+
+REFERENCES
+(Note. References [5, 7] are not cited m the text )
+ 1 BLEDSOB,W W The SUP-INF method in Presburger anthmette Memo ATP-18, Math Dept , U of
+   Texas at Austin, Austin, Tex, Dec 1974.
+On the SUP-INF Method for Provmg Presburger Formulas                                                       543
+ 2 BLEDSOE,W W A new method tor proving certain Presburger formulas Advance Papers 4th lnt Joint
+   Conf on Artlf Intell , Tlbdlsi, Georgia, U S S R , Sept 1975, pp 15-21
+ 3 COOPER, D C Programs for mechamcal program verification In Mach Intell 6, B Meltzer and D
+   Michte, Eds., American Elsevier, New York, 1971, pp 43-59
+ 4 CoovEg, D C Theorem prowng m arithmetic without mult~phcatlon In Mach. Intell 7, B. Meitzer and
+   D Mlch~e, E d s , American Elsevier, New York, 1972, pp 91-99
+ 5 DAVIS,M A program for Presburger's algorithm Summer lnst for Symbolic Logic, Cornell U , Ithaca,
+   N Y , 1957, pp 215-233
+ 6 KREISEL, G , AND KREVINE, J L Elements of Mathematical Logic North-Holland, Amsterdam, 1967,
+   pp 54-57
+ 7 LEE, R D An apphcatlon of mathemaucal logic to the integer hnear programming problem Notre
+   Dame J Formal Logic XIlI, 2 (April 1972), 279-282
+ 80PPEN, D Ph D Th , U. of Toronto, Toronto, Ont , 1975,J Comptr Syst Scl (to appear).
+ 9 PRESBUROER, M Uber die Vollstandlgkelt emes gemssen Systems der Arithmetic ganzer Zahlen In
+   Welchem &e Ad&t~on als Emz~ge Operation hervortrltt, Sprawozdanle z I Kongresu Matematykow
+   Krajow Slowcansklch Warszawa, 1929, pp 92-101
+
+RECEIVED OCTOBER 1975, REVISED MARCH1977
+
+
+
+
+                                       Journalof the Associationfor ComputingMachinery,Vol 24, No 4, October1977
+
