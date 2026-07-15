@@ -11,12 +11,12 @@
 - TASK_09 markers + process_claset_tags — done
 - TASK_10 TypeBase hook — done
 - TASK_11 seed theory — done (verified against TASK_11; selftests and upto-auto gate green)
-- TASK_12 theory_tests — unblocked (not started)
-- TASK_13 bookkeeping + full gate — blocked (needs 01–12)
+- TASK_12 theory_tests — done (verified against TASK_12; theory tests pass on two consecutive runs and upto-auto gate is green)
+- TASK_13 bookkeeping + full gate — unblocked (not started)
 
 ## 2. Next unblocked task
 
-TASK_12 (`TASK_12_theory_tests.md`).
+TASK_13 (`TASK_13_bookkeeping.md`).
 
 ## 3. Completion log
 
@@ -31,3 +31,4 @@ TASK_12 (`TASK_12_theory_tests.md`).
 - 2026-07-15 TASK_09 — marker constructors and processing landed; implementation reverified against TASK_09, selftests and upto-auto gate are green.
 - 2026-07-15 TASK_10 — TypeBase contribution registry, catch-up hook, distinctness/injectivity rules, and idempotence landed; implementation and acceptance criteria rechecked, selftests and upto-auto gate are green.
 - 2026-07-15 TASK_11 — seed theory landed; implementation and acceptance criteria rechecked against TASK_11, selftests and upto-auto gate are green.
+- 2026-07-15 TASK_12 — cross-theory persistence tests landed; implementation and acceptance criteria rechecked against TASK_12, two consecutive theory-test runs and upto-auto gate are green.
