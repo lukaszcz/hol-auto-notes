@@ -2,7 +2,7 @@
 
 ## 1. Task status
 
-- TASK_01 build skeleton — unblocked (not started)
+- TASK_01 build skeleton — unblocked (not started; deliverables absent)
 - TASK_02 clasetMarker theory — blocked (needs 01)
 - TASK_03 NTactical — blocked (needs 01)
 - TASK_04 clasetNet — blocked (needs 01)
@@ -25,4 +25,4 @@ TASK_01 (build skeleton).
 Add exactly ONE line per task here as it lands, format:
 `- YYYY-MM-DD TASK_NN — <one-line result / deviation note>`
 
-(empty)
+(empty; no task has landed)
