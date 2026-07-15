@@ -1,4 +1,4 @@
-# Phase 0 task progress
+# Phase 0 task progress (verified 2026-07-15)
 
 ## 1. Task status
 
@@ -25,4 +25,4 @@ TASK_01 (build skeleton).
 Add exactly ONE line per task here as it lands, format:
 `- YYYY-MM-DD TASK_NN — <one-line result / deviation note>`
 
-(empty; no task has landed)
+(empty; no task has landed; one line is required for each task as it lands)
