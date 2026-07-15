@@ -1,4 +1,4 @@
-# Phase 0 task progress (verified 2026-07-15)
+# Phase 0 task progress (verified 2026-07-15; TASK_04 rechecked)
 
 ## 1. Task status
 
@@ -25,4 +25,4 @@ TASK_05 (`TASK_05_claset_rules_model.md`).
 - 2026-07-15 TASK_01 — build skeleton landed; upto-auto gate is green.
 - 2026-07-15 TASK_02 — clasetMarker theory landed; upto-auto gate is green.
 - 2026-07-15 TASK_03 — NTactical landed; selftests and upto-auto gate are green.
-- 2026-07-15 TASK_04 — clasetNet landed; selftests and upto-auto gate are green.
+- 2026-07-15 TASK_04 — clasetNet landed; deliverables and acceptance criteria rechecked; selftests and upto-auto gate are green.
