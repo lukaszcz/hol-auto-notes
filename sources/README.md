@@ -50,3 +50,7 @@ Theory files (cited with line numbers or as rule-corpus guides):
 | `src/HOL/Fields.thy` | field_simps corpus |
 | `src/HOL/Groups.thy` | algebra_simps corpus |
 | `src/Doc/Isar_Ref/Generic.thy` | isar-ref chapters on the Simplifier and Classical Reasoner |
+| `src/HOL/Set.thy` | seeding-corpus guide (rule classifications to mine) |
+| `src/HOL/List.thy` | seeding-corpus guide |
+| `src/HOL/Map.thy` | seeding-corpus guide |
+| `src/HOL/Examples/Groebner_Examples.thy` | ALGEBRA_TAC/RING_TAC benchmark corpus |

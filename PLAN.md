@@ -22,6 +22,9 @@ that are **at least as strong** as the Isabelle originals.
   `sources/README.md`).  Every `file.ML:line` reference in this plan
   resolves against those copies, e.g.
   `sources/src/Provers/classical.ML:241`.
+- The four underlying research reports (line-level analysis beyond what
+  this plan summarizes) are archived under `.agent-files/research/`
+  (see `research/README.md`).
 
 ## 1. Research summary: what exists, what is missing
 
@@ -511,7 +514,8 @@ rule-by-rule — misclassified "safe" rules are the classic way clasets rot.
 - Parity suite: Pelletier problems (blast); Isabelle's `auto`/`force`
   regression goals translated to HOL4; `lin_arith`/Presburger example
   sets (incl. `src/integer/testing/` already in-repo); Gröbner examples
-  (`NUM_RING`/`INT_RING` corpora + Isabelle `Groebner_Examples.thy`).
+  (`NUM_RING`/`INT_RING` corpora + Isabelle `Groebner_Examples.thy`,
+  vendored at `sources/src/HOL/Examples/Groebner_Examples.thy`).
 - Strength metric: solved-goal counts + wall-clock, tracked in the layer's
   selftests (failing = regression); a comparison table vs Isabelle
   documented per release.
