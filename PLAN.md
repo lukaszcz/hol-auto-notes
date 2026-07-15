@@ -109,13 +109,16 @@ All decided 2026-07-14, one-by-one, with alternatives presented:
 | D1 | **Scope**: phased full-parity program.  Core phases planned in depth: classical family, simplifier upgrades, arith, presburger, algebra/ring.  Later phases sketched: verified/reflected QE (Cooper, Ferrante–Rackoff, MIR), argo-style internal SMT, `approximation`. |
 | D2 | **Classical architecture**: build BOTH a faithful port of Isabelle's claset design (`Provers/classical.ML`) AND a full aesop-style best-first engine (Limperg & From, CPP 2023), now, over ONE shared rule database whose schema carries both kinds of metadata from day one. |
 | D3 | **blast**: faithful port of Paulson's `Provers/blast.ML` (untyped tableau + tactic-script reconstruction). |
-| D4 | **Rule infrastructure**: mirror the simpset dual-track design — first-class claset/ruleset values with combinators, plus a global stateful claset persisted via `ThmSetData.export_with_ancestry` (attributes `[intro]`, `[intro!]`, `[elim]`, `[elim!]`, `[dest]`, `[dest!]`, `[iff]`, `[split]`, `[arith]`, …); per-invocation modifiers as theorem-list markers extending the existing `Cong`/`Excl`/`SF` convention. |
+| D4 | **Rule infrastructure**: mirror the simpset dual-track design — first-class claset/ruleset values with combinators, plus a global stateful claset persisted through the theory-ancestry machinery (see D11); per-invocation modifiers as theorem-list markers extending the existing `Cong`/`Excl`/`SF` convention.  *Revised 2026-07-15 (D12)*: attribute surface is HOL4-native, not Isabelle-mimicking — `[intro]`/`[elim]`/`[dest]` (unsafe), `[sintro]`/`[selim]`/`[sdest]` (safe), plus `[iff]`, `[split]`, `[arith]` in later phases; removal via functions (`delrule`), not a del attribute. |
 | D5 | **Simplifier**: extend simpLib in place (looper + splitter port, solver stacks, subgoaler, configurable limits/term order, congprocs in SSFRAG, fixpoint asm mode).  Keep top-down traversal; adopt skeleton-style optimizations only where behavior-preserving. |
 | D6 | **arith**: port `Fast_Lin_Arith` as a generic Farkas-certificate engine parametric over instance records; port the `lin_arith.ML` preprocessing layer; wire as type-generic simp solver; `ARITH_TAC` = extensible registry with escalation linarith → presburger → real backends. |
 | D7 | **presburger**: Omega first, Cooper fallback, behind Isabelle-parity preprocessing and a `[presburger]` rule set. |
 | D8 | **algebra/ring**: persistent instance registry (types and abstract-structure hypotheses → semiring/ring/field instance records) + goal-type dispatch; `ringLib` promoted from `examples/`; curated `algebra_simps`/`field_simps` collections. |
 | D9 | **Naming**: HOL4 uppercase convention only — `AUTO_TAC`, `BLAST_TAC`, `FORCE_TAC`, `FASTFORCE_TAC`, `SAFE_TAC`, `CLARIFY_TAC`, `CLARSIMP_TAC`, `FAST_TAC`, `BEST_TAC`, `DEEPEN_TAC`, `AESOP_TAC`, `ARITH_TAC`, `PRESBURGER_TAC`, `ALGEBRA_TAC`, `RING_TAC`, `IDEAL_TAC`.  No lowercase Isabelle-alias layer.  (Collision handling: §11, "Resolved micro-decisions".) |
 | D10 | **Integration**: portable opt-in layer — own subtree in the default build (after the core), integration-identical mechanisms, central seed theories for the rule corpus, TypeBase hook + catch-up; promotion to full core integration planned as an explicit final phase. |
+| D11 | *(2026-07-15, Phase 0)* **Claset persistence substrate**: one `AncestryData.fullmake` instance (tag `"claset"`) with a rich custom delta type (kind, safety, optional priority) and explicitly registered attributes — not `ThmSetData.export_with_ancestry`, whose fixed `ADD/REMOVE` delta type cannot carry the D2 schema.  Same mechanism family one level down; D10 unaffected.  Details: `PLAN_phase_0.md` §0. |
+| D12 | *(2026-07-15, Phase 0)* **HOL4-native attribute syntax** (revises D4): `[intro]/[elim]/[dest]` unsafe, `[sintro]/[selim]/[sdest]` safe, mirroring the `Intro`/`SIntro`/… marker constructors; zero core-grammar changes; numeric aesop priorities as attribute arguments deferred to Phase 4 (small additive lexer tweak then). |
+| D13 | *(2026-07-15, Phase 0)* **Wrapper representation**: layer-level nondeterministic tactic type `ntactic = goal -> (goal list * validation) seq.seq` (`portableML/seq`), `wrapper = ntactic -> ntactic`; safe wrappers compose ORELSE-style, unsafe APPEND-style — one wrapper vocabulary for Phases 1–4. |
 
 Overarching (owner clarification): judge every design by resulting tactic
 strength, not by resemblance to Isabelle's user syntax.
@@ -140,10 +143,10 @@ src/auto/
 Design constraints making the layer portable to full integration (D10):
 
 1. **Integration-identical mechanisms**: everything uses
-   `ThmSetData.export_with_ancestry` / `ThmAttribute` / TypeBase hooks —
+   `AncestryData`/`ThmSetData` / `ThmAttribute` / TypeBase hooks —
    nothing bespoke to "opt-in mode".
 2. **Central seed theories**: `clasetSeedScript.sml` etc. declare rules
-   *about ancestor theories' theorems* (ThmSetData deltas live in the
+   *about ancestor theories' theorems* (theory-ancestry deltas live in the
    declaring theory).  Promotion = move each declaration into the theorem's
    home `*Script.sml` as an attribute; identical semantics.
 3. **Stratified dependencies**: code depends only on libraries available
@@ -204,11 +207,12 @@ strictly separate, since the safe/unsafe semantics depends on it
 - `claset` abstract type with combinators (`add_safe_intro`, `++`-style
   merge, removal by name), mirroring simpset value ergonomics; merge
   preserves canonical declaration order (`Bires.merge_decls`).
-- Global stateful claset (analogue of `srw_ss()`), persisted with
-  `ThmSetData.export_with_ancestry {settype = "claset", ...}`, which
-  auto-registers the attribute; attribute arguments select the kind:
-  `Theorem foo[intro]`, `[intro!]`, `[elim!]`, `[dest]`, …; aesop priority
-  as a parameterized attribute argument.
+- Global stateful claset (analogue of `srw_ss()`), persisted with a
+  dedicated `AncestryData.fullmake` instance carrying rich deltas (D11),
+  with explicitly registered attributes selecting the kind:
+  `Theorem foo[intro]`, `[sintro]`, `[selim]`, `[dest]`, … (D12); aesop
+  priority as a parameterized attribute argument (surface deferred to
+  Phase 4).
 - Per-invocation modifiers as theorem-list markers in the existing
   simpLib style (`process_tags`, `simpLib.sml:834`):
   `SIntro th`, `Intro th`, `SElim th`, `Elim th`, `SDest th`, `Dest th`,
