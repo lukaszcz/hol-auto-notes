@@ -1,4 +1,4 @@
-# Phase 0 task progress (verified 2026-07-15; source, selftests, and gate rechecked)
+# Phase 0 task progress (verified 2026-07-15; sources, selftests, and gate rechecked)
 
 ## 1. Task status
 
@@ -26,6 +26,6 @@ TASK_06 (`TASK_06_derived_rules.md`).
 - 2026-07-15 TASK_02 — clasetMarker theory landed; upto-auto gate is green.
 - 2026-07-15 TASK_03 — NTactical landed; selftests and upto-auto gate are green.
 - 2026-07-15 TASK_04 — clasetNet landed; deliverables and acceptance criteria rechecked; selftests and upto-auto gate are green.
-- 2026-07-15 TASK_05 — rule model, canonical form, declaration bookkeeping, and codec landed; deliverables and acceptance criteria rechecked; selftests and upto-auto gate are green.
+- 2026-07-15 TASK_05 — rule model, canonical form, declaration bookkeeping, and codec landed; Bires/canonical-form sources and all acceptance criteria rechecked; selftests and upto-auto gate are green.
 - 2026-07-15 TASK_06 — initial implementation landed; verification re-opened it because the swap guard and theorem-level golden/diagnostic checks are incomplete.
 - 2026-07-15 TASK_07 — implementation landed; verification re-opened it because swapped-rule routing, declaration ordering, and lookup tests are incomplete.
