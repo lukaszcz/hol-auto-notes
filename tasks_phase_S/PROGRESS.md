@@ -16,11 +16,11 @@
 - TASK_12 — done (re-verified against sources; group-7 selftests, h4pedant, and upto-parallel build pass)
 - TASK_13 — done (re-verified against TASK_13.md; docs, h4pedant, and upto-parallel pass)
 - TASK_14 — done (re-verified PLAN.md §2/§5/§11 updates and gate bookkeeping)
-- TASK_15 — unblocked (not started)
+- TASK_15 — done (verified full `bin/build -F -t`, h4pedant, and PLAN gate record)
 
 ## Next unblocked task
 
-TASK_15.md
+NONE (all tasks complete)
 
 ## Completion log
 
@@ -38,3 +38,4 @@ TASK_15.md
 - 2026-07-16 TASK_12 — Re-verified congproc fragment merging, relation keys, history rebuild, and group-7 selftests; h4pedant and upto-parallel build pass.
 - 2026-07-16 TASK_13 — Re-verified user documentation and notes; doc processing, h4pedant, and upto-parallel build pass.
 - 2026-07-16 TASK_14 — Recorded Phase S decisions, delivery status, freeze/revisit notes, and per-task gate status in PLAN.md; acceptance updates verified.
+- 2026-07-16 TASK_15 — Verified green full-distribution build, clean h4pedant, gate record, and no pre-existing failures.
