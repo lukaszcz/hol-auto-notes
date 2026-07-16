@@ -1,0 +1,1 @@
+This repository contains AI-generated notes for the development of HolAuto - an automation layer for HOL4 replicating Isabelle/HOL automation tactics (`auto`, `blast`, `force`, `simp`, `arith`, etc.).
