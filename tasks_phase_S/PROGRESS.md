@@ -35,4 +35,4 @@ TASK_13.md
 - 2026-07-16 TASK_09 — Re-verified registration, TypeBase cache, conclusion/assumption integration, cases_simp, add/del_split, and split_ss against TASK_09.md; selftests, integration theory test, h4pedant, and upto-parallel build pass.
 - 2026-07-16 TASK_10 — Verified Split/Excl process_tags plumbing, splitter exclusions, Generic/RW_TAC parity and limit selftests; h4pedant and upto-parallel build pass.
 - 2026-07-16 TASK_11 — Added and verified GEN_GLOBAL_SIMP_TAC mutual fixpoint controls, change counting, opt-in flags, and regression selftests; upto-parallel build passes.
-- 2026-07-16 TASK_12 — Added and verified congproc fragment merging, relation keys, history rebuild, and group-7 selftests; h4pedant and upto-parallel build pass.
+- 2026-07-16 TASK_12 — Re-verified congproc fragment merging, relation keys, history rebuild, and group-7 selftests; h4pedant and upto-parallel build pass.
