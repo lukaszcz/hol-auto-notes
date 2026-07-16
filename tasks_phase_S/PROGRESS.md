@@ -6,7 +6,7 @@
 - TASK_02 — done
 - TASK_03 — done
 - TASK_04 — done (re-verified against sources; acceptance tests and upto-parallel build pass)
-- TASK_05 — unblocked (not started)
+- TASK_05 — done
 - TASK_06 — unblocked (not started)
 - TASK_07 — unblocked (not started)
 - TASK_08 — blocked (needs 07)
@@ -20,7 +20,7 @@
 
 ## Next unblocked task
 
-TASK_05.md
+TASK_06.md
 
 ## Completion log
 
@@ -28,3 +28,4 @@ TASK_05.md
 - 2026-07-16 TASK_02 — Added and verified Traverse context/solver pipeline.
 - 2026-07-16 TASK_03 — Verified traverse-data controls, dynamic refs, reentrancy, and congLib seam; selftests and upto-parallel pass.
 - 2026-07-16 TASK_04 — Re-verified implementation and acceptance criteria against sources; selftest, h4pedant, and upto-parallel build pass.
+- 2026-07-16 TASK_05 — Added and verified the Split marker round-trip; marker selftest and upto-parallel build pass.
