@@ -8,8 +8,8 @@
 - TASK_04 — done (re-verified against sources; acceptance tests and upto-parallel build pass)
 - TASK_05 — done
 - TASK_06 — done
-- TASK_07 — unblocked (not started)
-- TASK_08 — blocked (needs 07)
+- TASK_07 — done
+- TASK_08 — unblocked (not started)
 - TASK_09 — blocked (needs 04, 06, 07, 08)
 - TASK_10 — blocked (needs 05, 06, 09)
 - TASK_11 — unblocked (not started)
@@ -20,7 +20,7 @@
 
 ## Next unblocked task
 
-TASK_06.md
+TASK_08.md
 
 ## Completion log
 
@@ -30,3 +30,4 @@ TASK_06.md
 - 2026-07-16 TASK_04 — Re-verified implementation and acceptance criteria against sources; selftest, h4pedant, and upto-parallel build pass.
 - 2026-07-16 TASK_05 — Added and verified the Split marker round-trip; marker selftest and upto-parallel build pass.
 - 2026-07-16 TASK_06 — Added and verified GEN_SIMP_TAC loop, solver/looper handling, entry-point rewiring, and group-5 selftests; upto-parallel build passes.
+- 2026-07-16 TASK_07 — Added and verified splitLib conclusion splitting, rule analysis, binder handling, and selftests; h4pedant and upto-parallel build pass.
