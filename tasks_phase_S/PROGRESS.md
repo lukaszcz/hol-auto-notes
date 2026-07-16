@@ -4,8 +4,8 @@
 
 - TASK_01 — done
 - TASK_02 — done
-- TASK_03 — unblocked (not started)
-- TASK_04 — blocked (needs 03)
+- TASK_03 — done
+- TASK_04 — unblocked (not started)
 - TASK_05 — unblocked (not started)
 - TASK_06 — blocked (needs 04)
 - TASK_07 — unblocked (not started)
@@ -20,9 +20,10 @@
 
 ## Next unblocked task
 
-TASK_03.md
+TASK_04.md
 
 ## Completion log
 
 - 2026-07-16 TASK_01 — Added and verified default-equivalence simplifier goldens.
 - 2026-07-16 TASK_02 — Added and verified Traverse context/solver pipeline.
+- 2026-07-16 TASK_03 — Added and verified traverse-data rewrite controls, dynamic refs, and congLib seam.
