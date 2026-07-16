@@ -2,8 +2,8 @@
 
 ## Task status
 
-- TASK_01 — unblocked (not started)
-- TASK_02 — blocked (needs 01)
+- TASK_01 — done
+- TASK_02 — unblocked (not started)
 - TASK_03 — blocked (needs 02)
 - TASK_04 — blocked (needs 03)
 - TASK_05 — unblocked (not started)
@@ -20,9 +20,8 @@
 
 ## Next unblocked task
 
-TASK_01.md (TASK_05.md and TASK_07.md are also unblocked and independent).
+TASK_02.md
 
 ## Completion log
 
-Append exactly ONE line per task as it lands, e.g.
-`- YYYY-MM-DD TASK_NN — <one-line result>`.  No tasks completed yet.
+- 2026-07-16 TASK_01 — Added and verified default-equivalence simplifier goldens.
