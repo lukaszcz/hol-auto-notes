@@ -1,0 +1,423 @@
+Tasks dir: .agent-files/tasks_phase_0
+
+-------------------------------------------------------------
+                Step 1  (2026-07-15 10:55:24)                
+-------------------------------------------------------------
+
+.agent-files/tasks_phase_0/TASK_01_build_skeleton.md
+
+Selected task: /home/lukasz/dev/HOL/worktrees/isabelle-tactics/.agent-files/tasks_phase_0/TASK_01_build_skeleton.md
+
+Implemented and committed the build skeleton.
+
+- Added `src/auto/rules/Holmakefile`
+- Added `tools/sequences/upto-auto`
+- Registered `auto/rules` in core `SRCRELNAMES`
+
+Verified: `bin/build -t --seq=tools/sequences/upto-auto` passed.
+
+Commit: `28ccdc10b Add auto rules build skeleton`
+
+-------------------------------------------------------------
+                Step 2  (2026-07-15 11:00:26)                
+-------------------------------------------------------------
+
+/home/lukasz/dev/HOL/worktrees/isabelle-tactics/.agent-files/tasks_phase_0/TASK_02_claset_marker_theory.md
+
+Selected task: /home/lukasz/dev/HOL/worktrees/isabelle-tactics/.agent-files/tasks_phase_0/TASK_02_claset_marker_theory.md
+
+Implemented and committed `clasetMarkerTheory`.
+
+- Added six theorem markers and `Del` in `src/auto/rules/clasetMarkerScript.sml`.
+- Updated `src/auto/rules/Holmakefile` to build theory targets.
+- Verified: `bin/build -t --seq=tools/sequences/upto-auto` passes.
+
+Commit: `a93c9511e Add claset marker theory`
+
+-------------------------------------------------------------
+                Step 3  (2026-07-15 11:03:56)                
+-------------------------------------------------------------
+
+/home/lukasz/dev/HOL/worktrees/isabelle-tactics/.agent-files/tasks_phase_0/TASK_03_ntactical.md
+
+Selected task: /home/lukasz/dev/HOL/worktrees/isabelle-tactics/.agent-files/tasks_phase_0/TASK_03_ntactical.md
+
+Implemented and committed NTactical.
+
+Commit: `8cc04d00d Add nondeterministic tactic combinators`
+
+Verified:
+- `bin/build -t --seq=tools/sequences/upto-auto` passes.
+
+-------------------------------------------------------------
+                Step 4  (2026-07-15 11:13:23)                
+-------------------------------------------------------------
+
+/home/lukasz/dev/HOL/worktrees/isabelle-tactics/.agent-files/tasks_phase_0/TASK_04_claset_net.md
+
+Selected task: /home/lukasz/dev/HOL/worktrees/isabelle-tactics/.agent-files/tasks_phase_0/TASK_04_claset_net.md
+
+Implemented and committed `clasetNet`.
+
+Commit: `59864a67d Add dual-mode claset discrimination net`
+
+Validated with:
+- `bin/build -t --seq=tools/sequences/upto-auto`
+- `tools/h4pedant/h4pedant src/auto/rules`
+
+-------------------------------------------------------------
+                Step 5  (2026-07-15 11:24:43)                
+-------------------------------------------------------------
+
+/home/lukasz/dev/HOL/worktrees/isabelle-tactics/.agent-files/tasks_phase_0/TASK_05_claset_rules_model.md
+
+Selected task: /home/lukasz/dev/HOL/worktrees/isabelle-tactics/.agent-files/tasks_phase_0/TASK_05_claset_rules_model.md
+
+Implemented and committed TASK_05.
+
+Commit: `ae3affe7e Add claset rule model and persistence codec`
+
+Validated with:
+- `bin/build -t --seq=tools/sequences/upto-auto` ✅
+
+-------------------------------------------------------------
+                Step 6  (2026-07-15 11:32:25)                
+-------------------------------------------------------------
+
+/home/lukasz/dev/HOL/worktrees/isabelle-tactics/.agent-files/tasks_phase_0/TASK_06_derived_rules.md
+
+Selected task: /home/lukasz/dev/HOL/worktrees/isabelle-tactics/.agent-files/tasks_phase_0/TASK_06_derived_rules.md
+
+Implemented and committed derived claset preprocessing.
+
+Commit: `b50717235 Add derived classical rule preprocessing`
+
+Validated:
+- `src/auto/rules/selftest.exe` passes
+- `bin/build -t --seq=tools/sequences/upto-auto` passes
+
+-------------------------------------------------------------
+                Step 7  (2026-07-15 11:51:09)                
+-------------------------------------------------------------
+
+/home/lukasz/dev/HOL/worktrees/isabelle-tactics/.agent-files/tasks_phase_0/TASK_07_clasetlib_value.md
+
+Selected task: /home/lukasz/dev/HOL/worktrees/isabelle-tactics/.agent-files/tasks_phase_0/TASK_07_clasetlib_value.md
+
+Implemented and committed `clasetLib` value API, net routing/lookups, wrappers, config, printing, and selftests.
+
+Commit: `aa1554248 Add claset value and net lookup API`
+
+Verified:
+- `bin/build -t --seq=tools/sequences/upto-auto` passes.
+
+-------------------------------------------------------------
+                Step 8  (2026-07-15 12:06:14)                
+-------------------------------------------------------------
+
+/home/lukasz/dev/HOL/worktrees/isabelle-tactics/.agent-files/tasks_phase_0/TASK_06_derived_rules.md
+
+Selected task: /home/lukasz/dev/HOL/worktrees/isabelle-tactics/.agent-files/tasks_phase_0/TASK_06_derived_rules.md
+
+Implemented and committed as:
+
+- `b50717235 Add derived classical rule preprocessing`
+
+Verified:
+- `src/auto/rules/selftest.exe` passes
+- `bin/build -t --seq=tools/sequences/upto-auto` passes
+
+-------------------------------------------------------------
+                Step 9  (2026-07-15 12:20:56)                
+-------------------------------------------------------------
+
+/home/lukasz/dev/HOL/worktrees/isabelle-tactics/.agent-files/tasks_phase_0/TASK_06_derived_rules.md
+
+Selected task: /home/lukasz/dev/HOL/worktrees/isabelle-tactics/.agent-files/tasks_phase_0/TASK_06_derived_rules.md
+
+Implemented and committed the TASK_06 completion fix.
+
+- Preserved explicit negated conclusions during canonical spine processing.
+- Added swap no-op and exact ill-formed-elim diagnostic regressions.
+- Verified: `bin/build -t --seq=tools/sequences/upto-auto`
+
+Commit: `d1445ac8c Preserve negated rule conclusions`
+
+-------------------------------------------------------------
+                Step 10  (2026-07-15 12:32:33)               
+-------------------------------------------------------------
+
+/home/lukasz/dev/HOL/worktrees/isabelle-tactics/.agent-files/tasks_phase_0/TASK_06_derived_rules.md
+
+Selected task: /home/lukasz/dev/HOL/worktrees/isabelle-tactics/.agent-files/tasks_phase_0/TASK_06_derived_rules.md
+
+Implemented and committed derived rule preprocessing.
+
+Commit: `d1445ac8c Preserve negated rule conclusions`
+
+Validation passed:
+- `src/auto/rules/selftest.exe`
+- `bin/build -t --seq=tools/sequences/upto-auto`
+
+-------------------------------------------------------------
+                Step 11  (2026-07-15 12:35:33)               
+-------------------------------------------------------------
+
+/home/lukasz/dev/HOL/worktrees/isabelle-tactics/.agent-files/tasks_phase_0/TASK_07_clasetlib_value.md
+
+Selected task: /home/lukasz/dev/HOL/worktrees/isabelle-tactics/.agent-files/tasks_phase_0/TASK_07_clasetlib_value.md
+
+Implemented and committed claset value/net lookup API in commit:
+
+`aa1554248 Add claset value and net lookup API`
+
+Verified:
+- `src/auto/rules/selftest.exe` passes
+- `bin/build -t --seq=tools/sequences/upto-auto` passes
+
+-------------------------------------------------------------
+                Step 12  (2026-07-15 12:39:46)               
+-------------------------------------------------------------
+
+/home/lukasz/dev/HOL/worktrees/isabelle-tactics/.agent-files/tasks_phase_0/TASK_07_clasetlib_value.md
+
+Selected task: /home/lukasz/dev/HOL/worktrees/isabelle-tactics/.agent-files/tasks_phase_0/TASK_07_clasetlib_value.md
+
+Implemented and committed claset value coverage.
+
+Commit: `e2c98daed Test claset wrapper choice semantics`
+
+Validated with:
+- `src/auto/rules/selftest.exe`
+- `bin/build -t --seq=tools/sequences/upto-auto`
+
+-------------------------------------------------------------
+                Step 13  (2026-07-15 12:43:53)               
+-------------------------------------------------------------
+
+/home/lukasz/dev/HOL/worktrees/isabelle-tactics/.agent-files/tasks_phase_0/TASK_07_clasetlib_value.md
+
+Selected task: /home/lukasz/dev/HOL/worktrees/isabelle-tactics/.agent-files/tasks_phase_0/TASK_07_clasetlib_value.md
+
+Implemented and committed the claset canonical-order fix.
+
+Commit: `f41b2b295 Preserve claset canonical kind ordering`
+
+Validated:
+- `src/auto/rules/selftest.exe`
+- `bin/build -t --seq=tools/sequences/upto-auto`
+
+-------------------------------------------------------------
+                Step 14  (2026-07-15 12:48:57)               
+-------------------------------------------------------------
+
+/home/lukasz/dev/HOL/worktrees/isabelle-tactics/.agent-files/tasks_phase_0/TASK_07_clasetlib_value.md
+
+Selected task: /home/lukasz/dev/HOL/worktrees/isabelle-tactics/.agent-files/tasks_phase_0/TASK_07_clasetlib_value.md
+
+Implemented and committed claset value coverage.
+
+Commit: `172438228 Strengthen claset value selftests`
+
+Validated:
+- `src/auto/rules/selftest.exe` passes
+- `bin/build -t --seq=tools/sequences/upto-auto` passes
+
+-------------------------------------------------------------
+                Step 15  (2026-07-15 13:00:50)               
+-------------------------------------------------------------
+
+/home/lukasz/dev/HOL/worktrees/isabelle-tactics/.agent-files/tasks_phase_0/TASK_07_clasetlib_value.md
+
+Selected task: /home/lukasz/dev/HOL/worktrees/isabelle-tactics/.agent-files/tasks_phase_0/TASK_07_clasetlib_value.md
+
+Implemented and committed the `clasetLib` value layer and strengthened its ordering test.
+
+Commit: `af50c9aac Check claset candidate subgoal ordering`
+
+Verified:
+- `src/auto/rules/selftest.exe`
+- `bin/build -t --seq=tools/sequences/upto-auto`
+
+-------------------------------------------------------------
+                Step 16  (2026-07-15 13:06:22)               
+-------------------------------------------------------------
+
+/home/lukasz/dev/HOL/worktrees/isabelle-tactics/.agent-files/tasks_phase_0/TASK_07_clasetlib_value.md
+
+Selected task: /home/lukasz/dev/HOL/worktrees/isabelle-tactics/.agent-files/tasks_phase_0/TASK_07_clasetlib_value.md
+
+Implemented and committed claset value API work.
+
+Verified:
+- `src/auto/rules/selftest.exe` passes.
+- `bin/build -t --seq=tools/sequences/upto-auto` passes.
+
+Latest commit: `af50c9aac Check claset candidate subgoal ordering`
+
+-------------------------------------------------------------
+                Step 17  (2026-07-15 13:09:43)               
+-------------------------------------------------------------
+
+/home/lukasz/dev/HOL/worktrees/isabelle-tactics/.agent-files/tasks_phase_0/TASK_08_clasetlib_state.md
+
+Selected task: /home/lukasz/dev/HOL/worktrees/isabelle-tactics/.agent-files/tasks_phase_0/TASK_08_clasetlib_state.md
+
+Implemented and committed TASK_08.
+
+Commit: `bcd0b2149 Persist global claset declarations`
+
+Validated with:
+- `src/auto/rules/selftest.exe`
+- `bin/build -t --seq=tools/sequences/upto-auto`
+
+-------------------------------------------------------------
+                Step 18  (2026-07-15 13:25:06)               
+-------------------------------------------------------------
+
+/home/lukasz/dev/HOL/worktrees/isabelle-tactics/.agent-files/tasks_phase_0/TASK_09_markers.md
+
+Selected task: /home/lukasz/dev/HOL/worktrees/isabelle-tactics/.agent-files/tasks_phase_0/TASK_09_markers.md
+
+Implemented and committed TASK_09.
+
+Commit: `bac229e9a Add claset invocation markers`
+
+Validated with:
+`bin/build -t --seq=tools/sequences/upto-auto`
+
+-------------------------------------------------------------
+                Step 19  (2026-07-15 13:34:47)               
+-------------------------------------------------------------
+
+/home/lukasz/dev/HOL/worktrees/isabelle-tactics/.agent-files/tasks_phase_0/TASK_08_clasetlib_state.md
+
+Selected task: /home/lukasz/dev/HOL/worktrees/isabelle-tactics/.agent-files/tasks_phase_0/TASK_08_clasetlib_state.md
+
+Task was already implemented in commit `bcd0b2149` (`Persist global claset declarations`).
+
+Verified:
+- `src/auto/rules/selftest.exe` passes.
+- `bin/build -t --seq=tools/sequences/upto-auto` passes.
+
+No new commit was needed; worktree has no tracked changes.
+
+-------------------------------------------------------------
+                Step 20  (2026-07-15 13:39:13)               
+-------------------------------------------------------------
+
+/home/lukasz/dev/HOL/worktrees/isabelle-tactics/.agent-files/tasks_phase_0/TASK_08_clasetlib_state.md
+
+Selected task: /home/lukasz/dev/HOL/worktrees/isabelle-tactics/.agent-files/tasks_phase_0/TASK_08_clasetlib_state.md
+
+Task 08 was already implemented and committed as:
+
+`bcd0b2149 Persist global claset declarations`
+
+Verified:
+- `src/auto/rules/selftest.exe` passes.
+- `bin/build -t --seq=tools/sequences/upto-auto` passes.
+- `git show --check bcd0b2149` clean.
+
+-------------------------------------------------------------
+                Step 21  (2026-07-15 13:43:30)               
+-------------------------------------------------------------
+
+/home/lukasz/dev/HOL/worktrees/isabelle-tactics/.agent-files/tasks_phase_0/TASK_08_clasetlib_state.md
+
+Selected task: /home/lukasz/dev/HOL/worktrees/isabelle-tactics/.agent-files/tasks_phase_0/TASK_08_clasetlib_state.md
+
+Implemented and committed persistent claset-state hardening.
+
+Commit: `af97025cd Harden persistent claset state`
+
+Validated:
+- `src/auto/rules/selftest.exe`
+- `bin/build -t --seq=tools/sequences/upto-auto`
+
+-------------------------------------------------------------
+                Step 22  (2026-07-15 13:59:22)               
+-------------------------------------------------------------
+
+/home/lukasz/dev/HOL/worktrees/isabelle-tactics/.agent-files/tasks_phase_0/TASK_09_markers.md
+
+Selected task: /home/lukasz/dev/HOL/worktrees/isabelle-tactics/.agent-files/tasks_phase_0/TASK_09_markers.md
+
+TASK_09 was already implemented in commit `bac229e9a Add claset invocation markers`.
+
+Verified:
+- `src/auto/rules/selftest.exe` passes, including all marker tests.
+- `bin/build -t --seq=tools/sequences/upto-auto` passes.
+
+No new commit was needed.
+
+-------------------------------------------------------------
+                Step 23  (2026-07-15 14:03:00)               
+-------------------------------------------------------------
+
+/home/lukasz/dev/HOL/worktrees/isabelle-tactics/.agent-files/tasks_phase_0/TASK_10_typebase_hook.md
+
+Selected task: /home/lukasz/dev/HOL/worktrees/isabelle-tactics/.agent-files/tasks_phase_0/TASK_10_typebase_hook.md
+
+Implemented and committed TypeBase claset contributions.
+
+Commit: `3bc95e004 Add TypeBase claset contributions`
+
+Validated with:
+`bin/build -t --seq=tools/sequences/upto-auto`
+
+-------------------------------------------------------------
+                Step 24  (2026-07-15 14:12:17)               
+-------------------------------------------------------------
+
+/home/lukasz/dev/HOL/worktrees/isabelle-tactics/.agent-files/tasks_phase_0/TASK_11_seed_theory.md
+
+Selected task: /home/lukasz/dev/HOL/worktrees/isabelle-tactics/.agent-files/tasks_phase_0/TASK_11_seed_theory.md
+
+Implemented and committed seed theory support.
+
+- Added `src/auto/rules/clasetSeedScript.sml` with all required declarations/theorems.
+- Added seed-claset ordering/kind and initialization-budget selftests.
+- Updated `src/auto/rules/Holmakefile`.
+
+Verified: `bin/build -t --seq=tools/sequences/upto-auto` passed.
+
+Commit: `8334828c6 Add base logic claset seed theory`
+
+-------------------------------------------------------------
+                Step 25  (2026-07-15 14:22:32)               
+-------------------------------------------------------------
+
+/home/lukasz/dev/HOL/worktrees/isabelle-tactics/.agent-files/tasks_phase_0/TASK_12_theory_tests.md
+
+Selected task: /home/lukasz/dev/HOL/worktrees/isabelle-tactics/.agent-files/tasks_phase_0/TASK_12_theory_tests.md
+
+Implemented and committed cross-theory claset regressions.
+
+Commit: `680882888 Add claset cross-theory regression tests`
+
+Verified:
+- `bin/build -t --seq=tools/sequences/upto-auto`
+- Second `Holmake` run in `src/auto/rules/theory_tests`
+- `tools/h4pedant/h4pedant src/auto/rules/theory_tests`
+
+-------------------------------------------------------------
+                Step 26  (2026-07-15 14:29:41)               
+-------------------------------------------------------------
+
+/home/lukasz/dev/HOL/worktrees/isabelle-tactics/.agent-files/tasks_phase_0/TASK_13_bookkeeping.md
+
+Selected task: /home/lukasz/dev/HOL/worktrees/isabelle-tactics/.agent-files/tasks_phase_0/TASK_13_bookkeeping.md
+
+Completed and committed bookkeeping updates.
+
+- Updated Phase 0 delivery, refinements, freeze list, and gate result.
+- Deferred `help/Docfiles` to Phase 1.
+- Full gate passed: `bin/build -F -t`.
+- Commit: `c87f899 Close Phase 0 bookkeeping` (in `.agent-files` repository).
+
+-------------------------------------------------------------
+                Step 27  (2026-07-15 14:46:00)               
+-------------------------------------------------------------
+
+COMPLETE
