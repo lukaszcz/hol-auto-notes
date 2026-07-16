@@ -3,8 +3,8 @@
 ## Task status
 
 - TASK_01 — done
-- TASK_02 — unblocked (not started)
-- TASK_03 — blocked (needs 02)
+- TASK_02 — done
+- TASK_03 — unblocked (not started)
 - TASK_04 — blocked (needs 03)
 - TASK_05 — unblocked (not started)
 - TASK_06 — blocked (needs 04)
@@ -20,8 +20,9 @@
 
 ## Next unblocked task
 
-TASK_02.md
+TASK_03.md
 
 ## Completion log
 
 - 2026-07-16 TASK_01 — Added and verified default-equivalence simplifier goldens.
+- 2026-07-16 TASK_02 — Added and verified Traverse context/solver pipeline.
