@@ -9,8 +9,8 @@
 - TASK_05 — done
 - TASK_06 — done
 - TASK_07 — done
-- TASK_08 — done
-- TASK_09 — unblocked (in progress; TypeBase asm split missing)
+- TASK_08 — done (re-verified against TASK_08.md; selftests, h4pedant, and upto-parallel build pass)
+- TASK_09 — unblocked (in progress; source wires only conclusion TypeBase splits; asm integration remains)
 - TASK_10 — blocked (needs 05, 06, 09)
 - TASK_11 — unblocked (not started)
 - TASK_12 — unblocked (not started)
@@ -31,4 +31,4 @@ TASK_09.md
 - 2026-07-16 TASK_05 — Added and verified the Split marker round-trip; marker selftest and upto-parallel build pass.
 - 2026-07-16 TASK_06 — Added and verified GEN_SIMP_TAC loop, solver/looper handling, entry-point rewiring, and group-5 selftests; upto-parallel build passes.
 - 2026-07-16 TASK_07 — Added and verified splitLib conclusion splitting, rule analysis, binder handling, and selftests; h4pedant and upto-parallel build pass.
-- 2026-07-16 TASK_08 — Re-verified SPLIT_ASM_TAC against its task spec; clean case routing, ordering, selftests, h4pedant, and upto-parallel build pass.
+- 2026-07-16 TASK_08 — Re-verified implementation against TASK_08.md; clean asm routing, ordering, no double-negation residue, selftests, h4pedant, and upto-parallel build pass.
