@@ -12,7 +12,7 @@
 - TASK_08 — done (re-verified against TASK_08.md; selftests, h4pedant, and upto-parallel build pass)
 - TASK_09 — done (re-verified against sources; integration selftests and upto-parallel build pass)
 - TASK_10 — done
-- TASK_11 — unblocked (not started)
+- TASK_11 — done
 - TASK_12 — unblocked (not started)
 - TASK_13 — blocked (needs 09, 10, 11, 12)
 - TASK_14 — blocked (needs 13)
@@ -34,3 +34,4 @@ TASK_11.md
 - 2026-07-16 TASK_08 — Re-verified implementation against TASK_08.md; clean asm routing, ordering, no double-negation residue, selftests, h4pedant, and upto-parallel build pass.
 - 2026-07-16 TASK_09 — Re-verified registration, TypeBase cache, conclusion/assumption integration, cases_simp, add/del_split, and split_ss against TASK_09.md; selftests, integration theory test, h4pedant, and upto-parallel build pass.
 - 2026-07-16 TASK_10 — Verified Split/Excl process_tags plumbing, splitter exclusions, Generic/RW_TAC parity and limit selftests; h4pedant and upto-parallel build pass.
+- 2026-07-16 TASK_11 — Added and verified GEN_GLOBAL_SIMP_TAC mutual fixpoint controls, change counting, opt-in flags, and regression selftests; upto-parallel build passes.
