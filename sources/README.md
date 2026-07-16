@@ -41,6 +41,25 @@ ML sources (paths as in the Isabelle repository):
 | `src/HOL/Tools/semiring_normalizer.ML` | class-parametric ring normalization |
 | `src/HOL/Tools/Qelim/cooper.ML` | presburger method (proof-producing Cooper) |
 
+Added 2026-07-16 (same pinned commit; cited by
+`../research/phase12-classical-search-port.md`):
+
+| File | Cited for |
+|---|---|
+| `src/Pure/search.ML` | DEPTH_FIRST/DEPTH_SOLVE/BEST_FIRST/ASTAR/DEEPEN/ITER_DEEPEN |
+| `src/Pure/tactical.ML` | ORELSE/APPEND/DETERM/REPEAT_DETERM1/FIRSTGOAL/COND semantics |
+| `src/Pure/tactic.ML` | assume/eq_assume/biresolve/bimatch/make_elim tactics |
+| `src/Pure/thm.ML` | Thm.biresolution/bicompose/lift_rule/(eq_)assumption |
+| `src/Pure/drule.ML` | size_of_thm, revcut_rl, RSN/RS |
+| `src/Pure/logic.ML` | lift_all/lift_abs, flatten_params, assum_problems |
+| `src/Pure/term.ML` | size_of_term |
+| `src/Pure/goal.ML` | SELECT_GOAL/restrict |
+| `src/Pure/unify.ML` | HO unification, unify_search_bound |
+| `src/Pure/pattern.ML` | pattern unification fast path |
+| `src/Pure/library.ML` | make_order_list/untag_list (candidate ordering) |
+| `src/Pure/General/alist.ML` | AList.update (wrapper list ordering) |
+| `src/Pure/Isar/object_logic.ML` | atomize_prems_tac |
+
 Theory files (cited with line numbers or as rule-corpus guides):
 
 | File | Cited for |

@@ -1,21 +1,28 @@
-# Research reports underlying ../PLAN.md and ../PLAN_phase_0.md
+# Research reports underlying the plans in `..`
 
-Two report sets, both containing finer-grained (line-level) analysis
-than the plans themselves:
+Report sets, all containing finer-grained (line-level) analysis than
+the plans themselves:
 
 - four reports produced 2026-07-14 by parallel research agents, prior to
   the owner-decision round and the writing of `../PLAN.md`;
 - four `phase0-*` reports produced 2026-07-15 during the Phase 0
   planning round, prior to the D11–D13 owner decisions and the writing
-  of `../PLAN_phase_0.md`.
+  of `../PLAN_phase_0.md`;
+- four `phaseS-*` reports produced 2026-07-16 during the Phase S
+  planning round, prior to the D14–D20 owner decisions and the writing
+  of `../PLAN_phase_S.md`;
+- three `phase12-*` reports produced 2026-07-16 during the Phase 1–2
+  planning round, prior to the writing of `../PLAN_phase_1_2.md`.
 
 Isabelle citations in these reports refer to `mirror-isabelle @ master`
 as of 2026-07-14, which is exactly the snapshot vendored at
 `../sources/` (commit `f7e02b7e1f311d9c41ee075d22ff788b3e0de6db`), so
-all `file.ML:line` references resolve there.  Papers cited are archived
+all `file.ML:line` references resolve there.  (The `phase12-*` round
+added further `src/Pure` files to the snapshot, fetched at the same
+pinned commit; see `../sources/README.md`.)  Papers cited are archived
 at `../papers/` (see `../papers/README.md` for slugs).  HOL4 citations
-refer to this repository (worktree `isabelle-tactics`, HEAD at the time
-`af5d4a63f`).
+refer to this repository (worktree `isabelle-tactics`; HEAD `af5d4a63f`
+for the 07-14/07-15 sets, `7dfd21f4f` for the 07-16 sets).
 
 | Report | Covers |
 |---|---|
@@ -27,3 +34,10 @@ refer to this repository (worktree `isabelle-tactics`, HEAD at the time
 | [phase0-hol4-term-nets.md](phase0-hol4-term-nets.md) | lookup semantics of `src/0/Net` and `src/1/Ho_Net` (match-mode only; wildcard disciplines), `mlibTermnet.unify` as the repo's only unify-mode lookup, survey of all other net structures, build bands |
 | [phase0-isabelle-claset-seed-rules.md](phase0-isabelle-claset-seed-rules.md) | full correspondence table `HOL.thy:819–935` base claset rules ↔ HOL4 heap theorems (exact statements, boolScript.sml lines); which ~15 rule forms must be proved fresh; quantification irregularities |
 | [phase0-lazyseq-backtracking.md](phase0-lazyseq-backtracking.md) | portableML `seq`/`seqmonad`, simp's `Sequence` (Paulson 1988 port), `mlibStream`, meson's CPS backtracking, jrhTactics types, goal/tactic/validation types and `VALID`/`VALIDATE` plumbing |
+| [phaseS-isabelle-splitter.md](phaseS-isabelle-splitter.md) | `Provers/splitter.ML` algorithm (conclusion/assumption splits, lift theorem) + HOL4 mapping |
+| [phaseS-isabelle-simploop.md](phaseS-isabelle-simploop.md) | subgoaler/solver/looper wiring in raw_simplifier/simplifier, safe-simp mode, `mut_impc` |
+| [phaseS-simplib-compat.md](phaseS-simplib-compat.md) | repo-wide simpLib/Traverse/Cond_rewr compatibility survey (frozen records, call sites) |
+| [phaseS-hol4-splitting-idioms.md](phaseS-hol4-splitting-idioms.md) | existing HOL4 split theorems and case-splitting idioms (RW_TAC, TypeBase, if-splitting) |
+| [phase12-classical-search-port.md](phase12-classical-search-port.md) | exact semantics of classical.ML:578–732 + Pure/search.ML combinators + Thm.biresolution (lifting, elim consumption, match mode); Phase 1 goal-level mapping (design choices C1–C10); Phase 2 metavariable-engine requirements (E1–E11); wrapper-on-Vars analysis; numeric constants; upstream `safe_depth_tac` DETERM-inversion finding |
+| [phase12-blast-port.md](phase12-blast-port.md) | reimplementation-grade spec of blast.ML: prototerm language/trail/unification, typargs + HOL4 encoding options, netMkRules/rule conversion, five-clause search cascade (penalties, md flags, prune, mayUndo), six-tactic reconstruction vocabulary + replay-instantiation analysis, limitations table, design choices A–M, Pelletier Table 1 + selftest spec |
+| [phase12-hol4-substrate.md](phase12-hol4-substrate.md) | delivered Phase-0 API as-built; HOL4 unification survey (`FullUnify` verdict, no HOU anywhere); jrhTactics (no metavariable support); meson/metis search-then-replay pipelines incl. types-as-terms typargs precedent; rule-application tactic vocabulary; `VAR_EQ_TAC` vs hypsubst verified (4 deviations); assumption ordering/rotation gaps; term_size/heap findings; Pelletier absence; bounding/trace conventions |

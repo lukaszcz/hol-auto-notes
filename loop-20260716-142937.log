@@ -1,0 +1,399 @@
+Tasks dir: .agent-files/tasks_phase_S
+
+-------------------------------------------------------------
+                Step 1  (2026-07-16 14:29:37)                
+-------------------------------------------------------------
+
+/home/lukasz/dev/HOL/worktrees/isabelle-tactics/.agent-files/tasks_phase_S/TASK_01.md
+
+Selected task: /home/lukasz/dev/HOL/worktrees/isabelle-tactics/.agent-files/tasks_phase_S/TASK_01.md
+
+Implemented and committed the default-equivalence golden selftests in `src/simp/src/selftest.sml`.
+
+Covered:
+- Recursive side-condition discharge and failure recovery
+- Traversal limit save/restore
+- Default stack depth 4 boundary
+- `UNCHANGED` propagation cases
+- Implication and `let` congruence contexts
+
+Validation passed:
+- Simplifier `Holmake` and full selftest
+- `tools/h4pedant`
+- `bin/build -t --seq=tools/sequences/upto-parallel`
+
+Commit: `f293fc576 Add simplifier default-equivalence goldens`
+
+-------------------------------------------------------------
+                Step 2  (2026-07-16 14:42:25)                
+-------------------------------------------------------------
+
+/home/lukasz/dev/HOL/worktrees/isabelle-tactics/.agent-files/tasks_phase_S/TASK_02.md
+
+Selected task: /home/lukasz/dev/HOL/worktrees/isabelle-tactics/.agent-files/tasks_phase_S/TASK_02.md
+
+Implemented and committed as `6f6412896` (`Add Traverse solver pipeline`).
+
+Highlights:
+- Added `context_thms` accumulation.
+- Exported the three required prover types.
+- Added subgoaler/solver pipeline with default-equivalent behavior.
+- Added solver seam, context visibility, limit restoration, and exception tests.
+- Full required build and selftests pass.
+- `h4pedant` passes.
+
+-------------------------------------------------------------
+                Step 3  (2026-07-16 15:00:08)                
+-------------------------------------------------------------
+
+/home/lukasz/dev/HOL/worktrees/isabelle-tactics/.agent-files/tasks_phase_S/TASK_03.md
+
+Selected task: /home/lukasz/dev/HOL/worktrees/isabelle-tactics/.agent-files/tasks_phase_S/TASK_03.md
+
+Implemented and committed as `36b8e022c` (`Add configurable Traverse rewrite controls`).
+
+Completed:
+- Added `traverse_data` prover/depth/order fields.
+- Added dynamically scoped `stack_limit` and `term_ord`.
+- Updated `simpLib` and `congLib`.
+- Added depth, ordering, reentrancy, exception-restoration, and congLib tests.
+- `h4pedant` passes.
+- `bin/build -t --seq=tools/sequences/upto-parallel` passes.
+
+-------------------------------------------------------------
+                Step 4  (2026-07-16 15:23:36)                
+-------------------------------------------------------------
+
+/home/lukasz/dev/HOL/worktrees/isabelle-tactics/.agent-files/tasks_phase_S/TASK_04.md
+
+Selected task: /home/lukasz/dev/HOL/worktrees/isabelle-tactics/.agent-files/tasks_phase_S/TASK_04.md
+
+Implemented and committed TASK_04.
+
+- Added simpset strategy fields, setters, fragment constructors, merge/history behavior, `clear_rules`, and pretty-printing.
+- Threaded solver/subgoaler/depth/order settings into traversal.
+- Added comprehensive selftests.
+- Required build passed:
+  `bin/build -t --seq=tools/sequences/upto-parallel`
+
+Commit: `9c78a2166 Extend simpLib strategy configuration`
+
+-------------------------------------------------------------
+                Step 5  (2026-07-16 16:15:00)                
+-------------------------------------------------------------
+
+/home/lukasz/dev/HOL/worktrees/isabelle-tactics/.agent-files/tasks_phase_S/TASK_04.md
+
+Selected task: /home/lukasz/dev/HOL/worktrees/isabelle-tactics/.agent-files/tasks_phase_S/TASK_04.md
+
+Implemented and committed as `9c78a2166` (`Extend simpLib strategy configuration`).
+
+Validation:
+- `src/simp/src/selftest.exe` passes.
+- `bin/build -t --seq=tools/sequences/upto-parallel` passes.
+- Tracked working tree is clean.
+
+-------------------------------------------------------------
+                Step 6  (2026-07-16 16:25:40)                
+-------------------------------------------------------------
+
+.agent-files/tasks_phase_S/TASK_05.md
+
+Selected task: /home/lukasz/dev/HOL/worktrees/isabelle-tactics/.agent-files/tasks_phase_S/TASK_05.md
+
+Implemented and committed as `52c399b47` (`Add Split theorem marker`).
+
+Changes:
+- Added `marker$Split` and `Split_def`.
+- Added `markerLib.Split` and `markerLib.destSplit`.
+- Added round-trip selftest.
+- Left `simpLib` untouched.
+
+Validation:
+- `src/marker` build and selftest passed.
+- `bin/build -t --seq=tools/sequences/upto-parallel` passed.
+- `git diff --check` passed.
+
+-------------------------------------------------------------
+                Step 7  (2026-07-16 16:37:55)                
+-------------------------------------------------------------
+
+/home/lukasz/dev/HOL/worktrees/isabelle-tactics/.agent-files/tasks_phase_S/TASK_05.md
+
+Selected task: /home/lukasz/dev/HOL/worktrees/isabelle-tactics/.agent-files/tasks_phase_S/TASK_05.md
+
+Implemented and committed as `52c399b47` (`Add Split theorem marker`).
+
+Changes:
+- Added marker theory constant `Split`.
+- Added `markerLib.Split` and `markerLib.destSplit`.
+- Added round-trip selftest.
+- Left `simpLib` untouched.
+- Verified `Split` was absent before the commit.
+
+Validation:
+- Clean `src/marker` build and selftests: passed.
+- `destSplit (Split th) = th`: passed.
+- `bin/build -t --seq=tools/sequences/upto-parallel`: passed.
+- Patch whitespace/style checks: passed.
+
+-------------------------------------------------------------
+                Step 8  (2026-07-16 16:50:50)                
+-------------------------------------------------------------
+
+.agent-files/tasks_phase_S/TASK_05.md
+
+Selected task: /home/lukasz/dev/HOL/worktrees/isabelle-tactics/.agent-files/tasks_phase_S/TASK_05.md
+
+Implemented and committed as `52c399b47 Add Split theorem marker`.
+
+Changes:
+- Added marker theory constant `Split`.
+- Added `markerLib.Split` and `markerLib.destSplit`.
+- Added round-trip selftest.
+- No simpLib changes.
+
+Validation passed:
+- `src/marker` build and selftests.
+- `bin/build -t --seq=tools/sequences/upto-parallel`
+- Style/diff checks.
+
+-------------------------------------------------------------
+                Step 9  (2026-07-16 16:53:48)                
+-------------------------------------------------------------
+
+/home/lukasz/dev/HOL/worktrees/isabelle-tactics/.agent-files/tasks_phase_S/TASK_05.md
+
+Selected task: /home/lukasz/dev/HOL/worktrees/isabelle-tactics/.agent-files/tasks_phase_S/TASK_05.md
+
+Implemented and committed as `52c399b47 Add Split theorem marker`.
+
+Changes:
+- Added `marker$Split` following the `Cong` pattern.
+- Added `markerLib.Split` and `markerLib.destSplit`.
+- Added round-trip selftest.
+- Left `simpLib` untouched.
+- Verified style and clean tracked working tree.
+
+Validation:
+- `bin/build -t --seq=tools/sequences/upto-parallel` — passed.
+- Split marker round-trip selftest — passed.
+
+-------------------------------------------------------------
+                Step 10  (2026-07-16 16:56:57)               
+-------------------------------------------------------------
+
+/home/lukasz/dev/HOL/worktrees/isabelle-tactics/.agent-files/tasks_phase_S/TASK_05.md
+
+Selected task: /home/lukasz/dev/HOL/worktrees/isabelle-tactics/.agent-files/tasks_phase_S/TASK_05.md
+
+Implemented and committed as **52c399b47 Add Split theorem marker**.
+
+Changes:
+- Added marker theory constant `Split`.
+- Added `markerLib.Split` and `markerLib.destSplit`.
+- Added round-trip selftest.
+- Confirmed `Split` was previously free in `src/marker`.
+- `src/marker` builds successfully.
+- `bin/build -t --seq=tools/sequences/upto-parallel` passes.
+- Style checks pass for changed lines.
+
+-------------------------------------------------------------
+                Step 11  (2026-07-16 16:59:39)               
+-------------------------------------------------------------
+
+.agent-files/tasks_phase_S/TASK_05.md
+
+Selected task: /home/lukasz/dev/HOL/worktrees/isabelle-tactics/.agent-files/tasks_phase_S/TASK_05.md
+
+Implemented and committed as `52c399b47` (`Add Split theorem marker`).
+
+Changes:
+- Added marker theory constant `Split`.
+- Added `markerLib.Split` and `markerLib.destSplit`.
+- Added round-trip marker selftest.
+- Left `simpLib` untouched.
+
+Validation:
+- Marker selftests pass, including `Split marker round-trip`.
+- `bin/build -t --seq=tools/sequences/upto-parallel` passes.
+- `git diff --check` passes.
+- Tracked working tree is clean.
+
+-------------------------------------------------------------
+                Step 12  (2026-07-16 17:03:04)               
+-------------------------------------------------------------
+
+/home/lukasz/dev/HOL/worktrees/isabelle-tactics/.agent-files/tasks_phase_S/TASK_06.md
+
+Selected task: /home/lukasz/dev/HOL/worktrees/isabelle-tactics/.agent-files/tasks_phase_S/TASK_06.md
+
+Implemented and committed TASK_06.
+
+- Added `simp_mode` and `GEN_SIMP_TAC`
+- Added looper restart/limit handling and safe/unsafe final solvers
+- Rewired simp tactic entry points, including FULL/global families
+- Added comprehensive group-5 and compatibility selftests
+- Full required build passed:
+  `bin/build -t --seq=tools/sequences/upto-parallel`
+
+Commit: `f37aba865 Add tactic-level simplifier loop`
+
+-------------------------------------------------------------
+                Step 13  (2026-07-16 17:34:10)               
+-------------------------------------------------------------
+
+/home/lukasz/dev/HOL/worktrees/isabelle-tactics/.agent-files/tasks_phase_S/TASK_07.md
+
+Selected task: /home/lukasz/dev/HOL/worktrees/isabelle-tactics/.agent-files/tasks_phase_S/TASK_07.md
+
+Implemented and committed TASK_07.
+
+- Added `src/simp/src/splitLib.{sig,sml}`
+- Added conclusion splitting, rule indexing/validation, binder handling, and `SPLIT_TAC`
+- Added comprehensive splitter selftests
+- Style checks passed
+- `bin/build -t --seq=tools/sequences/upto-parallel` passed
+
+Commit: `867a5b3f4 Add core simplifier splitter`
+
+-------------------------------------------------------------
+                Step 14  (2026-07-16 18:06:48)               
+-------------------------------------------------------------
+
+/home/lukasz/dev/HOL/worktrees/isabelle-tactics/.agent-files/tasks_phase_S/TASK_08.md
+
+Selected task: /home/lukasz/dev/HOL/worktrees/isabelle-tactics/.agent-files/tasks_phase_S/TASK_08.md
+
+Implemented and committed TASK_08.
+
+- Added `SPLIT_ASM_TAC`
+- Extended `SPLIT_TAC` with conclusion-first assumption fallback and `CHANGED`
+- Added double-negation cleanup and assumption selection semantics
+- Added conditional and datatype assumption-split selftests
+- Full required build and style checks pass
+
+Commit: `7dfd21f4f Add assumption splitter tactic`
+
+-------------------------------------------------------------
+                Step 15  (2026-07-16 18:27:42)               
+-------------------------------------------------------------
+
+/home/lukasz/dev/HOL/worktrees/isabelle-tactics/.agent-files/tasks_phase_S/TASK_09.md
+
+Selected task: /home/lukasz/dev/HOL/worktrees/isabelle-tactics/.agent-files/tasks_phase_S/TASK_09.md
+
+Implemented and committed as `ce6f61cc4` (`Integrate splitter with simpsets`).
+
+Highlights:
+- Persistent `[split]` theorem set.
+- Cached TypeBase split rules.
+- `add_split`, `del_split`, and opt-in `split_ss`.
+- Stateful datatype/conditional splitting and `cases_simp`.
+- Integration tests for attributes, caching, list cases, local datatypes, and asm routing.
+
+Validation:
+- `bin/build -t --seq=tools/sequences/upto-parallel` passed.
+- Style and whitespace checks passed.
+
+-------------------------------------------------------------
+                Step 16  (2026-07-16 19:04:33)               
+-------------------------------------------------------------
+
+/home/lukasz/dev/HOL/worktrees/isabelle-tactics/.agent-files/tasks_phase_S/TASK_09.md
+
+Selected task: /home/lukasz/dev/HOL/worktrees/isabelle-tactics/.agent-files/tasks_phase_S/TASK_09.md
+
+Implemented and committed as `ce6f61cc4` (`Integrate splitter with simpsets`).
+
+Verified:
+- Simplifier selftests pass.
+- Datatype/list integration tests pass.
+- `bin/build -t --seq=tools/sequences/upto-parallel` succeeds.
+- No tracked working-tree changes remain.
+
+-------------------------------------------------------------
+                Step 17  (2026-07-16 19:22:50)               
+-------------------------------------------------------------
+
+.agent-files/tasks_phase_S/TASK_09.md
+
+Selected task: /home/lukasz/dev/HOL/worktrees/isabelle-tactics/.agent-files/tasks_phase_S/TASK_09.md
+
+Implemented and committed as:
+
+`ce6f61cc4 Integrate splitter with simpsets`
+
+Verification:
+- `bin/build -t --seq=tools/sequences/upto-parallel` — passed
+- Integration and existing selftests — passed
+- `git show --check HEAD` — clean
+
+-------------------------------------------------------------
+                Step 18  (2026-07-16 19:31:02)               
+-------------------------------------------------------------
+
+/home/lukasz/dev/HOL/worktrees/isabelle-tactics/.agent-files/tasks_phase_S/TASK_09.md
+
+Selected task: /home/lukasz/dev/HOL/worktrees/isabelle-tactics/.agent-files/tasks_phase_S/TASK_09.md
+
+Implemented TASK_09 and completed TypeBase assumption splitting in `split_ss`.
+
+Verification:
+- Simplifier, datatype, and list selftests pass
+- `tools/h4pedant/h4pedant src/simp/src` passes
+- `bin/build -t --seq=tools/sequences/upto-parallel` passes
+- Working tree clean
+
+Commit: `81455b58b Wire TypeBase assumption splits into split_ss`
+
+-------------------------------------------------------------
+                Step 19  (2026-07-16 19:46:48)               
+-------------------------------------------------------------
+
+/home/lukasz/dev/HOL/worktrees/isabelle-tactics/.agent-files/tasks_phase_S/TASK_10.md
+
+Selected task: /home/lukasz/dev/HOL/worktrees/isabelle-tactics/.agent-files/tasks_phase_S/TASK_10.md
+
+Implemented and committed as `3ce854113` (`Complete simplifier splitter integration`).
+
+Highlights:
+- Added `simpLib.Split` and `process_tags` integration.
+- Added looper, solver, named split, and TypeBase split exclusions.
+- Added splitter limit, Generic.thy, `[split]`, and RW_TAC parity tests.
+- `bin/build -t --seq=tools/sequences/upto-parallel` passes.
+- `h4pedant` and `git diff --check` pass.
+
+-------------------------------------------------------------
+                Step 20  (2026-07-16 20:16:49)               
+-------------------------------------------------------------
+
+/home/lukasz/dev/HOL/worktrees/isabelle-tactics/.agent-files/tasks_phase_S/TASK_11.md
+
+Selected task: /home/lukasz/dev/HOL/worktrees/isabelle-tactics/.agent-files/tasks_phase_S/TASK_11.md
+
+Implemented and committed TASK_11.
+
+Highlights:
+- Added `xsimptac_config` and `GEN_GLOBAL_SIMP_TAC`.
+- Added change-counted assumption fixpoint scheduling.
+- Added `concl_in_fixpoint` and `imp_rebuild`.
+- Preserved existing `global_simp_tac` defaults.
+- Added group-8 and boss entry-point regression tests.
+- Added root-only rewrite support for implication rebuilding.
+
+Validation:
+- Simplifier and boss selftests pass.
+- `h4pedant` passes.
+- `bin/build -t --seq=tools/sequences/upto-parallel` passes.
+
+Commit: `0a4c5782e Add mutual global simplifier fixpoint controls`
+
+-------------------------------------------------------------
+                Step 21  (2026-07-16 21:09:06)               
+-------------------------------------------------------------
+
+/home/lukasz/dev/HOL/worktrees/isabelle-tactics/.agent-files/tasks_phase_S/TASK_12.md
+
+Selected task: /home/lukasz/dev/HOL/worktrees/isabelle-tactics/.agent-files/tasks_phase_S/TASK_12.md
+
