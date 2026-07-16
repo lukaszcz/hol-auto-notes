@@ -7,12 +7,12 @@
 - TASK_03 — done
 - TASK_04 — done (re-verified against sources; acceptance tests and upto-parallel build pass)
 - TASK_05 — done
-- TASK_06 — unblocked (not started)
+- TASK_06 — done
 - TASK_07 — unblocked (not started)
 - TASK_08 — blocked (needs 07)
 - TASK_09 — blocked (needs 04, 06, 07, 08)
 - TASK_10 — blocked (needs 05, 06, 09)
-- TASK_11 — blocked (needs 06)
+- TASK_11 — unblocked (not started)
 - TASK_12 — unblocked (not started)
 - TASK_13 — blocked (needs 09, 10, 11, 12)
 - TASK_14 — blocked (needs 13)
@@ -29,3 +29,4 @@ TASK_06.md
 - 2026-07-16 TASK_03 — Verified traverse-data controls, dynamic refs, reentrancy, and congLib seam; selftests and upto-parallel pass.
 - 2026-07-16 TASK_04 — Re-verified implementation and acceptance criteria against sources; selftest, h4pedant, and upto-parallel build pass.
 - 2026-07-16 TASK_05 — Added and verified the Split marker round-trip; marker selftest and upto-parallel build pass.
+- 2026-07-16 TASK_06 — Added and verified GEN_SIMP_TAC loop, solver/looper handling, entry-point rewiring, and group-5 selftests; upto-parallel build passes.
