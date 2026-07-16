@@ -27,4 +27,4 @@ TASK_05.md
 - 2026-07-16 TASK_01 — Added and verified default-equivalence simplifier goldens.
 - 2026-07-16 TASK_02 — Added and verified Traverse context/solver pipeline.
 - 2026-07-16 TASK_03 — Verified traverse-data controls, dynamic refs, reentrancy, and congLib seam; selftests and upto-parallel pass.
-- 2026-07-16 TASK_04 — Re-verified all acceptance criteria against sources; selftests and upto-parallel build pass.
+- 2026-07-16 TASK_04 — Re-verified implementation and acceptance criteria against sources; selftest, h4pedant, and upto-parallel build pass.
