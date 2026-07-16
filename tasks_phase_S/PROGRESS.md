@@ -15,12 +15,12 @@
 - TASK_11 — done
 - TASK_12 — done (re-verified against sources; group-7 selftests, h4pedant, and upto-parallel build pass)
 - TASK_13 — done
-- TASK_14 — unblocked (not started)
-- TASK_15 — blocked (needs all)
+- TASK_14 — done (re-verified PLAN.md §2/§5/§11 updates and gate bookkeeping)
+- TASK_15 — unblocked (not started)
 
 ## Next unblocked task
 
-TASK_14.md
+TASK_15.md
 
 ## Completion log
 
@@ -37,3 +37,4 @@ TASK_14.md
 - 2026-07-16 TASK_11 — Added and verified GEN_GLOBAL_SIMP_TAC mutual fixpoint controls, change counting, opt-in flags, and regression selftests; upto-parallel build passes.
 - 2026-07-16 TASK_12 — Re-verified congproc fragment merging, relation keys, history rebuild, and group-7 selftests; h4pedant and upto-parallel build pass.
 - 2026-07-16 TASK_13 — Added user documentation and notes; targeted doc processing, h4pedant, and upto-parallel build pass.
+- 2026-07-16 TASK_14 — Recorded Phase S decisions, delivery status, freeze/revisit notes, and per-task gate status in PLAN.md; acceptance updates verified.
