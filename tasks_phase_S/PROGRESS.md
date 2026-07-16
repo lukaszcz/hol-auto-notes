@@ -11,7 +11,7 @@
 - TASK_07 — done
 - TASK_08 — done (re-verified against TASK_08.md; selftests, h4pedant, and upto-parallel build pass)
 - TASK_09 — done (re-verified against sources; integration selftests and upto-parallel build pass)
-- TASK_10 — unblocked (not started)
+- TASK_10 — done
 - TASK_11 — unblocked (not started)
 - TASK_12 — unblocked (not started)
 - TASK_13 — blocked (needs 09, 10, 11, 12)
@@ -20,7 +20,7 @@
 
 ## Next unblocked task
 
-TASK_10.md
+TASK_11.md
 
 ## Completion log
 
@@ -33,3 +33,4 @@ TASK_10.md
 - 2026-07-16 TASK_07 — Added and verified splitLib conclusion splitting, rule analysis, binder handling, and selftests; h4pedant and upto-parallel build pass.
 - 2026-07-16 TASK_08 — Re-verified implementation against TASK_08.md; clean asm routing, ordering, no double-negation residue, selftests, h4pedant, and upto-parallel build pass.
 - 2026-07-16 TASK_09 — Re-verified registration, TypeBase cache, conclusion/assumption integration, cases_simp, add/del_split, and split_ss against TASK_09.md; selftests, integration theory test, h4pedant, and upto-parallel build pass.
+- 2026-07-16 TASK_10 — Verified Split/Excl process_tags plumbing, splitter exclusions, Generic/RW_TAC parity and limit selftests; h4pedant and upto-parallel build pass.
