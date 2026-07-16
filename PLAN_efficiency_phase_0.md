@@ -311,7 +311,14 @@ moving all TypeBase work to the end can change which declaration name wins a
 same-theorem conflict. The optimisation must retain the relative position of
 catch-up requests among other pending updates.
 
-### Fix: represent and coalesce catch-up events explicitly
+Runtime tracing adds one important constraint: in a real fresh process, the
+two built-in catch-up requests are followed by further ancestry batches and
+modifiers before first demand.  The first catch-up and the final repair are
+therefore both semantically necessary.  Only the adjacent second request is a
+redundant application.  A direct implementation of the boolean replay below
+would reduce three provider scans and applications to two, not one.
+
+### Fix: represent events explicitly and cache provider results
 
 Extend `pending` with a distinguished constructor:
 
@@ -328,38 +335,57 @@ When the state is initialized, registration still applies
 `CatchUpTypeBase` at the same chronological position where it currently queues
 `Modify catch_up_typebase`.
 
-Move pending replay below the TypeBase helper definitions and track whether
-the current claset has been caught up since its last possible mutation:
+Factor TypeBase processing into two operations:
+
+1. `collect_typebase_rules` traverses `TypeBase.elts`, invokes each
+   contribution, and returns the rules in exactly the order in which the old
+   nested folds applied them.
+2. `apply_tyinfo_rules` applies an already collected list with the existing
+   canonical-theorem deduplication.
+
+At first demand, collect the final provider results exactly once.  Move
+pending replay below these helpers, pass the collected list through it, and
+track whether the current claset has been caught up since its last possible
+mutation:
 
 ```sml
-fun replay_pending [] (cs, caught_up) =
-      if caught_up then cs else catch_up_typebase cs
-  | replay_pending (update :: updates) (cs, caught_up) =
+fun replay_pending typebase_rules [] (cs, caught_up) =
+      if caught_up then cs else apply_tyinfo_rules typebase_rules cs
+  | replay_pending typebase_rules (update :: updates) (cs, caught_up) =
       (case update of
            CatchUpTypeBase =>
-             if caught_up then replay_pending updates (cs, true)
-             else replay_pending updates (catch_up_typebase cs, true)
+             if caught_up then
+               replay_pending typebase_rules updates (cs, true)
+             else
+               replay_pending typebase_rules updates
+                 (apply_tyinfo_rules typebase_rules cs, true)
          | ApplyDelta delta =>
-             replay_pending updates (apply_cdelta delta cs, false)
+             replay_pending typebase_rules updates
+               (apply_cdelta delta cs, false)
          | ApplyBatch deltas =>
-             replay_pending updates (batch_apply deltas cs, false)
+             replay_pending typebase_rules updates
+               (batch_apply deltas cs, false)
          | Modify f =>
-             replay_pending updates (f cs, false))
+             replay_pending typebase_rules updates (f cs, false))
 
 fun init_state (state as (cs, initialised, pending)) =
   if initialised then state
-  else (replay_pending (List.rev pending) (cs, false), true, [])
+  else
+    let val typebase_rules = collect_typebase_rules ()
+    in
+      (replay_pending typebase_rules (List.rev pending) (cs, false), true, [])
+    end
 ```
 
 The actual implementation may factor the cases differently, but it must keep
 these state transitions:
 
-- a catch-up sets `caught_up = true`;
+- a catch-up applies the cached list and sets `caught_up = true`;
 - an adjacent catch-up with no intervening claset transformation is skipped;
 - every `ApplyDelta`, `ApplyBatch`, or `Modify` conservatively sets
   `caught_up = false`; and
-- the end of replay performs one final catch-up exactly when the last pending
-  transformation may have made the derived TypeBase rules stale.
+- the end of replay reapplies the same cached list exactly when the last
+  pending transformation may have made the derived TypeBase rules stale.
 
 Registration should update the contribution table first, then update the
 global state in one `#update_global_value` call:
@@ -380,19 +406,24 @@ and invocation count and timing are not public API guarantees.
 
 ### Equivalence argument
 
-For a pure deterministic contribution table, `catch_up_typebase` is
-idempotent on claset contents:
+For a pure deterministic contribution table, collecting once is equivalent to
+every old catch-up evaluating the providers again:
 
-1. Each contribution returns the same ordered rule list for the same `tyinfo`.
-2. The first sweep either finds a canonical theorem already declared or adds
-   it once.
-3. A second sweep with no intervening claset transformation finds every such
-   theorem through `has_decls` and leaves the claset unchanged.
+1. All pending catch-up closures are replayed only at first demand, after the
+   contribution table and `TypeBase` have reached the same final values seen
+   by `collect_typebase_rules`.
+2. Each pure deterministic contribution returns the same ordered rule list
+   for the same `tyinfo` on every old invocation.
+3. `rules_for_tyinfo` and `collect_typebase_rules` preserve the old nesting
+   order: TypeBase entries, then contribution-table entries, then each
+   contribution's rule list.
+4. Applying that cached list at a catch-up point therefore produces the same
+   declarations, names, indices, and warnings as recomputing the list there.
 
-The new replay skips a catch-up only in that exact state: after a preceding
-catch-up and before any other pending transformation. Any delta, batch, or
-arbitrary modifier invalidates `caught_up`, even if it happens to be harmless,
-so the next requested or final sweep still runs. Consequently:
+The replay skips an application only after a preceding application and before
+any other pending transformation. Any delta, batch, or arbitrary modifier
+invalidates `caught_up`, even if it happens to be harmless, so the next
+requested or final application still runs. Consequently:
 
 - the first catch-up remains at the same chronological position relative to
   persistent and temporary updates;
@@ -400,12 +431,16 @@ so the next requested or final sweep still runs. Consequently:
   under the old unconditional final sweep;
 - conflicts, removals, generated names, declaration indices, and final
   candidate order are preserved; and
-- the standard startup sequence (ancestor batches, two adjacent built-in
-  catch-ups, no later modification) runs exactly one full sweep.
+- real startup performs one TypeBase/provider collection scan, applies the
+  cached list at the first built-in request, skips the adjacent request, and
+  reapplies the cached list after later pending mutations.
 
-The number of calls into contribution functions is intentionally not
-preserved; the documented purity/determinism requirement makes that count
-non-observable API behavior.
+The number of applications cannot safely fall to one without changing
+chronological conflict winners or adding substantially more mutation
+tracking.  The provider scan does fall from three to one; cached membership
+applications fall from three to two.  The number of calls into contribution
+functions is intentionally not preserved, and the documented
+purity/determinism requirement makes that count non-observable API behavior.
 
 ### Validation
 
@@ -424,8 +459,9 @@ non-observable API behavior.
 - Run `theory_tests/reloadCheck` to ensure datatype reloads still do not
   duplicate TypeBase-derived rules.
 
-During development, count calls to `catch_up_typebase` in the ordinary initial
-demand and confirm the reduction from three sweeps to one. Do not retain a
+During development, count provider collection and cached application passes in
+a fresh initial demand. Confirm the change from three provider scans and three
+applications to one provider scan and two cached applications. Do not retain a
 production counter.
 
 ---
@@ -463,8 +499,9 @@ After each commit:
 - F1 performs no `dest_decls` call for marker-name allocation.
 - F2 inserts only accepted new declarations for ADD-only batches and retains
   the rebuild path for every batch containing an `RM`.
-- F3 performs one TypeBase sweep on the ordinary first-demand path and reruns
-  catch-up after every intervening pending claset transformation.
+- F3 performs one TypeBase/provider collection scan on the ordinary
+  first-demand path and reapplies the cached ordered rules after every
+  intervening pending claset transformation.
 - Public documentation states the TypeBase contribution purity/determinism
   requirement and disclaims callback invocation-count guarantees.
 - Before/after work counts are recorded in the corresponding commit messages;
