@@ -31,4 +31,4 @@ TASK_09.md
 - 2026-07-16 TASK_05 — Added and verified the Split marker round-trip; marker selftest and upto-parallel build pass.
 - 2026-07-16 TASK_06 — Added and verified GEN_SIMP_TAC loop, solver/looper handling, entry-point rewiring, and group-5 selftests; upto-parallel build passes.
 - 2026-07-16 TASK_07 — Added and verified splitLib conclusion splitting, rule analysis, binder handling, and selftests; h4pedant and upto-parallel build pass.
-- 2026-07-16 TASK_08 — Added and verified assumption splitting, clean case routing, SPLIT_TAC ordering, selftests, and upto-parallel build pass.
+- 2026-07-16 TASK_08 — Re-verified SPLIT_ASM_TAC against its task spec; clean case routing, ordering, selftests, h4pedant, and upto-parallel build pass.
