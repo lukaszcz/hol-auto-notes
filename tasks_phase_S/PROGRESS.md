@@ -20,9 +20,9 @@
 
 ## Next unblocked task
 
-TASK_01 (TASK_05 and TASK_07 are also unblocked and independent).
+TASK_01.md (TASK_05.md and TASK_07.md are also unblocked and independent).
 
 ## Completion log
 
 Append exactly ONE line per task as it lands, e.g.
-`- YYYY-MM-DD TASK_NN — <one-line result>`.  Nothing here yet.
+`- YYYY-MM-DD TASK_NN — <one-line result>`.  No tasks completed yet.
