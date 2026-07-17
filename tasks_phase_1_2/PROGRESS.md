@@ -10,16 +10,16 @@
 - TASK_06 — done
 - TASK_07 — done
 - TASK_08 — done
-- TASK_09 — unblocked (not started)
-- TASK_10 — blocked (needs 09)
+- TASK_09 — done
+- TASK_10 — unblocked (not started)
 - TASK_11 — blocked (needs 10)
 - TASK_12 — blocked (needs 11)
 - TASK_13 — blocked (needs 12)
 - TASK_14 — blocked (needs 13)
 - TASK_15 — blocked (needs 14)
 - TASK_16 — blocked (needs 14)
-- TASK_17 — blocked (needs 09)
-- TASK_18 — blocked (needs 09)
+- TASK_17 — unblocked (not started)
+- TASK_18 — unblocked (not started)
 - TASK_19 — blocked (needs 17, 18)
 - TASK_20 — blocked (needs 19)
 - TASK_21 — blocked (needs 12, 20)
@@ -32,7 +32,7 @@
 
 ## Next unblocked task
 
-TASK_09.md
+TASK_10.md
 
 ## Completion log
 
@@ -43,4 +43,5 @@ TASK_09.md
 - TASK_05 — completed and verified against its acceptance criteria.
 - TASK_06 — completed and verified against its acceptance criteria.
 - TASK_07 — completed and verified against its acceptance criteria.
-- TASK_08 — completed and verified against its acceptance criteria.
+- TASK_08 — reverified against its task file; doc processing, AliasGen, and style checks pass.
+- TASK_09 — Phase-1 gate recorded; pre-existing full-build failure and clean h4pedant result verified.
