@@ -46,4 +46,4 @@ TASK_12.md
 - TASK_08 — reverified against its task file; doc processing, AliasGen, and style checks pass.
 - TASK_09 — Phase-1 gate recorded; pre-existing full-build failure and clean h4pedant result verified.
 - TASK_10 — completed and verified: Holmake/selftest, upto-auto build, and h4pedant pass.
-- TASK_11 — completed and verified: Holmake/selftest, upto-auto build, and h4pedant pass.
+- TASK_11 — completed and verified against its task file: Holmake/selftest, upto-auto build, and h4pedant pass.
