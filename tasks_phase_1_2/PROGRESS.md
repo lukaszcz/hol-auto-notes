@@ -2,8 +2,8 @@
 
 ## Task status
 
-- TASK_01 — unblocked (not started)
-- TASK_02 — blocked (needs 01)
+- TASK_01 — done
+- TASK_02 — unblocked (not started)
 - TASK_03 — blocked (needs 02)
 - TASK_04 — blocked (needs 03)
 - TASK_05 — blocked (needs 04)
@@ -32,8 +32,8 @@
 
 ## Next unblocked task
 
-TASK_01.md
+TASK_02.md
 
 ## Completion log
 
-- No tasks completed yet.
+- TASK_01 — completed and verified against its acceptance criteria.
