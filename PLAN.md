@@ -563,6 +563,15 @@ rule-by-rule — misclassified "safe" rules are the classic way clasets rot.
   `bin/build -t --seq=tools/sequences/upto-parallel` gates **green**
   (TASK_01–TASK_13); full `bin/build -F -t` gate **green** at commit
   `3620dc729ef32204161ecf425362872ad1b3d317` (TASK_15).
+- **2026-07-17, Phase 1:** `bin/build -F -t` reached the parallel core
+  build, then failed in `src/probability` while proving
+  `in_borel_measurable_inv` in `real_borelTheory`.  The same failure was
+  reproduced with
+  `Holmake HOLSELFTESTLEVEL=1 real_borelTheory.uo` at the Phase-1 branch
+  base, commit `b0002151f63b0072922b8d30fa892de85ef5fed6`, proving it
+  pre-existing; no Phase-1 fix was made.  The command
+  `tools/h4pedant/h4pedant src/auto/classical/` was **clean** at commit
+  `0642ba5540ab826f8e9c375d7b25f7c6ae033804` (TASK_09).
 
 ### Promotion (Phase 9, gated on the layer proving itself)
 
