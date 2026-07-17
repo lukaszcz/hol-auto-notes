@@ -12,8 +12,8 @@
 - TASK_08 — done
 - TASK_09 — done
 - TASK_10 — done
-- TASK_11 — unblocked (not started)
-- TASK_12 — blocked (needs 11)
+- TASK_11 — done
+- TASK_12 — unblocked (not started)
 - TASK_13 — blocked (needs 12)
 - TASK_14 — blocked (needs 13)
 - TASK_15 — blocked (needs 14)
@@ -32,7 +32,7 @@
 
 ## Next unblocked task
 
-TASK_11.md
+TASK_12.md
 
 ## Completion log
 
@@ -46,3 +46,4 @@ TASK_11.md
 - TASK_08 — reverified against its task file; doc processing, AliasGen, and style checks pass.
 - TASK_09 — Phase-1 gate recorded; pre-existing full-build failure and clean h4pedant result verified.
 - TASK_10 — completed and verified: Holmake/selftest, upto-auto build, and h4pedant pass.
+- TASK_11 — completed and verified: Holmake/selftest, upto-auto build, and h4pedant pass.
