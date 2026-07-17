@@ -15,9 +15,9 @@
 - TASK_11 — done
 - TASK_12 — done
 - TASK_13 — done
-- TASK_14 — unblocked (in progress)
+- TASK_14 — done
 - TASK_15 — done
-- TASK_16 — blocked (needs 14)
+- TASK_16 — unblocked (not started)
 - TASK_17 — done
 - TASK_18 — unblocked (not started)
 - TASK_19 — blocked (needs 17, 18)
@@ -32,7 +32,7 @@
 
 ## Next unblocked task
 
-TASK_14.md
+TASK_16.md
 
 ## Completion log
 
@@ -49,6 +49,6 @@ TASK_14.md
 - TASK_11 — completed and verified against its task file: Holmake/selftest, upto-auto build, and h4pedant pass.
 - TASK_12 — completed and verified against its task file: Holmake/selftest, upto-auto build, and h4pedant pass.
 - TASK_13 — completed and verified against its task file: Holmake/selftest, upto-auto build, and h4pedant pass.
-- TASK_14 — reopened: DEEPEN_TAC lacks the required preliminary safe saturation before bounded solving.
+- TASK_14 — completed and verified: all driver smoke/regression tests, Holmake, upto-auto, and h4pedant pass, including safe saturation before DEEPEN.
 - TASK_15 — completed and verified: all three driver-test groups pass, with upto-auto and h4pedant clean.
 - TASK_17 — completed and verified: reverse-duplication implementation and rules selftests pass; change is additive.
