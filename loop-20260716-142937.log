@@ -397,3 +397,86 @@ Commit: `0a4c5782e Add mutual global simplifier fixpoint controls`
 
 Selected task: /home/lukasz/dev/HOL/worktrees/isabelle-tactics/.agent-files/tasks_phase_S/TASK_12.md
 
+Implemented and committed TASK_12.
+
+- Added relation-keyed `congproc_ss` merging at `++`.
+- Preserved existing behavior when fragments contain no congprocs.
+- Added tests for theorem parity, merging, relation keying, and history rebuilds.
+- Full required build passed:
+  `bin/build -t --seq=tools/sequences/upto-parallel`
+
+Commit: `ab54b926f Merge procedural congruences from simpset fragments`
+
+-------------------------------------------------------------
+                Step 22  (2026-07-16 21:32:53)               
+-------------------------------------------------------------
+
+/home/lukasz/dev/HOL/worktrees/isabelle-tactics/.agent-files/tasks_phase_S/TASK_13.md
+
+Selected task: /home/lukasz/dev/HOL/worktrees/isabelle-tactics/.agent-files/tasks_phase_S/TASK_13.md
+
+Implemented and committed as `fb61555a0`.
+
+Highlights:
+- Added 22 Docfiles covering splitter, looper, solver, and simplifier APIs.
+- Updated `src/simp/src/notes.md` with new engine and tactic architecture.
+- Docfiles passed alias checking and polyscripting validation.
+- Phase S files pass `h4pedant` and whitespace checks.
+- `bin/build -t --seq=tools/sequences/upto-parallel` passed.
+
+-------------------------------------------------------------
+                Step 23  (2026-07-16 21:57:12)               
+-------------------------------------------------------------
+
+/home/lukasz/dev/HOL/worktrees/isabelle-tactics/.agent-files/tasks_phase_S/TASK_13.md
+
+Selected task: /home/lukasz/dev/HOL/worktrees/isabelle-tactics/.agent-files/tasks_phase_S/TASK_13.md
+
+Implemented and committed as `fb61555a0` (`Document simplifier strategy and splitter APIs`).
+
+Validation:
+- All 22 new Docfiles passed `AliasGen` and `process_docfiles`.
+- `tools/h4pedant` clean across all Phase S source directories.
+- `bin/build -t --seq=tools/sequences/upto-parallel` passed.
+- Working tree has no tracked changes.
+
+-------------------------------------------------------------
+                Step 24  (2026-07-16 22:03:40)               
+-------------------------------------------------------------
+
+/home/lukasz/dev/HOL/worktrees/isabelle-tactics/.agent-files/tasks_phase_S/TASK_14.md
+
+Selected task: /home/lukasz/dev/HOL/worktrees/isabelle-tactics/.agent-files/tasks_phase_S/TASK_14.md
+
+Implemented Phase S bookkeeping in `.agent-files/PLAN.md`:
+
+- Added decisions D14–D20.
+- Updated Phase S delivery status and defaults.
+- Recorded interface freeze, `cond_depth` convention, and `mut_impc` revisit.
+- Added per-task gates and pending TASK_15 full-build gate.
+- Verified whitespace and required records.
+
+Commit: `3620dc729 Record Phase S plan status`
+
+The commit is intentionally empty because `.agent-files` is gitignored; no tracked files were modified.
+
+-------------------------------------------------------------
+                Step 25  (2026-07-16 22:09:02)               
+-------------------------------------------------------------
+
+/home/lukasz/dev/HOL/worktrees/isabelle-tactics/.agent-files/tasks_phase_S/TASK_15.md
+
+Selected task: /home/lukasz/dev/HOL/worktrees/isabelle-tactics/.agent-files/tasks_phase_S/TASK_15.md
+
+Implemented and committed as `489e2f734`.
+
+- `bin/build -F -t`: **green**
+- `tools/h4pedant`: **clean**
+- Gate recorded in `.agent-files/PLAN.md`
+- No pre-existing failures encountered or patched.
+
+-------------------------------------------------------------
+                Step 26  (2026-07-16 22:32:13)               
+-------------------------------------------------------------
+
+COMPLETE

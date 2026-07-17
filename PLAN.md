@@ -119,6 +119,13 @@ All decided 2026-07-14, one-by-one, with alternatives presented:
 | D11 | *(2026-07-15, Phase 0)* **Claset persistence substrate**: one `AncestryData.fullmake` instance (tag `"claset"`) with a rich custom delta type (kind, safety, optional priority) and explicitly registered attributes — not `ThmSetData.export_with_ancestry`, whose fixed `ADD/REMOVE` delta type cannot carry the D2 schema.  Same mechanism family one level down; D10 unaffected.  Details: `PLAN_phase_0.md` §0. |
 | D12 | *(2026-07-15, Phase 0)* **HOL4-native attribute syntax** (revises D4): `[intro]/[elim]/[dest]` unsafe, `[sintro]/[selim]/[sdest]` safe, mirroring the `Intro`/`SIntro`/… marker constructors; zero core-grammar changes; numeric aesop priorities as attribute arguments deferred to Phase 4 (small additive lexer tweak then). |
 | D13 | *(2026-07-15, Phase 0)* **Wrapper representation**: layer-level nondeterministic tactic type `ntactic = goal -> (goal list * validation) seq.seq` (`portableML/seq`), `wrapper = ntactic -> ntactic`; safe wrappers compose ORELSE-style, unsafe APPEND-style — one wrapper vocabulary for Phases 1–4. |
+| D14 | *(2026-07-16, Phase S)* **Loop hook surface**: all simpLib tactic entry points honor simpset loopers and final solvers; conversion/rule/prove entry points do not.  Empty default lists preserve distribution behavior. |
+| D15 | *(2026-07-16, Phase S)* **Solver architecture**: one conversion-level solver type serves both engine side conditions (always unsafe) and tactic-level residual goals (safe or unsafe by mode); simpsets carry named safe/unsafe lists and a separately settable subgoaler.  The default subgoaler preserves the existing recursive traversal, context theorems are accumulated for solvers, tactics lift through `mk_tactic_solver`, and `REDUCER` stays unchanged. |
+| D16 | *(2026-07-16, Phase S)* **Safe-simp mode**: an invocation-mode record on generic `GEN_SIMP_TAC`, not a simpset transformer or `SAFE_*` family.  The flag selects only the safe final-solver list; side-condition solving remains unsafe and loopers still run. |
+| D17 | *(2026-07-16, Phase S)* **`mut_impc` realization** (revises §5.7): tactic-level through `global_simp_tac`, with change counting/fixed-tail skipping and opt-in conclusion-fixpoint and implication-rebuild flags; existing entries retain their semantics.  An in-engine port is deferred to the Phase 8 benchmark gate (§11). |
+| D18 | *(2026-07-16, Phase S)* **Splitter congruence policy**: retain HOL4's strong congruences (`COND_CONG` and descent into case branches); `split_ss` adds only the splitter looper and the `cases_simp` analogue.  This deliberate strength-first divergence from Isabelle's weak-congruence pairing may be retuned after Phase 8 benchmarks. |
+| D19 | *(2026-07-16, Phase S)* **`[split]` placement**: all split machinery lives in `src/simp` (`splitLib`, the `split` ThmSetData settype/attribute, `Split` marker, TypeBase cache, and `split_ss`); no default simpset consumes it in Phase S. |
+| D20 | *(2026-07-16, Phase S)* **Names**: own module `splitLib`; `SPLIT_TAC`, `split_ss`, `Split th`, and attribute/settype `split`.  Collision-checked; the only shadow is an unaffected script-local `SPLIT_TAC` under `examples/`. |
 
 Overarching (owner clarification): judge every design by resulting tactic
 strength, not by resemblance to Isabelle's user syntax.
@@ -267,14 +274,18 @@ markers, wrappers), `clasetSeedScript.sml`, TypeBase hook, selftest.
 
 ## 5. Phase S — Simplifier upgrades (`src/simp/src/`, in place)
 
-Concurrent with Phases 0–1 (needed by CLARSIMP/AUTO).  All defaults
-preserve current behavior; the full-distribution build is the regression
-gate for every step (D5).
+Concurrent with Phases 0–1 (needed by CLARSIMP/AUTO).
 
-1. **Looper hook**: named looper list on the simpset; traversal calls
-   loopers when rewriting + dprocs are exhausted on a subgoal-shaped
+**Status (2026-07-16): delivered in `src/simp/src`.**  New loopers,
+solver lists, splitting, and mutual-fixpoint flags default off, and no
+distribution simpset consumes them.  Promotion remains pending §11; the
+full-distribution regression gate is recorded there (D5).
+
+1. **Looper hook**: named looper list on the simpset; tactic entry points
+   call loopers when rewriting + dprocs are exhausted on a subgoal-shaped
    residue, restarting simplification on each result (semantics of
-   `simplifier.ML:312–329`).  `simp only`-style invocations clear loopers.
+   `simplifier.ML:312–329`).  Conversion/rule/prove entry points do not run
+   loopers or final solvers (D14).
 2. **Splitter**: port of `Provers/splitter.ML` — split rules
    `?P (c args) = rhs` indexed by head constant; conclusion splits via the
    `meta_iffD`/lift-theorem contexting (`splitter.ML:101, 288–356`) adapted
@@ -284,31 +295,35 @@ gate for every step (D5).
    looper; `[split]` rule set (ThmSetData-backed) + TypeBase-provided
    case-split theorems; `Split th` marker for per-invocation use.
    If-splitting parity with `RW_TAC`'s ad hoc `IF_CASES_TAC` handling.
-3. **Solver stacks**: safe/unsafe solver lists (pluggable), defaulting to
-   the current hardwired behavior (recursive simplification to `T`).  A
-   **safe-simp mode** (safe solvers only, no instantiation) — required by
-   `AUTO_TAC`'s final pass and `CLARSIMP_TAC` (`simpdata.ML:127–151`,
-   `clasimp.ML:44–54`).  The generic linear-arith solver (§8) registers as
-   an unsafe solver, as HOL does (`lin_arith.ML:949`).
-4. **Subgoaler hook** (default: current behavior).
-5. **Configurable limits**: side-condition `stack_limit` becomes a simpset
-   field.  Decision: all existing entry points keep the current default 4
-   (zero behavior change to the distribution); the layer's simpsets set it
-   to 40 (Isabelle's code default, `raw_simplifier.ML:433`) —
-   Isabelle-parity conditional rule sets need ≫ 4.  Settable term order
-   (`set_term_ord` analogue) for ordered rewriting.
+3. **Solver stacks**: named safe/unsafe solver lists (pluggable).  Engine
+   side conditions always use the unsafe list; **safe-simp mode** selects
+   the safe list only for the final tactic-level residue (D15–D16), as
+   required by `AUTO_TAC` and `CLARSIMP_TAC` (`simpdata.ML:127–151`,
+   `clasimp.ML:44–54`).  Empty lists preserve existing behavior.  The
+   generic linear-arith solver (§8) registers as unsafe, as HOL does
+   (`lin_arith.ML:949`).
+4. **Subgoaler hook and context**: the default subgoaler is the existing
+   recursive traversal; accumulated context theorems are visible to
+   solvers (D15).
+5. **Configurable limits**: side-condition `cond_depth` is a simpset field.
+   All existing entry points keep the current default 4 (zero distribution
+   behavior change); the layer's simpsets set it to 40 (Isabelle's code
+   default, `raw_simplifier.ML:433`) — Isabelle-parity conditional rule
+   sets need ≫ 4.  Settable term order (`set_term_ord` analogue) controls
+   ordered rewriting.
 6. **Congprocs through SSFRAG**: expose `Opening`'s procedural congruence
    interface in the `SSFRAG` record (Isabelle's congprocs,
    `raw_simplifier.ML` `Congproc`).
-7. **Fixpoint assumption simplification**: an in-engine mutual-fixpoint
-   mode over assumptions (semantics of `mut_impc`,
-   `raw_simplifier.ML:1315–1441`), surfaced as a new entry rather than a
-   change to `FULL_SIMP_TAC`/`fs`; `gvs`-family plumbing reused where
-   possible.
+7. **Fixpoint assumption simplification**: tactic-level mutual-fixpoint
+   controls in `GEN_GLOBAL_SIMP_TAC` (semantics of `mut_impc`,
+   `raw_simplifier.ML:1315–1441`): change counting with fixed-tail skipping,
+   plus opt-in conclusion-fixpoint and implication-rebuild flags.  Existing
+   `gvs`-family behavior is unchanged (D17); an in-engine port is subject to
+   the Phase 8 benchmark gate in §11.
 
-Deliverables: extended `simpLib` API (backward compatible), `splitLib`
-(or module inside `src/simp`), `[split]` set, selftests incl. ported
-splitter test cases from Isabelle's simplifier docs/tests.
+Delivered: backward-compatible extended `simpLib` API, own `splitLib`
+module, `[split]` set and attribute, TypeBase cache, marker and fragment
+integration, selftests including ported splitter cases, and user docs.
 
 ## 6. Phases 1–2 — Classical step tactics, search tactics, BLAST
 
@@ -544,6 +559,10 @@ rule-by-rule — misclassified "safe" rules are the classic way clasets rot.
 ### Gate record
 
 - **2026-07-15, Phase 0:** `bin/build -F -t` **green** (TASK_13 gate).
+- **2026-07-16, Phase S:** per-task
+  `bin/build -t --seq=tools/sequences/upto-parallel` gates **green**
+  (TASK_01–TASK_13); full `bin/build -F -t` gate **green** at commit
+  `3620dc729ef32204161ecf425362872ad1b3d317` (TASK_15).
 
 ### Promotion (Phase 9, gated on the layer proving itself)
 
@@ -583,10 +602,17 @@ arithmetic.  Each gets its own plan when reached.
 - **Marker constructors**: `SIntro`, `Intro`, `SElim`, `Elim`, `SDest`,
   `Dest`, `Iff`, `Split`, `Del` — reusing existing `Cong`, `Excl`, `SF`,
   `Once` unchanged (no signature collisions).
+- **Phase S interface freeze**: the authoritative list is
+  `PLAN_phase_S.md` §12; later changes to those interfaces require an owner
+  decision.
+- **In-engine `mut_impc` revisit**: if Phase 8's Isabelle-translated
+  benchmarks show gaps attributable to mutuality inside `SIMP_RULE`, under
+  binders, or in nested implications, an engine port becomes its own
+  planned item.  Otherwise the tactic-level D17 implementation stands.
 - **Numeric defaults**: adopt Isabelle's — `AUTO_TAC` depths (4, 2),
   blast depth cap 20, linarith `neq_limit`/`split_limit` 9; simp
-  side-condition `stack_limit` stays 4 for all existing entry points and
-  is set to 40 in the layer's simpsets (§5.5).  All are configurable;
+  side-condition `cond_depth` stays 4 for all existing entry points and is
+  set to 40 in the layer's simpsets (§5.5).  All are configurable;
   benchmark results may retune the layer's values (a tuning matter, not
   an open design question).
 
