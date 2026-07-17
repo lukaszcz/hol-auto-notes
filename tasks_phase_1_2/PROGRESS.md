@@ -15,7 +15,7 @@
 - TASK_11 — done
 - TASK_12 — done
 - TASK_13 — done
-- TASK_14 — blocked (needs 13)
+- TASK_14 — unblocked (not started)
 - TASK_15 — blocked (needs 14)
 - TASK_16 — blocked (needs 14)
 - TASK_17 — unblocked (not started)
@@ -32,7 +32,7 @@
 
 ## Next unblocked task
 
-TASK_17.md
+TASK_14.md
 
 ## Completion log
 
