@@ -32,9 +32,8 @@
 
 ## Next unblocked task
 
-TASK_01
+TASK_01.md
 
 ## Completion log
 
-Add exactly ONE line per task here as it lands
-(`- YYYY-MM-DD TASK_NN — what was delivered/verified`).
+- No tasks completed yet.
