@@ -7,9 +7,9 @@
 - TASK_03 — done
 - TASK_04 — done
 - TASK_05 — done
-- TASK_06 — unblocked (not started)
-- TASK_07 — blocked (needs 06)
-- TASK_08 — blocked (needs 06)
+- TASK_06 — done
+- TASK_07 — unblocked (not started)
+- TASK_08 — unblocked (not started)
 - TASK_09 — blocked (needs 01–08)
 - TASK_10 — blocked (needs 09)
 - TASK_11 — blocked (needs 10)
@@ -32,7 +32,7 @@
 
 ## Next unblocked task
 
-TASK_05.md
+TASK_07.md
 
 ## Completion log
 
@@ -41,3 +41,4 @@ TASK_05.md
 - TASK_03 — completed and verified against its acceptance criteria.
 - TASK_04 — completed and verified against its acceptance criteria.
 - TASK_05 — completed and verified against its acceptance criteria.
+- TASK_06 — completed and verified against its acceptance criteria.
