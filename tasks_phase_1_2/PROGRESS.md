@@ -15,9 +15,9 @@
 - TASK_11 — done
 - TASK_12 — done
 - TASK_13 — done
-- TASK_14 — unblocked (not started)
-- TASK_15 — blocked (needs 14)
-- TASK_16 — blocked (needs 14)
+- TASK_14 — done
+- TASK_15 — unblocked (not started)
+- TASK_16 — unblocked (not started)
 - TASK_17 — unblocked (not started)
 - TASK_18 — unblocked (not started)
 - TASK_19 — blocked (needs 17, 18)
@@ -32,7 +32,7 @@
 
 ## Next unblocked task
 
-TASK_14.md
+TASK_15.md
 
 ## Completion log
 
@@ -49,3 +49,4 @@ TASK_14.md
 - TASK_11 — completed and verified against its task file: Holmake/selftest, upto-auto build, and h4pedant pass.
 - TASK_12 — completed and verified against its task file: Holmake/selftest, upto-auto build, and h4pedant pass.
 - TASK_13 — completed and verified against its task file: Holmake/selftest, upto-auto build, and h4pedant pass.
+- TASK_14 — completed and verified against its task file: Holmake/selftest, upto-auto build, and h4pedant pass.
