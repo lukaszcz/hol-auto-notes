@@ -6,8 +6,8 @@
 - TASK_02 — done
 - TASK_03 — done
 - TASK_04 — done
-- TASK_05 — unblocked (not started)
-- TASK_06 — blocked (needs 05)
+- TASK_05 — done
+- TASK_06 — unblocked (not started)
 - TASK_07 — blocked (needs 06)
 - TASK_08 — blocked (needs 06)
 - TASK_09 — blocked (needs 01–08)
@@ -40,3 +40,4 @@ TASK_05.md
 - TASK_02 — completed and verified against its acceptance criteria.
 - TASK_03 — completed and verified against its acceptance criteria.
 - TASK_04 — completed and verified against its acceptance criteria.
+- TASK_05 — completed and verified against its acceptance criteria.
