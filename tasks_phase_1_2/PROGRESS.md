@@ -22,8 +22,8 @@
 - TASK_18 — done
 - TASK_19 — done
 - TASK_20 — done
-- TASK_21 — done
-- TASK_22 — unblocked (in progress; BLAST_TAC starts at depth 0, but requires DEEPEN(1, !depth_limit))
+- TASK_21 — unblocked (in progress; src/auto/classical/selftest.exe fails at FAST_TAC Pelletier 26's 30-second budget)
+- TASK_22 — blocked (needs 21)
 - TASK_23 — blocked (needs 22)
 - TASK_24 — blocked (needs 23)
 - TASK_25 — blocked (needs 22)
@@ -32,7 +32,7 @@
 
 ## Next unblocked task
 
-TASK_22.md
+TASK_21.md
 
 ## Completion log
 
@@ -56,4 +56,4 @@ TASK_22.md
 - TASK_18 — completed and verified against TASK_18.md: blast skeleton, private prototerm/trail unifier, unit selftests, upto-auto, and h4pedant pass.
 - TASK_19 — reverified against TASK_19.md: Holmake/selftest, upto-auto, and h4pedant pass.
 - TASK_20 — completed and verified 2026-07-18 against TASK_20.md/blast.ML: search clause mapping, six search-only goldens, Holmake/selftest, upto-auto, and h4pedant pass.
-- TASK_21 — reverified 2026-07-18 against TASK_21.md/source: typed replay, T1–T6 goldens, Tactical.VALID checks, backtracking, clean failure, Holmake/selftests, upto-auto, and h4pedant all pass.
+- TASK_21 — reopened 2026-07-18: src/auto/classical/selftest.exe fails at FAST_TAC Pelletier 26's 30-second budget; acceptance must be rerun after this is fixed.
