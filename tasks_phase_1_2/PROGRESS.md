@@ -21,8 +21,8 @@
 - TASK_17 — done
 - TASK_18 — done
 - TASK_19 — done
-- TASK_20 — unblocked (not started)
-- TASK_21 — blocked (needs TASK_20)
+- TASK_20 — done
+- TASK_21 — unblocked (not started)
 - TASK_22 — blocked (needs 21)
 - TASK_23 — blocked (needs 22)
 - TASK_24 — blocked (needs 23)
@@ -32,7 +32,7 @@
 
 ## Next unblocked task
 
-TASK_20.md
+TASK_21.md
 
 ## Completion log
 
@@ -55,3 +55,4 @@ TASK_20.md
 - TASK_16 — reverified against TASK_16.md: reusable 20-problem FAST_TAC corpus, per-goal budgets/count, Holmake/selftest, upto-auto, and h4pedant pass.
 - TASK_18 — completed and verified against TASK_18.md: blast skeleton, private prototerm/trail unifier, unit selftests, upto-auto, and h4pedant pass.
 - TASK_19 — reverified against TASK_19.md: Holmake/selftest, upto-auto, and h4pedant pass.
+- TASK_20 — completed and verified against TASK_20.md: Holmake/selftest, upto-auto, and h4pedant pass.
