@@ -23,16 +23,16 @@
 - TASK_19 — done
 - TASK_20 — done
 - TASK_21 — done
-- TASK_22 — unblocked (in progress; current upto-auto gate fails at the classical selftest "rule validations normalize local theorem hypotheses")
-- TASK_23 — blocked (needs 22; corpus selftest passes, but its build gate cannot pass while 22 is reopened)
+- TASK_22 — done
+- TASK_23 — unblocked (not started)
 - TASK_24 — blocked (needs 23)
-- TASK_25 — blocked (needs 22)
+- TASK_25 — unblocked (not started)
 - TASK_26 — blocked (needs 15, 16, 24, 25)
 - TASK_27 — blocked (needs all)
 
 ## Next unblocked task
 
-TASK_22.md
+TASK_23.md
 
 ## Completion log
 
@@ -57,4 +57,4 @@ TASK_22.md
 - TASK_19 — reverified against TASK_19.md: Holmake/selftest, upto-auto, and h4pedant pass.
 - TASK_20 — completed and verified 2026-07-18 against TASK_20.md/blast.ML: search clause mapping, six search-only goldens, Holmake/selftest, upto-auto, and h4pedant pass.
 - TASK_21 — reverified 2026-07-18 against TASK_21.md and current sources: T1–T6 reconstruction, Tactical.VALID, backtracking, clean failure, Holmake, selftests, upto-auto, and h4pedant pass.
-- TASK_22 — landed and initially verified; re-opened 2026-07-18 because the current upto-auto gate fails at the classical selftest "rule validations normalize local theorem hypotheses".
+- TASK_22 — reverified 2026-07-18 after reopening: public blast tactics, configuration, markers, tryIt, traces/stats, Holmake/selftest, upto-auto, and h4pedant pass.
