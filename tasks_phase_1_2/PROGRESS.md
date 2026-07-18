@@ -56,5 +56,5 @@ TASK_22.md
 - TASK_18 — completed and verified against TASK_18.md: blast skeleton, private prototerm/trail unifier, unit selftests, upto-auto, and h4pedant pass.
 - TASK_19 — reverified against TASK_19.md: Holmake/selftest, upto-auto, and h4pedant pass.
 - TASK_20 — completed and verified 2026-07-18 against TASK_20.md/blast.ML: search clause mapping, six search-only goldens, Holmake/selftest, upto-auto, and h4pedant pass.
-- TASK_21 — reverified 2026-07-18 against TASK_21.md and current sources: baseline blast/classical selftests pass, including T1–T6 Tactical.VALID replay, backtracking, and clean failure; the unfinished TASK_23 Pelletier-20 extension still fails separately.
+- TASK_21 — reverified 2026-07-18 against TASK_21.md and current sources: all T1–T6 reconstruction, Tactical.VALID, backtracking, and clean-failure checks pass; the current blast selftest then fails separately at unfinished TASK_23 Pelletier 20.
 - TASK_22 — reopened: required classical-driver and BLAST docfiles, including BBLAST_TAC cross-links, are missing.
