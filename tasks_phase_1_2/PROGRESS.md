@@ -22,9 +22,9 @@
 - TASK_18 — done
 - TASK_19 — done
 - TASK_20 — done
-- TASK_21 — unblocked (in progress; src/auto/classical/selftest.exe fails at FAST_TAC Pelletier 26's 30-second budget)
-- TASK_22 — blocked (needs 21)
-- TASK_23 — blocked (needs 22)
+- TASK_21 — done
+- TASK_22 — done
+- TASK_23 — unblocked (not started)
 - TASK_24 — blocked (needs 23)
 - TASK_25 — blocked (needs 22)
 - TASK_26 — blocked (needs 15, 16, 24, 25)
@@ -32,7 +32,7 @@
 
 ## Next unblocked task
 
-TASK_21.md
+TASK_23.md
 
 ## Completion log
 
@@ -56,4 +56,5 @@ TASK_21.md
 - TASK_18 — completed and verified against TASK_18.md: blast skeleton, private prototerm/trail unifier, unit selftests, upto-auto, and h4pedant pass.
 - TASK_19 — reverified against TASK_19.md: Holmake/selftest, upto-auto, and h4pedant pass.
 - TASK_20 — completed and verified 2026-07-18 against TASK_20.md/blast.ML: search clause mapping, six search-only goldens, Holmake/selftest, upto-auto, and h4pedant pass.
-- TASK_21 — reopened 2026-07-18: src/auto/classical/selftest.exe fails at FAST_TAC Pelletier 26's 30-second budget; acceptance must be rerun after this is fixed.
+- TASK_21 — completed and verified 2026-07-18: blast/classical selftests, upto-auto build, and h4pedant pass after the Pelletier 26 performance fix.
+- TASK_22 — completed and verified 2026-07-18: public BLAST surface, marker/config handling, tryIt, traces/stats, selftests, upto-auto build, and h4pedant pass.
