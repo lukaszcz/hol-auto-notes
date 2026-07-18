@@ -23,8 +23,8 @@
 - TASK_19 — done
 - TASK_20 — done
 - TASK_21 — done
-- TASK_22 — done
-- TASK_23 — unblocked (not started)
+- TASK_22 — unblocked (in progress; reopened: required docfiles are missing)
+- TASK_23 — blocked (in progress; needs 22; its driver currently runs only Pelletier 20)
 - TASK_24 — blocked (needs 23)
 - TASK_25 — blocked (needs 22)
 - TASK_26 — blocked (needs 15, 16, 24, 25)
@@ -32,7 +32,7 @@
 
 ## Next unblocked task
 
-TASK_23.md
+TASK_22.md
 
 ## Completion log
 
@@ -57,4 +57,4 @@ TASK_23.md
 - TASK_19 — reverified against TASK_19.md: Holmake/selftest, upto-auto, and h4pedant pass.
 - TASK_20 — completed and verified 2026-07-18 against TASK_20.md/blast.ML: search clause mapping, six search-only goldens, Holmake/selftest, upto-auto, and h4pedant pass.
 - TASK_21 — completed and verified 2026-07-18: blast/classical selftests, upto-auto build, and h4pedant pass after the Pelletier 26 performance fix.
-- TASK_22 — completed and verified 2026-07-18: public BLAST surface, marker/config handling, tryIt, traces/stats, selftests, upto-auto build, and h4pedant pass.
+- TASK_22 — reopened: required classical-driver and BLAST docfiles, including BBLAST_TAC cross-links, are missing.
