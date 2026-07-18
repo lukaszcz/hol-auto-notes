@@ -23,7 +23,7 @@
 - TASK_19 — done
 - TASK_20 — done
 - TASK_21 — done
-- TASK_22 — unblocked (in progress; BLAST_TAC still enumerates depth 0 instead of required DEEPEN(1, !depth_limit))
+- TASK_22 — unblocked (in progress; BLAST_TAC starts at depth 0, but requires DEEPEN(1, !depth_limit))
 - TASK_23 — blocked (needs 22)
 - TASK_24 — blocked (needs 23)
 - TASK_25 — blocked (needs 22)
@@ -56,4 +56,4 @@ TASK_22.md
 - TASK_18 — completed and verified against TASK_18.md: blast skeleton, private prototerm/trail unifier, unit selftests, upto-auto, and h4pedant pass.
 - TASK_19 — reverified against TASK_19.md: Holmake/selftest, upto-auto, and h4pedant pass.
 - TASK_20 — completed and verified 2026-07-18 against TASK_20.md/blast.ML: search clause mapping, six search-only goldens, Holmake/selftest, upto-auto, and h4pedant pass.
-- TASK_21 — reverified 2026-07-18 against TASK_21.md/source: typed replay, hyp-subst contract, Tactical.VALID goldens, backtracking, clean failure, Holmake/selftests, upto-auto, and h4pedant all pass.
+- TASK_21 — reverified 2026-07-18 against TASK_21.md/source: typed replay, T1–T6 goldens, Tactical.VALID checks, backtracking, clean failure, Holmake/selftests, upto-auto, and h4pedant all pass.
