@@ -17,7 +17,7 @@
 - TASK_13 — done
 - TASK_14 — done
 - TASK_15 — done
-- TASK_16 — unblocked (in progress)
+- TASK_16 — done
 - TASK_17 — done
 - TASK_18 — unblocked (not started)
 - TASK_19 — blocked (needs 17, 18)
@@ -32,7 +32,7 @@
 
 ## Next unblocked task
 
-TASK_16.md
+TASK_18.md
 
 ## Completion log
 
@@ -52,3 +52,4 @@ TASK_16.md
 - TASK_14 — completed and verified: all driver smoke/regression tests, Holmake, upto-auto, and h4pedant pass, including safe saturation before DEEPEN.
 - TASK_15 — completed and verified: all three driver-test groups pass, with upto-auto and h4pedant clean.
 - TASK_17 — completed and verified against TASK_17.md: additive export, golden tests, Holmake, baseline upto-auto gate, and h4pedant pass.
+- TASK_16 — completed and verified against TASK_16.md: reusable 20-problem FAST_TAC corpus, per-goal budgets/count, Holmake, upto-auto, and h4pedant pass.
