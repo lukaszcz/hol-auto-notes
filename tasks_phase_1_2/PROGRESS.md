@@ -23,7 +23,7 @@
 - TASK_19 — done
 - TASK_20 — done
 - TASK_21 — done
-- TASK_22 — unblocked (not started)
+- TASK_22 — done
 - TASK_23 — blocked (needs 22)
 - TASK_24 — blocked (needs 23)
 - TASK_25 — blocked (needs TASK_22)
@@ -32,7 +32,7 @@
 
 ## Next unblocked task
 
-TASK_22.md
+TASK_23.md
 
 ## Completion log
 
@@ -57,3 +57,4 @@ TASK_22.md
 - TASK_19 — reverified against TASK_19.md: Holmake/selftest, upto-auto, and h4pedant pass.
 - TASK_20 — reverified against TASK_20.md and blast.ML: Holmake/selftest, upto-auto, and h4pedant pass.
 - TASK_21 — reverified against TASK_21.md and sources: reconstruction, blast hyp-subst contract, Tactical.VALID goldens, backtracking, clean failure, Holmake/selftest, upto-auto build, and h4pedant pass.
+- TASK_22 — completed and verified against TASK_22.md: public tactics/config, marker handling, tryIt, trace/stats, state isolation, Holmake/selftest, upto-auto, and h4pedant pass.
