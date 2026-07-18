@@ -22,8 +22,8 @@
 - TASK_18 — done
 - TASK_19 — done
 - TASK_20 — done
-- TASK_21 — unblocked (not started)
-- TASK_22 — blocked (needs 21)
+- TASK_21 — done
+- TASK_22 — unblocked (not started)
 - TASK_23 — blocked (needs 22)
 - TASK_24 — blocked (needs 23)
 - TASK_25 — blocked (needs TASK_22)
@@ -32,7 +32,7 @@
 
 ## Next unblocked task
 
-TASK_21.md
+TASK_22.md
 
 ## Completion log
 
@@ -56,3 +56,4 @@ TASK_21.md
 - TASK_18 — completed and verified against TASK_18.md: blast skeleton, private prototerm/trail unifier, unit selftests, upto-auto, and h4pedant pass.
 - TASK_19 — reverified against TASK_19.md: Holmake/selftest, upto-auto, and h4pedant pass.
 - TASK_20 — reverified against TASK_20.md and blast.ML: Holmake/selftest, upto-auto, and h4pedant pass.
+- TASK_21 — completed and verified against TASK_21.md: reconstruction, hyp-subst contract, Tactical.VALID goldens, backtracking, Holmake/selftest, upto-auto, and h4pedant pass.
