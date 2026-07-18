@@ -24,9 +24,9 @@
 - TASK_20 — done
 - TASK_21 — done
 - TASK_22 — done
-- TASK_23 — blocked (needs 22)
+- TASK_23 — unblocked (in progress)
 - TASK_24 — blocked (needs 23)
-- TASK_25 — blocked (needs TASK_22)
+- TASK_25 — unblocked (not started)
 - TASK_26 — blocked (needs 15, 16, 24, 25)
 - TASK_27 — blocked (needs all)
 
