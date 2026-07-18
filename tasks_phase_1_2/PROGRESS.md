@@ -56,4 +56,4 @@ TASK_22.md
 - TASK_18 — completed and verified against TASK_18.md: blast skeleton, private prototerm/trail unifier, unit selftests, upto-auto, and h4pedant pass.
 - TASK_19 — reverified against TASK_19.md: Holmake/selftest, upto-auto, and h4pedant pass.
 - TASK_20 — reverified against TASK_20.md and blast.ML: Holmake/selftest, upto-auto, and h4pedant pass.
-- TASK_21 — reverified against TASK_21.md: reconstruction, hyp-subst contract, Tactical.VALID goldens, backtracking, Holmake/selftest, upto-auto build, and h4pedant pass.
+- TASK_21 — reverified against TASK_21.md and sources: reconstruction, blast hyp-subst contract, Tactical.VALID goldens, backtracking, clean failure, Holmake/selftest, upto-auto build, and h4pedant pass.
