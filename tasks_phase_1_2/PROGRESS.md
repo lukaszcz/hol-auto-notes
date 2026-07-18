@@ -22,8 +22,8 @@
 - TASK_18 — done
 - TASK_19 — done
 - TASK_20 — done
-- TASK_21 — unblocked (in progress; re-opened: searchGoal accepts nonempty tableaux via MESON instead of replaying them)
-- TASK_22 — blocked (needs 21; also starts BLAST_TAC at depth 0 instead of DEEPEN(1, !depth_limit))
+- TASK_21 — done
+- TASK_22 — unblocked (in progress; BLAST_TAC starts at depth 0 instead of the required DEEPEN(1, !depth_limit))
 - TASK_23 — blocked (needs 22)
 - TASK_24 — blocked (needs 23)
 - TASK_25 — blocked (needs 22)
@@ -32,7 +32,7 @@
 
 ## Next unblocked task
 
-TASK_21.md
+TASK_22.md
 
 ## Completion log
 
@@ -56,4 +56,4 @@ TASK_21.md
 - TASK_18 — completed and verified against TASK_18.md: blast skeleton, private prototerm/trail unifier, unit selftests, upto-auto, and h4pedant pass.
 - TASK_19 — reverified against TASK_19.md: Holmake/selftest, upto-auto, and h4pedant pass.
 - TASK_20 — completed and verified 2026-07-18 against TASK_20.md/blast.ML: search clause mapping, six search-only goldens, Holmake/selftest, upto-auto, and h4pedant pass.
-- TASK_21 — re-opened during verification: searchGoal's zero threshold routes every nonempty tableau through MESON, so the recorded script is not actually replayed by that API.
+- TASK_21 — completed and verified against TASK_21.md: typed left-to-right reconstruction, blast hyp-subst contract, Tactical.VALID goldens, backtracking, clean failure, Holmake/selftest, upto-auto, and h4pedant pass.
