@@ -51,4 +51,4 @@ TASK_16.md
 - TASK_13 — completed and verified against its task file: Holmake/selftest, upto-auto build, and h4pedant pass.
 - TASK_14 — completed and verified: all driver smoke/regression tests, Holmake, upto-auto, and h4pedant pass, including safe saturation before DEEPEN.
 - TASK_15 — completed and verified: all three driver-test groups pass, with upto-auto and h4pedant clean.
-- TASK_17 — completed and verified against TASK_17.md: additive export/implementation and golden tests pass; h4pedant is clean.
+- TASK_17 — completed and verified against TASK_17.md: additive export, golden tests, Holmake, baseline upto-auto gate, and h4pedant pass.
