@@ -22,11 +22,11 @@
 - TASK_18 — done
 - TASK_19 — done
 - TASK_20 — unblocked (not started)
-- TASK_21 — blocked (needs 12, 20)
+- TASK_21 — blocked (needs TASK_20)
 - TASK_22 — blocked (needs 21)
 - TASK_23 — blocked (needs 22)
 - TASK_24 — blocked (needs 23)
-- TASK_25 — blocked (needs 14, 22)
+- TASK_25 — blocked (needs TASK_22)
 - TASK_26 — blocked (needs 15, 16, 24, 25)
 - TASK_27 — blocked (needs all)
 
@@ -54,4 +54,4 @@ TASK_20.md
 - TASK_17 — completed and verified against TASK_17.md: additive export, golden tests, Holmake, baseline upto-auto gate, and h4pedant pass.
 - TASK_16 — reverified against TASK_16.md: reusable 20-problem FAST_TAC corpus, per-goal budgets/count, Holmake/selftest, upto-auto, and h4pedant pass.
 - TASK_18 — completed and verified against TASK_18.md: blast skeleton, private prototerm/trail unifier, unit selftests, upto-auto, and h4pedant pass.
-- TASK_19 — completed and verified against TASK_19.md: lazy rule translation, typargs, pseudo-rules, warnings, selftests, upto-auto, and h4pedant pass.
+- TASK_19 — reverified against TASK_19.md: Holmake/selftest, upto-auto, and h4pedant pass.
