@@ -27,12 +27,12 @@
 - TASK_23 — done
 - TASK_24 — done
 - TASK_25 — done
-- TASK_26 — unblocked (not started)
-- TASK_27 — blocked (needs all)
+- TASK_26 — done
+- TASK_27 — unblocked (not started)
 
 ## Next unblocked task
 
-TASK_26.md
+TASK_27.md
 
 ## Completion log
 
@@ -61,3 +61,4 @@ TASK_26.md
 - TASK_23 — completed and verified: all 48 Pelletier goals solve under Tactical.VALID within budget; Holmake/selftest, upto-auto, and h4pedant pass.
 - TASK_24 — completed and verified: Table-1 depths, set problems, Halting-II level 2, robustness regressions, Holmake/selftests, upto-auto, and h4pedant pass.
 - TASK_25 — completed and verified: all driver and BLAST docfiles, AliasGen, doc processing, cross-references, and style checks pass.
+- TASK_26 — completed and verified against TASK_26.md: PLAN.md records D21–D27, delivered Phase-1/2 trees and deviations, and the Phase-2 freeze amendments.
