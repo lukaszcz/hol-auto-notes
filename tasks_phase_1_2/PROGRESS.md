@@ -26,13 +26,13 @@
 - TASK_22 — done
 - TASK_23 — done
 - TASK_24 — done
-- TASK_25 — unblocked (not started)
-- TASK_26 — blocked (needs 15, 16, 24, 25)
+- TASK_25 — done
+- TASK_26 — unblocked (not started)
 - TASK_27 — blocked (needs all)
 
 ## Next unblocked task
 
-TASK_25.md
+TASK_26.md
 
 ## Completion log
 
@@ -60,3 +60,4 @@ TASK_25.md
 - TASK_22 — reverified 2026-07-18 after reopening: public blast tactics, configuration, markers, tryIt, traces/stats, Holmake/selftest, upto-auto, and h4pedant pass.
 - TASK_23 — completed and verified: all 48 Pelletier goals solve under Tactical.VALID within budget; Holmake/selftest, upto-auto, and h4pedant pass.
 - TASK_24 — completed and verified: Table-1 depths, set problems, Halting-II level 2, robustness regressions, Holmake/selftests, upto-auto, and h4pedant pass.
+- TASK_25 — completed and verified: all driver and BLAST docfiles, AliasGen, doc processing, cross-references, and style checks pass.
