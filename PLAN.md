@@ -126,6 +126,13 @@ All decided 2026-07-14, one-by-one, with alternatives presented:
 | D18 | *(2026-07-16, Phase S)* **Splitter congruence policy**: retain HOL4's strong congruences (`COND_CONG` and descent into case branches); `split_ss` adds only the splitter looper and the `cases_simp` analogue.  This deliberate strength-first divergence from Isabelle's weak-congruence pairing may be retuned after Phase 8 benchmarks. |
 | D19 | *(2026-07-16, Phase S)* **`[split]` placement**: all split machinery lives in `src/simp` (`splitLib`, the `split` ThmSetData settype/attribute, `Split` marker, TypeBase cache, and `split_ss`); no default simpset consumes it in Phase S. |
 | D20 | *(2026-07-16, Phase S)* **Names**: own module `splitLib`; `SPLIT_TAC`, `split_ss`, `Split th`, and attribute/settype `split`.  Collision-checked; the only shadow is an unaffected script-local `SPLIT_TAC` under `examples/`. |
+| D21 | **Engine state representation and unifier**: the shared search engine (Phases 2 and 4; blast keeps its private untyped prototerm language per D3) uses typed metavariables represented as marked fresh free variables occurring as *leaves* (no Isabelle-style lifting), each carrying an explicit **allow-set** of eigenvariables it may mention (checked at bind time, plus occurs check); a **persistent** substitution store behind an abstract API (so the representation stays swappable); and a unifier = typed first-order core (modeled on `src/1/FullUnify`) **plus** the higher-order *pattern* case (`?m x1…xk ≟ t`, `xi` distinct eigenvariables ⇒ `?m := λx̄.t`) **plus** Lean-style first-order-approximation and η heuristics, single-solution and deterministic.  Matching mode = the same algorithm rejecting bindings of pre-existing metavariables.  Rationale: option-1 cost profile (no spines, no pervasive β-normalization — cheaper than Isabelle's own lifting) with Lean/Aesop-level capability; Lean's Aesop itself has no full HOU (CPP'23 §3.1.1), and nothing in this space runs enumerative HOU in-search.  The unifier is the hardest single component; it is concentrated, golden-testable, and can never cause unsoundness (kernel replay checks everything). |
+| D22 | **One step cascade**: the classical step layer (safe/clarify/inst/unsafe/dup steps) is implemented **once**, over the engine's goal shape, with a mode flag (match vs unify) and per-step validation emission.  Phase-1 `SAFE_TAC`/`CLARIFY_TAC` are the cascade's metavariable-free instantiation: on such nodes every step carries its kernel validation directly, so the exported tactics are genuine `ntactic`s per D13 with no deferred replay, and wrappers apply as `ntactic` wrappers. |
+| D23 | **Blast replay architecture**: `BLAST_TAC`'s recorded script replays left-to-right on the shared engine's states (initialized from the real goal): steps genuinely resolve and instantiate typed metavariables (Isabelle's division of labor — search finds the shape, replay re-finds first-order unifiers, cheap per Paulson §8.2); grounding happens once at the end via the engine's kernel replay.  PROOF-FAILED-backtrack into the tableau is preserved.  No untyped→typed back-translation, no Skolem↔variable registry.  BLAST thereby depends on the engine (both are Phase 2; scheduling coupling only). |
+| D24 | **Engine wrappers, day one**: engine nodes are materializable as HOL4 goals with metavariables rendered as reserved rigid free variables; claset safe/unsafe wrappers are honored at exactly Isabelle's application points (uwrappers around the inst+unsafe rung — but *not* around `depth_tac`'s `inst0` closers, matching upstream `classical.ML:718`; swrappers inside every safe step); a wrapper's `(goals, validation)` result is lifted back (re-abstracting the rendered metavariables) and the validation recorded — wrapper steps replay for free.  Rigid semantics documented: a wrapper can never instantiate engine metavariables (Isabelle's rewriter-level guarantee; Isabelle's *solver-level* instantiation is a recorded Phase-3 option, `phase12-classical-search-port.md` §4.3). |
+| D25 | **Dynamic pruning** (supersedes the static `safe_depth_tac` DETERM-polarity question, where upstream Isabelle has carried an inverted branch since 2009 — see `phase12-classical-search-port.md` §8): the engine implements the real invariant — *when a subgoal's complete solve instantiated no metavariable visible in the remaining goals, discard its alternatives* — i.e. blast's `prune`/`clashVar` rule (`blast.ML:841–865`) applied to the classical drivers.  This subsumes the corrected 2005 semantics (HOL4 entry goals are metavariable-free, so the outer solve is deterministic by the invariant) and prunes losslessly deep inside metavariable-laden states.  No compatibility flags. |
+| D26 | **Full driver surface**: export `FAST_TAC`, `SLOW_TAC`, `BEST_TAC`, `SLOW_BEST_TAC`, `FIRST_BEST_TAC`, `ASTAR_TAC`, `SLOW_ASTAR_TAC`, `DEEPEN_TAC`, plus the step tactics `SAFE_STEP_TAC`, `CLARIFY_STEP_TAC`, `STEP_TAC`, `SLOW_STEP_TAC`, `INST_STEP_TAC`.  All are thin instantiations of the one engine; all names collision-checked free (2026-07-16, whole-tree grep). |
+| D27 | **Failure semantics**: `SAFE_TAC` and `CLARIFY_TAC` fail exactly when they change nothing (`CHANGED_PROP` semantics — what Isabelle users actually experience of the `safe`/`clarify` *methods*, `classical.ML:834,843–844`).  The raw never-fail behavior is reachable as `TRY SAFE_TAC`. |
 
 Overarching (owner clarification): judge every design by resulting tactic
 strength, not by resemblance to Isabelle's user syntax.
@@ -329,6 +336,17 @@ integration, selftests including ported splitter cases, and user docs.
 
 ### 6.1 Step layer (`src/auto/classical/`) — port of `classical.ML:578–732`
 
+**Status (2026-07-19): delivered (Phase 1).**  The Phase-1 slice comprises
+`searchHeap`, `clasetMeta`, `clasetUnify`, `clasetGoal`, `clasetStep`, and
+`classicalLib`, with selftests and user documentation.  It exports
+`SAFE_TAC`, `CLARIFY_TAC`, `SAFE_STEP_TAC`, and `CLARIFY_STEP_TAC`, plus
+claset-explicit lowercase forms, with D27's change-or-fail semantics.  The
+raw-goal sketch below was superseded by D22: safe reasoning runs through a
+metavariable-free `clasetGoal.node` and retains direct validations.  The
+shared cascade also includes assumption modus ponens, built-in `DISCH` and
+`GEN`, and swapped handling for negated implication and universal
+assumptions.
+
 - `SAFE_STEP_TAC`: FIRST of assumption-matching, contradiction
   (`P`/`¬P`), 0-subgoal safe rules by matching, hyp-subst, branching safe
   rules by matching — wrapped by safe wrappers.
@@ -340,6 +358,25 @@ integration, selftests including ported splitter cases, and user docs.
   unknowns, §1.3).
 
 ### 6.2 Search layer — internal engine with metavariables
+
+**Status (2026-07-19): delivered (Phase 2).**  The complete classical module
+list is `searchHeap`, `clasetMeta`, `clasetUnify`, `clasetReplay`,
+`clasetGoal`, `clasetStep`, `clasetSearch`, and `classicalLib`.
+`classicalLib` exports all of D26: `FAST_TAC`, `SLOW_TAC`, `BEST_TAC`,
+`SLOW_BEST_TAC`, `FIRST_BEST_TAC`, `ASTAR_TAC`, `SLOW_ASTAR_TAC`,
+`DEEPEN_TAC`, `STEP_TAC`, `SLOW_STEP_TAC`, and `INST_STEP_TAC`, plus the
+claset-explicit forms.  The D21 persistent typed-metavariable store,
+matching/unification, materialization, replay, wrappers, D25 pruning, heap,
+and four search policies are implemented and regression-tested.
+
+The delivered node is an ordered open-goal list with store, replay, ancestry,
+and binding-mark bookkeeping; alternatives and frontiers live in
+`clasetSearch`, rather than in an explicit exported AND/OR-forest type.
+Its atoms-plus-abstractions size metric is fixed in `clasetGoal` and does not
+call the otherwise corrected `claset_config.size_of`.  A-star's weight 5 and
+`DEEPEN`'s increment 2 and ceiling 10 are fixed in `classicalLib`; only the
+programmatic deepening start is configurable.  These are deviations from
+the original pluggable/shared-forest sketch below.
 
 `FAST_TAC`, `BEST_TAC`, `SLOW_TAC`, `DEEPEN_TAC` implement Isabelle's
 step semantics (`inst_step` on safe nets by unification, then unsafe
@@ -358,6 +395,25 @@ node-local deterministic phase; drivers differ only in frontier policy
 (DFS / best-first / iterative deepening / aesop priorities).
 
 ### 6.3 BLAST (`src/auto/blast/`) — faithful port of `Provers/blast.ML` (D3)
+
+**Status (2026-07-19): delivered (Phase 2).**  The actual modules are
+`blastTerm`, `blastRule`, `blastSearch`, `blastReconstruct`, and
+`tableauLib`, with selftests and user documentation.  The extra
+`blastReconstruct` module, absent from the original sketch, isolates D23's
+typed-engine reconstruction and PROOF-FAILED tableau backtracking.  The
+public operations are `BLAST_TAC`, `BLAST_DEPTH_TAC`, `depth_limit`, and
+`tryIt`.  Regressions cover Pelletier 1–46, 52, and 62, the nine Table-1
+published bounds, four set-theory problems, robustness cases, and Halting II
+at elevated `HOLSELFTESTLEVEL`.
+
+The public tactics also add two local safe elimination rules and run fixed
+preprocessing by nine helper rewrites; matching benchmark shapes can
+therefore be discharged before tableau search.  In particular the Table-1
+checks for problems 34, 38, 43, 46, and 52 do not measure raw tableau depth.
+The exact Halting-II proposition is discharged directly by its proved
+helper theorem, not by tableau search.  Thus the corpus records the strength
+of the delivered public tactic, while those cases are deliberate deviations
+from the unpreprocessed tableau pipeline described below.
 
 Pipeline (per the source and Paulson JUCS 1999):
 1. **Untyped translation**: private term datatype with destructive,
@@ -614,6 +670,19 @@ arithmetic.  Each gets its own plan when reached.
 - **Phase S interface freeze**: the authoritative list is
   `PLAN_phase_S.md` §12; later changes to those interfaces require an owner
   decision.
+- **Phase 1–2 amendments to the Phase-0 freeze list**: the unchanged
+  `claset_config.size_of : goal -> int` interface now defaults to Isabelle's
+  atoms-plus-abstractions metric instead of kernel `Term.term_size`, and
+  `clasetRules` additively exports `REV_DUP_ELIM_RULE : thm -> thm`.  Both
+  amendments are enacted and regression-tested; all other Phase-0
+  freeze-list interfaces remain frozen.
+- **Phase 1–2 interface freeze**: the current `clasetMeta` store API;
+  `clasetGoal`'s node shape and search bookkeeping; `clasetStep`'s step and
+  record contracts, depth-step parameterization, and wrapper application
+  points; `clasetReplay`'s replay-step vocabulary used by blast; the full
+  public `classicalLib` tactic signatures; and `tableauLib`'s complete
+  surface are frozen at Phase-2 completion.  Changes require an owner
+  decision; module internals remain private.
 - **In-engine `mut_impc` revisit**: if Phase 8's Isabelle-translated
   benchmarks show gaps attributable to mutuality inside `SIMP_RULE`, under
   binders, or in nested implications, an engine port becomes its own
