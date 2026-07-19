@@ -28,11 +28,11 @@
 - TASK_24 — done
 - TASK_25 — done
 - TASK_26 — done
-- TASK_27 — unblocked (not started)
+- TASK_27 — done
 
 ## Next unblocked task
 
-TASK_27.md
+None — all tasks complete.
 
 ## Completion log
 
@@ -62,3 +62,4 @@ TASK_27.md
 - TASK_24 — completed and verified: Table-1 depths, set problems, Halting-II level 2, robustness regressions, Holmake/selftests, upto-auto, and h4pedant pass.
 - TASK_25 — completed and verified: all driver and BLAST docfiles, AliasGen, doc processing, cross-references, and style checks pass.
 - TASK_26 — completed and verified against TASK_26.md: PLAN.md records D21–D27, delivered Phase-1/2 trees and deviations, and the Phase-2 freeze amendments.
+- TASK_27 — completed and verified against TASK_27.md: the Phase-2 full-build gate recorded the pre-existing probability failure; classical and BLAST h4pedant checks are clean.

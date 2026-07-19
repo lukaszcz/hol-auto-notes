@@ -628,6 +628,15 @@ rule-by-rule — misclassified "safe" rules are the classic way clasets rot.
   pre-existing; no Phase-1 fix was made.  The command
   `tools/h4pedant/h4pedant src/auto/classical/` was **clean** at commit
   `0642ba5540ab826f8e9c375d7b25f7c6ae033804` (TASK_09).
+- **2026-07-19, Phase 2:** `bin/build -F -t` reached the parallel core
+  build, then failed in `src/probability` while proving
+  `in_borel_measurable_inv` in `real_borelTheory`.  This is the exact
+  failure reproduced at the Phase-1 branch base
+  (`b0002151f63b0072922b8d30fa892de85ef5fed6`) by the TASK_09 gate,
+  proving it pre-existing; no Phase-2 fix was made.  The commands
+  `tools/h4pedant/h4pedant src/auto/classical/` and
+  `tools/h4pedant/h4pedant src/auto/blast/` were **clean** at commit
+  `30b76dc93fbc772385919ae27a7b0cc00d82d379` (TASK_27).
 
 ### Promotion (Phase 9, gated on the layer proving itself)
 
