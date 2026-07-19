@@ -1,0 +1,13 @@
+revision	repetition	position	problem	depth	batch	outcome	seconds	branches_created	branches_closed	choices_pruned	per_run_created	per_run_closed	per_run_pruned
+c7f72c445	0	0	34	4	1	exhausted	0.002301	8	1	0	8	1	0
+c7f72c445	0	0	38	3	1	exhausted	0.007539	27	21	29	27	21	29
+c7f72c445	0	0	41	3	1	exhausted	0.003193	5	5	0	5	5	0
+c7f72c445	0	0	42	3	1	exhausted	11.904766	34	97	11	34	97	11
+c7f72c445	0	0	43	3	1	exhausted	0.001585	5	1	0	5	1	0
+c7f72c445	0	0	45	3	1	exhausted	0.001876	5	0	0	5	0	0
+be308c56d	0	0	34	4	1	exhausted	0.003971	8	1	0	8	1	0
+be308c56d	0	0	38	3	1	exhausted	0.005425	27	21	29	27	21	29
+be308c56d	0	0	41	3	1	exhausted	0.002895	5	5	0	5	5	0
+be308c56d	0	0	42	3	1	exhausted	12.438078	34	97	11	34	97	11
+be308c56d	0	0	43	3	1	exhausted	0.002714	5	1	0	5	1	0
+be308c56d	0	0	45	3	1	exhausted	0.001823	5	0	0	5	0	0

@@ -1,0 +1,267 @@
+# PLAN — finishing Phases 1/2 honestly (`PLAN_phase_1_2_green.md`)
+
+Created 2026-07-19, after removing the goal-recognition preprocessors
+described in `PLAN_phase_1_2.md` §8.3.7.
+
+## 0. Purpose and the rule that governs it
+
+Phases 1/2 are **not** complete.  They were marked complete on figures
+produced by recognising benchmark goals rather than proving them.  This
+plan takes the honest baseline to a genuine green.
+
+**The rule, restated because it is the point of this plan:** a
+benchmark goal is closed by the tableau search, or it is an asserted
+expected failure.  Never by a preprocessor, rewrite set, claset seed or
+theory that names the problem, its statement, or a lemma whose only
+role is to discharge it.  No milestone below is complete if its numbers
+depend on recognition.  If a proposed change cannot be justified
+without naming a corpus problem, it is out of scope by construction.
+
+## 1. Honest baseline (measured 2026-07-19)
+
+`src/auto/blast/selftest.sml`, after removal, `HOLSELFTESTLEVEL=2`:
+
+| Suite | Result | Open |
+|---|---|---|
+| Pelletier `BLAST_TAC` (30 s budget) | **42/48** | 34, 38, 41, 42, 43, 45 |
+| Table-1 published depths | **6/9** | 34@7, 38@4, 43@5 |
+| Set problems (depths 3/3/4/4) | **4/4** | — |
+| Halting II @ depth 7 (120 s) | **unsolved** | — |
+
+Encoded as `pelletier_expected_failures`, `table1_expected_failures`
+and the Halting II entry.  Each is asserted to *fail*: if search
+improves, the suite turns red and the list must be shrunk
+deliberately.  The classical and rules selftests are unaffected and
+green.
+
+Two facts worth carrying forward:
+
+- **P46 and P52 were seeded but the search solves them unaided.**  The
+  seeds masked less than their presence suggested; do not assume every
+  removal implies a capability gap.
+- **Every open Pelletier problem is a timeout, not a clean failure.**
+  P34 at depth 7 provably completes when the budget is lifted.  So the
+  dominant symptom is *search cost*, not missing inference power — a
+  hypothesis M1 tests directly and cheaply.
+
+## 2. Milestones
+
+### M1 — Search performance (do this first; it may resolve several)
+
+Hypothesis: the open problems are within reach and the port is paying
+large avoidable constant factors.  Evidence already in hand:
+
+1. **The rule cache is defeated.**  `blastSearch.sml:448` and `:598`
+   allocate `blastRule.newCache ()` *inside* the per-node clauses, so
+   it can only ever hit for the safe/unsafe pair within a single node.
+   The cache key is `(safe, vars, formula)` and is sound across nodes,
+   and `freshName` ignores its cache argument (session-global counter),
+   so nothing in it is node-local.  Allocate one cache in `runTerms`
+   and thread it.  Every other node currently re-runs `candidates`
+   (net lookup + `candidate_order` sort) and re-converts every matching
+   theorem through `canonical_data`.
+2. **Linear assoc scans on per-constant paths.**  `blastRule.generic_info`
+   (`:64-78`) does `List.find` with string equality over a
+   monotonically growing global list, once per constant occurrence in
+   every term translation and every `query_skeleton`.  `lookup_type` /
+   `lookup_term` (`:80`, `:117`) are likewise linear with `aconv`.
+   Replace with `Redblackmap` keyed on the encoded name.
+3. **Uncached canonical forms.**  `clasetRules.canonical_form_of` is
+   recomputed per application attempt, and the elim path
+   (`clasetRules.sml:83-98`) lacks the `is_canonical` short-circuit
+   the intro path has (`:69-78`), so it does real kernel work
+   (`SPECL` + `MP`/`ASSUME` + `curry_conj_premises` + `DISCH` + `GENL`)
+   on every attempt.  Memoize per theorem, or at minimum add the fast
+   path.  Same call site in `blastRule.sml:260`.
+
+Acceptance: no behavioural change (all currently-passing goals still
+pass, at the same depths); measured wall-clock improvement on the six
+open problems recorded in this file.  Any problem that starts solving
+turns the suite red — shrink the expected-failure list and raise the
+asserted count in the same commit.
+
+#### M1 measurement (2026-07-19)
+
+Method: compare the pre-M1 commit `be308c56d` with the completed M1
+commit `c7f72c445`.  The baseline was configured and built through
+`tools/sequences/upto-auto` in a detached worktree under `/tmp`.  A
+byte-identical temporary executable in each worktree ran exactly the
+six open formulae, in the order below, in a fresh process.  Each run
+used `BLAST_TAC []`, `Tactical.VALID`, the existing default depth
+progression (maximum 20), and the unchanged 30 s `Timeout.apply`
+budget.  The two executables ran sequentially on the same host, with
+no concurrent build or test launched by this task.  The temporary
+harness was removed after measurement.
+
+| Problem | `be308c56d` | `c7f72c445` | Observable change |
+|---|---:|---:|---|
+| 34 | `>= 30.000 s` timeout | `>= 30.000 s` timeout | indeterminate |
+| 38 | `>= 30.000 s` timeout | `>= 30.000 s` timeout | indeterminate |
+| 41 | `>= 30.000 s` timeout | `>= 30.000 s` timeout | indeterminate |
+| 42 | `>= 30.000 s` timeout | `>= 30.000 s` timeout | indeterminate |
+| 43 | `>= 30.000 s` timeout | `>= 30.000 s` timeout | indeterminate |
+| 45 | `>= 30.000 s` timeout | `>= 30.000 s` timeout | indeterminate |
+
+These are right-censored observations: `30.000 s` is the timeout
+boundary, not a measured completion time.  One observation per
+revision was recorded in the original mandated-budget run.  That
+single censored observation is not a performance comparison; repeating
+the same fully-censored run would still not yield completion times.
+This table is retained as the full-search budget result, and supports
+no claim of an improvement or regression at that boundary.
+
+To test M1's wall-clock criterion without changing the mandated budget,
+an additional uncensored equal-work benchmark pins one explicit
+`BLAST_DEPTH_TAC` bound per formula.  The bounds were fixed before any
+baseline timing was observed: 34@4, and 38/41/42/43/45@3.  Both
+revisions deterministically exhaust (return without proof) below 30
+seconds at every bound.  Here "same depths" means the unchanged
+configured tactic and theorem arguments run with the same explicit,
+asserted depth bound in both revisions.  It is not a claim that these
+are unrecorded minimum proof depths.
+
+A current-only calibration showed that five single searches took only
+1--8 ms, so before the baseline timing the timed batch sizes were fixed
+at 500, 150, 300, 1, 600 and 500 searches respectively for problems
+34, 38, 41, 42, 43 and 45.  The harness asserts identical outcome and
+counters on every iteration.  Nine measured samples per revision were
+then run in fresh HOL processes, in alternating revision blocks
+B,C repeated nine times, reversing formula order on even repetitions.
+The original three observations were retained when replication was
+extended to nine.  The internal timer excludes process startup.  The
+table reports median and full observed range; all nine raw samples and
+their sorted distributions are retained in `raw.tsv` and `summary.tsv`.
+Ratios are baseline median divided by current median.
+
+| Problem@depth (batch) | `be308c56d` median [range] | `c7f72c445` median [range] | Ratio; median change |
+|---|---|---|---:|
+| 34@4 (500) | 1.324566 [1.265665--1.332898] | 1.081343 [0.852393--1.097296] | 1.225x; 18.4% faster |
+| 38@3 (150) | 0.689594 [0.649418--0.721958] | 0.733492 [0.496120--0.763775] | 0.940x; 6.4% slower |
+| 41@3 (300) | 0.551140 [0.534326--0.562237] | 0.582392 [0.335794--0.596136] | 0.946x; 5.7% slower |
+| 42@3 (1) | 12.313119 [12.266258--12.378128] | 12.169881 [12.151304--12.189878] | 1.012x; 1.2% faster |
+| 43@3 (600) | 0.913404 [0.847513--0.919069] | 0.845203 [0.611525--0.871889] | 1.081x; 7.5% faster |
+| 45@3 (500) | 0.370673 [0.306633--0.378364] | 0.466448 [0.245996--0.480193] | 0.795x; 25.8% slower |
+
+The complete counters common to both revisions are identical per
+constituent search: branches created/closed/choices pruned are 8/1/0,
+27/21/29, 5/5/0, 34/97/11, 5/1/0 and 5/0/0 in the same problem order.
+The engine has no separate complete inference counter at these
+revisions; fixed tactic, explicit depth, exhaustive outcome and these
+three complete search counters are the available equal-work check.
+The current median is lower for 34, 42 and 43, but higher for 38, 41 and
+45.  The distributions for the three slower medians overlap baseline,
+so these observations do not establish statistical regressions; they
+also do not demonstrate the required improvement for those formulae.
+M1's measured-improvement criterion is therefore met for three of the
+six workloads and remains unmet for 38, 41 and 45.  No full search now
+solves within 30 seconds, and no universal speedup is claimed.
+
+The auditable harness, exact commands, hashes, environment, calibration,
+108 raw observations and mechanically-derived summary are retained under
+`.agent-files/benchmarks/m1/`.
+
+The full `HOLSELFTESTLEVEL=2` blast suite on `c7f72c445` confirms no
+behavioural change: Pelletier remains **42/48**, with the same six
+asserted failures; published Table-1 depths remain **6/9**, with
+34@7, 38@4 and 43@5 asserted failures; and the set problems remain
+**4/4** at depths 3/3/4/4.  Halting II remains an asserted failure at
+depth 7 within its unchanged 120 s budget.  Therefore neither expected
+failure list nor any asserted count changes after M1.  The
+behaviour-preservation half of M1 acceptance is met.  The uncensored
+equal-work measurements above show mixed performance, so the
+performance half is not fully met.  Improvement at the fixed external
+wall-clock boundary remains indeterminate, and the residual problems
+proceed to M2 without treating censored times as a speedup.
+The complete rerun log is retained as
+`.agent-files/benchmarks/m1/verification-level2.log`.
+
+### M2 — Instrument before diagnosing
+
+Do not guess at the residue from M1.  For each still-open problem
+record inferences, branches created/closed, choices pruned and depth
+reached, and compare against Isabelle's published Table 1 depth for
+that problem.  At the M1 revisions `blastSearch.statistics` directly
+tracks branches created/closed and choices pruned (plus cache counters
+only in the current revision); the configured fixed depth is external,
+and there is no complete inference counter.  M2 must add the missing
+instrumentation rather than infer those quantities from wall time.
+
+The discriminating question per problem: does our search explore
+*more* than Isabelle's at the same depth (an accounting or ordering
+defect — `lim`, `md`, penalty, `candidate_order`), or does it explore a
+comparable amount and still not close (a capability gap)?  Record the
+verdict per problem here before writing any fix.
+
+### M3 — Capability gaps
+
+Scope only what M2 identifies.  The likely candidates, all shared by
+the open set (34, 38, 41, 42, 43, 45 are all nested-biconditional
+and/or diagonal problems):
+
+- **Biconditional handling.**  P41/42/43 nest `<=>` under quantifiers;
+  P34 is Andrews's Challenge, essentially iff-nesting.  Check
+  `IFF_CELIM_THM` declaration and whether iff splitting duplicates
+  correctly under γ.
+- **γ-duplication depth.**  `requeueGamma` / `md` accounting governs
+  how often a universal is re-used; the published Table-1 depths are
+  the reference for whether ours matches.
+- **Equality substitution.**  `equalSubst` and its typed counterpart —
+  relevant to P43 and P52-shaped goals.
+
+Each fix lands with a failing-first regression in the changed module's
+`selftest.sml`, per `src/auto/CLAUDE.md`.
+
+### M4 — Halting II
+
+Attempt only after M1-M3.  It is the largest goal in the suite and
+depends on γ-duplication and iff handling being right.  If it remains
+out of reach, it stays an asserted expected failure with the M2
+measurements recorded here as justification — **not** an answer lookup,
+and not a quietly dropped test.
+
+### M5 — Restore honest counts
+
+Shrink both expected-failure lists to whatever M1-M4 achieve, raise the
+asserted counts to match, and re-run: `Holmake` + `./selftest.exe` in
+all three directories, `bin/build -t --seq=tools/sequences/upto-auto`,
+then `bin/build -F -t` as the phase-boundary gate.  Update
+`PLAN_phase_1_2.md` §8.3.7's baseline table and reclose TASK_23/TASK_24
+in `tasks_phase_1_2/PROGRESS.md` — stating the achieved counts, not
+"all pass".
+
+## 3. Structural guard against recurrence
+
+Add to `src/auto/rules/selftest.sml`: assert that every theorem
+exported by `clasetSeedTheory` either carries a claset rule attribute
+or is one of the explicitly-listed rule schemas consumed
+programmatically (`NOT_IMP_CELIM_THM`, `NOT_FORALL_CELIM_THM`,
+`NOT_ELIM_THM`).  An untagged, non-rule theorem in the seed theory is
+exactly the shape the removed instance seeds had, and the test should
+fail on sight of one.
+
+This is a cheap structural invariant, not a substitute for review: it
+catches the specific mechanism used here, not recognition in general.
+`src/auto/CLAUDE.md` carries the general rule.
+
+## 4. Decided (not open questions)
+
+- Expected failures are asserted to fail, not skipped, so improvement
+  forces deliberate list maintenance.
+- The full corpus stays in the suite; no goal is removed.  (TASK_23 §3.)
+- Budgets stay at 30 s (Pelletier) and 120 s (Halting II).  A problem
+  that needs a raised budget is an M1/M2 finding to record, not a knob
+  to turn — raising a budget to convert a timeout into a pass is the
+  same category of error as this plan exists to correct.
+- M1 precedes M3 because it is cheap, behaviour-preserving, and
+  determines how much of M3 is actually needed.
+
+## 5. Owner decisions
+
+1. **If a problem proves genuinely out of reach for Isabelle's blast
+   too**, TASK_23 §3 allows a permanent expected-failure entry with a
+   citation.  Confirm case-by-case; do not self-approve.
+2. **Whether Phase 3 (`clasimp`/AUTO) may start before M5.**  AUTO
+   consumes `BLAST_DEPTH_TAC` and would inherit the current honest
+   weakness.  Recommendation: allow it, since the expected-failure
+   lists make the weakness explicit and AUTO's own corpus will be
+   measured independently — but this is yours to settle.

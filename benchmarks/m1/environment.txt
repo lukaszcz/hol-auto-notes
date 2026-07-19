@@ -1,0 +1,45 @@
+M1 equal-work benchmark environment
+===================================
+
+Measurement date (UTC): 2026-07-19
+Baseline revision: be308c56dacf977c30257de9b0bd58d487f6320b
+Current revision:  c7f72c445fdf838f9a01da7511d3d08015ed7849
+Baseline worktree: /tmp/hol4-m1-be308c56d (detached)
+Current worktree:  /home/lukasz/dev/HOL/worktrees/isabelle-tactics
+
+Host: Linux ip-172-31-20-100 6.17.0-1012-aws #12~24.04.1-Ubuntu
+      SMP Mon Apr 6 17:38:24 UTC 2026 aarch64 GNU/Linux
+CPU: 32 online vCPUs, Arm Neoverse-V2, 1 thread/core, 1 socket
+Memory at setup: 247 GiB total, no swap
+Poly/ML: Poly/ML 5.9.2 Release (/usr/local/bin/poly)
+C library: glibc 2.39
+Locale: C.UTF-8
+HOL runtime option: --gcthreads=1
+
+The baseline was created with `git worktree add --detach`, configured with
+`poly < tools/smart-configure.sml`, and built with
+`bin/build --seq=tools/sequences/upto-auto`.  The already-built current
+worktree was at the recorded current revision.  In each worktree the retained
+`m1benchmark.sml` was copied to `src/auto/blast/` and compiled with
+`../../../bin/Holmake m1benchmark.uo`.
+
+The exact measurement driver was:
+
+  REPETITIONS=3 .agent-files/benchmarks/m1/run-alternating.sh
+  START_REPETITION=4 REPETITIONS=9 \
+    .agent-files/benchmarks/m1/run-alternating.sh
+
+The exact current regression command was:
+
+  (cd src/auto/blast && HOLSELFTESTLEVEL=2 ./selftest.exe) \
+    > .agent-files/benchmarks/m1/verification-level2.log 2>&1
+
+The driver ran one revision block at a time in B,C order for each of nine
+repetitions.  Formulae ran 34,38,41,42,43,45 in odd repetitions and in reverse
+order in even repetitions.  Repetitions 4--9 appended to, rather than replaced,
+the original three.  Every row used a fresh HOL/Poly process.  No build or test
+was run concurrently by this task.  CPU affinity, frequency and host
+scheduling were not controlled, so the nine samples describe observed wall
+time on this host rather than a machine-independent performance guarantee.
+The internal timer is Poly/ML `Time.now` and excludes process startup and heap
+loading.
