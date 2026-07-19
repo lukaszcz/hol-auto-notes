@@ -24,15 +24,15 @@
 - TASK_20 — done
 - TASK_21 — done
 - TASK_22 — done
-- TASK_23 — unblocked (in progress; corpus passes, but the upto-auto gate currently fails in the existing classical selftest)
-- TASK_24 — blocked (needs 23)
+- TASK_23 — done
+- TASK_24 — unblocked (not started)
 - TASK_25 — unblocked (not started)
 - TASK_26 — blocked (needs 15, 16, 24, 25)
 - TASK_27 — blocked (needs all)
 
 ## Next unblocked task
 
-TASK_23.md
+TASK_24.md
 
 ## Completion log
 
@@ -58,3 +58,4 @@ TASK_23.md
 - TASK_20 — completed and verified 2026-07-18 against TASK_20.md/blast.ML: search clause mapping, six search-only goldens, Holmake/selftest, upto-auto, and h4pedant pass.
 - TASK_21 — reverified 2026-07-18 against TASK_21.md and current sources: T1–T6 reconstruction, Tactical.VALID, backtracking, clean failure, Holmake, selftests, upto-auto, and h4pedant pass.
 - TASK_22 — reverified 2026-07-18 after reopening: public blast tactics, configuration, markers, tryIt, traces/stats, Holmake/selftest, upto-auto, and h4pedant pass.
+- TASK_23 — completed and verified: all 48 Pelletier goals solve under Tactical.VALID within budget; Holmake/selftest, upto-auto, and h4pedant pass.
