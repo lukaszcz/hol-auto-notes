@@ -1,0 +1,6 @@
+problem	depth	attempt	process_seconds	completion	result	current_boundary	current_phase	cooperative_checkpoints	phase_entries	phase_exits	replay_recursions	alternative_pulls	typed_steps	hyp_subst_steps	close_assume_steps	close_contradiction_steps	safe_rule_steps	defer_goal_steps	unsafe_rule_steps	stored_rule_setups	stored_rule_transitions	duplicate_child_moves	finish_open_goal_checks	grounding_attempts	kernel_replay_attempts	finish_residual_goal_checks
+34	7	1	31.845302	interrupted	none	exit	alternative_enumeration	2568	1459	1109	353	356	353	0	13	42	152	69	77	160	160	77	0	0	0	0
+41	6	1	30.003354	completed	none	exit	replay_recursion	2994	1499	1495	281	557	277	0	22	54	107	45	49	128	144	100	4	4	4	0
+41	6	2	30.003354	completed	none	exit	replay_recursion	3258	1631	1627	303	601	299	0	0	76	129	45	49	150	166	100	4	4	4	0
+41	6	3	30.003354	interrupted	none	exit	alternative_enumeration	140206	70238	69968	14756	29242	14518	0	8628	584	4766	243	297	4821	5229	958	238	238	238	0
+45	11	1	30.209791	interrupted	none	enter	stored_rule_transition	3084	1731	1353	396	416	396	0	84	30	175	36	71	223	233	67	0	0	0	0

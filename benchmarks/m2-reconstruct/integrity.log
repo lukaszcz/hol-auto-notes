@@ -1,0 +1,122 @@
+M2 measured-reconstruction final integrity record
+=================================================
+
+Provenance
+----------
+Outer base revision: 9b88306e84b511cdd107085e8d94b43d11e54b8a
+Notes base revision: 700252f126d5d2abe16d1860a868c20d1d8742b0
+
+Measured source/object freshness and identity
+---------------------------------------------
+The accepted benchmark used the measured implementation whose pre-review
+source hash was:
+  f5f0f68e92fe2cc34adfdcc8f8333a4e5c89f87376a4207ec3ee7f7b030c054c
+and whose compiled blastReconstruct.uo hash was:
+  0f8173d32e0ca18c9fb00ef66ab9f834f6b18571eaa3a30f2246f61189bb493b
+
+The review repair changed only explanatory comments in blastReconstruct.sml,
+not its executable declarations.  After rebuilding from the final source:
+  final blastReconstruct.sml:
+    449d0aac7f03001fa2ed768788a0d83382ffd0590e225a19565d25e768ddafba
+    mtime 2026-07-20 05:56:58.830934820 +0000
+  rebuilt blastReconstruct.uo:
+    0f8173d32e0ca18c9fb00ef66ab9f834f6b18571eaa3a30f2246f61189bb493b
+    mtime 2026-07-20 06:00:03.315480239 +0000
+
+The rebuilt object is newer than the final source and byte-identical to the
+object used for capture.  The retained benchmark harness is also unchanged:
+  m2reconstruct.sml:
+    8efe5bb485825870d154d12a0e64ace8c302f05cdb5e6061cad0290d71118c0c
+Thus the measured executable linkage is fresh and unchanged; no benchmark
+rerun is required for the documentation/test-only review repair.
+
+Source/build
+------------
+Command: (cd src/auto/blast && Holmake selftest.exe)
+Result: exit 0; blastReconstruct signature, implementation and selftest built.
+
+Command: (cd src/auto/blast && ./selftest.exe)
+Result: exit 0; the final default-level blast selftest output is retained in
+default-selftest.log.  It covers the new focused measured-reconstruction
+regressions and the unchanged Pelletier/Table-1/set assertions; all are OK.
+Halting II is not exercised at the default selftest level.  It remains for the
+parent HOLSELFTESTLEVEL=2/full gate.
+
+Review repair verification
+--------------------------
+1. Provenance now records outer
+   9b88306e84b511cdd107085e8d94b43d11e54b8a and notes
+   700252f126d5d2abe16d1860a868c20d1d8742b0.  The source/object hashes and
+   mtimes above attest fresh, byte-identical measured executable linkage.
+2. Signature, implementation, README and green plan define TypedStep as lazy
+   sequence setup, AlternativeEnumeration as seq.cases/lazy forcing, and
+   StoredRuleTransition as post-yield processing.  They document indivisible
+   brackets, unmatched Enter paths and non-causal last-boundary evidence.
+3. The completed CloseContradiction regression observes exactly one typed
+   close-contradiction step and applies both ordinary and measured kernel
+   validations.
+4. Deep catch-all-boundary regressions preserve a distinctive stop HOL_ERR,
+   plus observer HOL_ERR, custom exception payload identity and runtime
+   Interrupt.
+5. The real two-tableau fixture observes ordinary NONE == measured
+   Completed/NONE before ordinary SOME == measured Completed/SOME and applies
+   both validations.  The sole bad tableau observes ordinary NONE == measured
+   Completed/NONE and still exhausts reconstruction search.
+6. attempts.tsv names its repeated whole-process duration process_seconds;
+   the validator generates that name and README defines its scope.
+7. The final default-level blast selftest log includes all focused regressions
+   and the unchanged Pelletier/Table-1/set assertions.  Halting II is not
+   exercised at this level and remains for the parent HOLSELFTESTLEVEL=2/full
+   gate.
+
+Accepted benchmark protocol
+---------------------------
+Pre-run process audit at 2026-07-20T05:21:02Z: no matching runner/harness.
+Driver: one explicitly polled session, fresh --gcthreads=1 process per row.
+Schedule: P34@7, P41@6, P45@11, sequential.
+Cooperative deadline: 30 seconds shared by search and reconstruction.
+Independent process watchdog: 60 seconds.
+Driver exit: 0.
+Post-run process audit at 2026-07-20T05:23:34Z: no matching process.
+
+P34@7: process 0; one Interrupted/NONE reconstruction attempt.
+P41@6: process 0; two Completed/NONE attempts, then Interrupted/NONE.
+P45@11: process 0; one Interrupted/NONE reconstruction attempt.
+No row reached the watchdog.  See raw.tsv and attempts.tsv for exact counters.
+
+Mechanical evidence validation
+------------------------------
+Command:
+  awk -f .agent-files/benchmarks/m2-reconstruct/verify-reconstruction.awk \
+    .agent-files/benchmarks/m2-reconstruct/raw.tsv > attempts.tsv
+Result: exit 0.
+
+Validated invariants: exact protocol/block/attempt order; one status 0 per
+process; one stdout result per process; last observed boundary equals current
+snapshot; checkpoints equal entries plus exits and the observed boundary
+count; typed counters and all phase-entry counters have exact subtotals.
+
+Command: .agent-files/benchmarks/m2-reconstruct/test-validator.sh
+Result: exit 0; retained evidence reproduced, and bad-header, unknown-phase
+and bad-counter fixtures all rejected with diagnostics.
+
+Hygiene
+-------
+Command: sh -n run-reconstruction.sh && sh -n test-validator.sh
+Result: exit 0.
+
+Command: git diff --check
+Result: exit 0, no output.
+
+Command: tools/h4pedant/h4pedant -q src/auto/blast
+Result: exit 0, no output.
+
+Command:
+  find src/auto/blast -maxdepth 4 \
+    \( -iname 'm2phase*' -o -iname 'm2rollback*' \
+       -o -iname 'm2continuation*' -o -iname 'm2reconstruct*' \) -print
+Result: exit 0, no output.  Temporary harness/build residue was removed.
+
+The broader repository phase gate remains deferred to the parent task as
+planned; this task changed only the blast reconstruction module/tests and the
+green-plan evidence package.

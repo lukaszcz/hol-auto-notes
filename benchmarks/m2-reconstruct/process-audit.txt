@@ -1,0 +1,23 @@
+M2 measured-reconstruction accepted-run process audit
+=====================================================
+
+Scope: only command lines matching run-reconstruction.sh or m2reconstruct.
+Unrelated processes were neither selected nor modified.
+
+Pre-run audit: 2026-07-20T05:21:02Z
+Command:
+  ps -eo pid=,ppid=,lstart=,args= |
+    rg 'run-reconstruction\.sh|[ /]m2reconstruct([ .]|$)' || true
+Result: no matching process.
+
+Accepted driver session: unified execution session 21132
+Execution: one run-reconstruction.sh process, three fresh HOL children in
+schedule order, explicitly polled until exit status 0.
+
+Post-run audit: 2026-07-20T05:23:34Z
+Command: same as pre-run audit.
+Result: no matching process.
+
+Preliminary files produced before this idle, sequential session were
+discarded.  No timing or counter from an overlapping preliminary invocation is
+retained in raw.tsv or attempts.tsv.

@@ -318,6 +318,48 @@ or canonical-form optimization is selected by this evidence; the next
 diagnosis must inspect reconstruction without altering honest outcomes or
 budgets.
 
+#### M2 measured-reconstruction follow-up (2026-07-20)
+
+Task 7d added a measured-only reconstruction path.  The ordinary
+`reconstruct`/`reconstructWith` functions, tactics and Stats path retain their
+original workers.  The diagnostic API cooperatively polls and counts replay
+recursion, lazy alternative pulls, all six typed script-step families, stored-
+rule setup and post-yield transition processing, duplicate-child movement,
+open/residual finish checks, grounding and the `Tactical.VALID` kernel-replay
+boundary.  `TypedStep` covers lazy-sequence setup; `AlternativeEnumeration`
+covers `seq.cases` and therefore any lazy engine-transition forcing needed to
+expose a node.  `StoredRuleTransition` begins only after that yield and covers
+child counting plus possible duplicate movement, not the engine call.
+Every phase has an `Enter`/`Exit` observation.  A true stop returns an
+`Interrupted` snapshot; exceptions from stop or observation callbacks,
+including `HOL_ERR`, cross legacy catch-all replay boundaries and propagate
+unchanged.  Every bracketed operation is indivisible between polls, especially
+lazy forcing, external typed transitions, grounding and kernel calls.
+Exceptions and replay backtracking can leave an `Enter` without a matching
+`Exit`; the last boundary is observation history, not a causal attribution.
+
+A clean fresh-process P34@7, P41@6, P45@11 schedule shared the original
+30-second cooperative deadline between search and reconstruction and retained
+the independent 60-second watchdog.  All processes exited normally with a
+reconstruction interruption.  P34 and P45 each had one interrupted attempt;
+P41 had two complete `NONE` attempts followed by an interrupted third attempt.
+The accepted P34/P41 snapshots ended after an alternative-enumeration pull;
+P45 stopped on entry to a stored-rule transition.  Earlier discarded captures
+placed the P34/P41 cutoff at different adjacent boundaries.  These cutoff
+locations are scheduler/deadline observations, not evidence that the last
+phase caused the cost.  Full phase counters and every boundary observation are
+retained and mechanically checked under `benchmarks/m2-reconstruct/`.
+
+The evidence establishes that cooperative reconstruction monitoring closes
+the prior watchdog observability gap, and that these attempts perform
+substantial repeated typed replay and alternative enumeration.  It does not
+select a search or capability optimization.  The smallest next diagnostic, if
+M3 needs it, targets lazy forcing inside `clasetStep` or a measured adapter,
+tagged with typed step kind and script position.  It should distinguish
+`try_rule`/unification, direct child construction and replay-record
+construction.  Do not optimize any of those components from the aggregate
+counters alone.
+
 ### M3 — Capability gaps
 
 M2 does not identify a cause.  The following are possible shared
