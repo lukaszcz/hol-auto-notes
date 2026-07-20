@@ -1,0 +1,19 @@
+M2 rollback-ownership experiment environment
+============================================
+
+Measurement date (UTC): 2026-07-20
+Outer base revision: 8264571bef871399630aed07c36abb7bb486c36b
+Notes base revision: 6d5f079ec441c4216f817f15d82aaa90b8bb5758
+Repository: /home/lukasz/dev/HOL/worktrees/isabelle-tactics
+
+Host: Linux ip-172-31-20-100 6.17.0-1012-aws #12~24.04.1-Ubuntu
+      SMP Mon Apr 6 17:38:24 UTC 2026 aarch64 GNU/Linux
+CPU: 32 online vCPUs
+Memory at capture: 247 GiB total, no swap
+Poly/ML: Poly/ML 5.9.2 Release
+Locale: C.UTF-8
+HOL runtime option: --gcthreads=1
+
+Each benchmark row used a fresh HOL process.  Runs were sequential in
+schedule order.  The cooperative deadline was 30 seconds and the independent
+whole-process watchdog was 60 seconds.

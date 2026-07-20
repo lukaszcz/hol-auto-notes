@@ -284,6 +284,40 @@ from work counts alone.  Complementary-literal indexing ranks behind it and
 likewise needs evidence separating literal scans from unification and
 transition work.
 
+#### M2 rollback-ownership follow-up (2026-07-20)
+
+Task 7c distinguished ownership at the measured API boundary.
+`searchGoalMeasured` may abandon only its fresh engine-owned state on the
+explicit `Interrupted` path; `searchTermsMeasured` still restores
+caller-owned prototerms, and stop-predicate or continuation exceptions always
+restore and propagate unchanged.  A focused regression interrupted exactly
+256 live goal-owned assignments and observed zero emergency cleanup
+traversal, no continuation, and identical repeated snapshots.  The caller-
+owned and exception paths have separate restoration regressions, including a
+saved proof whose reachable assigned variables are cleared on a continuation
+exception and a debug trace whose engine-owned cutoff assignments remain a
+coherent returned snapshot.  Cleanup counting is allocated only in measured
+instrumentation; the base term state and ordinary/Stats paths retain their
+original allocation shape.  Ordinary, statistics-only, and completed measured
+outcomes and existing counters are unchanged.
+
+The exact retained M2 harness then reran P34@7, P41@6 and P45@11 with the
+unchanged 30-second cooperative deadline and 60-second watchdog.  All three
+remained watchdog-censored with no snapshot.  Therefore emergency rollback
+is not sufficient to explain any of these three watchdogs.
+
+The plan's bounded continuation fallback used temporary flushed markers.
+P34 and P45 each entered `reconstructWith` and remained there until the
+watchdog.  P41 had two reconstructions return `NONE`, then entered a third and
+remained there until the watchdog.  None reached validation.  This localises
+the observed interval after a found tableau to proof reconstruction, not
+search cleanup.  Exact commands, rows and marker counts are retained under
+`benchmarks/m2-rollback/`, including self-contained harnesses, raw per-process
+markers/statuses and a mechanically-generated summary.  No search/capability
+or canonical-form optimization is selected by this evidence; the next
+diagnosis must inspect reconstruction without altering honest outcomes or
+budgets.
+
 ### M3 — Capability gaps
 
 M2 does not identify a cause.  The following are possible shared

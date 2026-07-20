@@ -1,0 +1,102 @@
+Final source and tests
+======================
+
+Outer base revision: 8264571bef871399630aed07c36abb7bb486c36b
+Notes base revision: 6d5f079ec441c4216f817f15d82aaa90b8bb5758
+Final blastSearch.sml timestamp: 2026-07-20 04:17:19 UTC
+Final selftest.sml timestamp: 2026-07-20 04:18:26 UTC
+
+(cd src/auto/blast && ../../../bin/Holmake)
+exit_status=0
+
+(cd src/auto/blast && ./selftest.exe > default-selftest.log 2>&1)
+exit_status=0
+elapsed_about=3m38s
+log_rows=158
+
+All focused ownership/cleanup/exception regressions reported OK.  The
+unchanged honest corpus assertions reported Pelletier 42/48, published Table
+1 6/9, and set problems 4/4.  No expected-failure list or budget changed.
+
+Rollback schedule
+=================
+
+cmp package m2rollback.sml temporary source
+cmp_status=0
+
+(cd src/auto/blast && ../../../bin/Holmake m2rollback.uo)
+exit_status=0
+
+.agent-files/benchmarks/m2-rollback/run-rollback.sh
+exit_status=0
+raw_timestamp=2026-07-20 04:28:47 UTC
+
+awk -f verify-rollback.awk raw.tsv
+all three rollback rows have the exact 30/60 protocol and
+watchdog-censored outcome
+exit_status=0
+
+Continuation schedule
+=====================
+
+cmp package m2continuation.sml temporary source
+cmp_status=0
+
+(cd src/auto/blast && ../../../bin/Holmake m2continuation.uo)
+exit_status=0
+
+.agent-files/benchmarks/m2-rollback/run-continuation.sh
+exit_status=0
+raw_timestamp=2026-07-20 04:36:53 UTC
+
+Each of the three child processes has exactly one retained status record with
+status 124.  The raw marker counts are P34 enter=1; P41 enter=3, none=2; P45
+enter=1.  No validation, successful-exit, residual, or stdout record occurs.
+
+awk -f summarize-continuation.awk continuation.raw.tsv > continuation.tsv
+exit_status=0
+summary_timestamp=2026-07-20 04:52:21 UTC
+
+The final verifier whitelists marker events and accepts only these exact
+per-problem terminal sequences:
+
+34: continuation_enter, status-124
+41: continuation_enter, continuation_none, continuation_enter,
+    continuation_none, continuation_enter, status-124
+45: continuation_enter, status-124
+
+It rejects stdout, multiple or non-124 statuses, missing terminal status, and
+every record after status.
+
+.agent-files/benchmarks/m2-rollback/test-continuation-validator.sh
+valid continuation evidence reproduced; all four negative fixtures rejected
+exit_status=0
+
+Negative fixtures cover unknown marker events, reordered events, stdout, and
+nonterminal status.  The retained raw measurement was unchanged; only its
+mechanically-derived summary and integrity metadata were regenerated.
+
+Cleanup and hygiene
+===================
+
+find src/auto/blast -maxdepth 3 for m2phase/m2rollback/m2continuation
+output_lines=0
+
+sh -n run-rollback.sh
+exit_status=0
+
+sh -n run-continuation.sh
+exit_status=0
+
+git diff --check
+exit_status=0
+
+git -C .agent-files diff --check
+exit_status=0
+
+tools/h4pedant/h4pedant src/auto/blast
+exit_status=0
+
+No trailing whitespace occurs in the retained package.  No TAB occurs in its
+SML, shell, AWK, Markdown, or text sources; TSV evidence uses TAB delimiters
+by design.

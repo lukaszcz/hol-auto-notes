@@ -1,0 +1,4 @@
+problem	depth	watchdog_seconds	continuation_enter	continuation_none	continuation_residual	validation_enter	continuation_exit	stdout_rows	classification
+34	7	60	1	0	0	0	0	0	entered reconstructWith and remained there until watchdog
+41	6	60	3	2	0	0	0	0	2 reconstructions returned; final reconstructWith remained until watchdog
+45	11	60	1	0	0	0	0	0	entered reconstructWith and remained there until watchdog
