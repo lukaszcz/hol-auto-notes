@@ -1,0 +1,22 @@
+M2 phase diagnostic environment
+===============================
+
+Measurement date (UTC): 2026-07-20
+Outer revision: 8264571bef871399630aed07c36abb7bb486c36b
+Starting notes revision: 04e8297ca837fcd040a46086db83107319f6fdea
+Repository: /home/lukasz/dev/HOL/worktrees/isabelle-tactics
+
+Host: Linux ip-172-31-20-100 6.17.0-1012-aws #12~24.04.1-Ubuntu
+      SMP Mon Apr 6 17:38:24 UTC 2026 aarch64 GNU/Linux
+CPU: 32 online vCPUs, Arm Neoverse-V2, 1 thread/core, 1 socket
+Memory at capture: 247 GiB total, no swap
+Poly/ML: Poly/ML 5.9.2 Release
+Locale: C.UTF-8
+HOL runtime option: --gcthreads=1
+
+Each TSV row came from a fresh HOL/Poly process.  Runs were sequential in
+schedule order.  The harness timer starts immediately before the measured
+fixed-depth API call, after goal parsing and invocation-claset assembly.  The
+cooperative deadline is 30 seconds.  The driver has a separate 60-second
+whole-process watchdog solely as a safety net for indivisible work or cleanup
+between an observable checkpoint and API return.

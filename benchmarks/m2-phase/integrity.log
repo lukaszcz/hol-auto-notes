@@ -1,0 +1,71 @@
+Harness preparation
+===================
+
+cmp retained harness temporary compiled copy
+harness_copy_status=0
+
+(cd src/auto/blast && ../../../bin/Holmake m2phase.uo)
+Holmake exit status=0
+
+Determinism and schema
+======================
+
+awk -f verify-determinism.awk raw.tsv repeat.tsv
+protocol/status/counter/poll/trace mismatch: 42:4
+strict_determinism_status=1
+
+awk -f verify-observations.awk raw.tsv repeat.tsv
+all six status/result pairs reproduced; completed-row counters, polls, and
+traces reproduced
+42:4: interrupted partial counters differ (time-censored)
+observation_status=0
+
+awk -f verify-predecessors.awk predecessors.tsv predecessors-repeat.tsv
+all predecessor protocol, status, counters, polls, and trace summaries are
+identical (run and elapsed time excluded)
+predecessor_status=0
+
+Every raw/repeat/predecessor TSV row has the 32 fields declared by its header.
+raw_schema_status=0
+Every summary.tsv row has its declared 24 fields.
+summary_schema_status=0
+Every observed row has stop_polls = cooperative_checkpoints.
+poll_equality_status=0
+
+Portability and workspace hygiene
+=================================
+
+sh -n run-m2-phase.sh
+sh_syntax_status=0
+No literal tab or trailing-space match in the SML, shell, or AWK sources.
+source_whitespace_status=0
+git diff --check -- PLAN_phase_1_2_green.md benchmarks/m2-phase
+diff_check_status=0
+
+The compiled temporary source, object, interface, dependency and lock files
+were removed.  `find src/auto/blast -maxdepth 3 -iname '*m2phase*'` prints
+nothing, and `git status --short src/auto/blast src/auto/rules` is empty.
+
+Review corrections
+==================
+
+The final records retain all three API-excluded watchdog intervals:
+indivisible primitive work, emergency rollback cleanup, and caller
+continuation reconstruction/validation.  Rollback observability is recorded
+as a hypothesis test, not a guarantee of return.  P42 records reproduction of
+only its completion/result pair; no cutoff state or path prefix is claimed.
+The targeted residual-overclaim `rg` check reports no forbidden old wording.
+Post-review checksum, schema, poll-equality, portable shell/AWK and diff checks
+all return status 0.  The strict determinism check still returns status 1 only
+for the retained P42 time-censored counter mismatch.
+
+Revision and checksum checks
+============================
+
+git rev-parse HEAD
+8264571bef871399630aed07c36abb7bb486c36b
+git -C .agent-files rev-parse HEAD
+04e8297ca837fcd040a46086db83107319f6fdea
+
+`sha256sum -c .agent-files/benchmarks/m2-phase/checksums.sha256` is run after
+the manifest is generated; every listed file reports OK.

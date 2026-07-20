@@ -235,6 +235,55 @@ interval between polls.  It neither localises the computation within that
 interval nor diagnoses production timeout behavior, and is not itself an M3
 fix.
 
+#### M2 phase-local follow-up (2026-07-20)
+
+Outer commit `8264571be` added cooperative checkpoints through the named inner
+workers and ten phase work counters.  Task 7b reran the formerly critical
+P34@7, P41@6, P42@4 and P45@11 rows at the same 30-second cooperative deadline
+and 60-second safety watchdog.  It also reran completed published P38@4 and
+P43@5 for comparable phase profiles, and completed adjacent P34@6, P41@5 and
+P45@10 profiles.  Every row used a fresh sequential HOL process.  Two passes
+retained all earlier M2 fields, both stop-poll/checkpoint counts, configured
+and resource depth, cache counts, the new phase counters, and bounded trace
+summaries under `benchmarks/m2-phase/`.
+
+| Problem | Phase evidence | Verdict |
+|---|---|---|
+| 34 | Depth 6 reproducibly has 3,300 candidate conversions, 2,674 rule unifications, 231 equality probes and 1,938 literal-close attempts.  Both depth-7 runs are watchdog-censored with no snapshot. | **Still opaque.**  No snapshot distinguishes one indivisible primitive, emergency rollback cleanup, or a caller continuation's reconstruction/validation interval.  No active phase can honestly be named. |
+| 38 | Depth 4 reproducibly completes without proof with 5,446 candidate conversions, 4,916 rule unifications, 734 equality probes and 6,367 literal-close attempts.  Core search counts remain 624 inferences and 140/210 branches. | **Mixed work; no time-dominance verdict.**  The completed 140 branches versus Isabelle's 30 retains the original caveat: it is consistent with, but does not prove, an accounting/ordering difference. |
+| 41 | Depth 5 reproducibly has 1,069 candidate conversions, 1,189 rule unifications, 125 equality probes and 1,099 literal-close attempts.  Both depth-6 runs are watchdog-censored with no snapshot. | **Still opaque** among an indivisible primitive, emergency rollback cleanup, and caller continuation reconstruction/validation; no phase is selected as causal. |
+| 42 | Both depth-4 runs return `Interrupted`.  Run-one/run-two ranges are 617--620 inferences, 34 branches created, 7,807 conversions, 8,417--8,433 unifications, 957--961 equality probes and 13,902--13,955 literal-close attempts. | **Mixed, time-censored work.**  Literal closing has the largest attempt count, but counts are not elapsed time and the partial counters are deliberately recorded as nondeterministic. |
+| 43 | Depth 5 reproducibly completes without proof with 2,833 candidate conversions, 2,795 rule unifications, 281 equality probes and 2,142 literal-close attempts.  Core counts remain 191 inferences and 40/42 branches. | **Mixed work; no time-dominance verdict.**  The completed 40 branches versus Isabelle's 24 retains the same non-causal caveat. |
+| 45 | Depth 10 reproducibly has 2,455 candidate conversions, 1,974 rule unifications, 336 equality probes and 4,666 literal-close attempts.  Both depth-11 runs are watchdog-censored with no snapshot. | **Still opaque** among an indivisible primitive, emergency rollback cleanup, and caller continuation reconstruction/validation; no phase is selected as causal. |
+
+P38, P43 and all three completed predecessor rows reproduce every non-time
+field exactly.  All six target completion/result pairs reproduce.  For P42,
+only that pair reproduces: its partial work counters differ because the stop
+is selected by elapsed time.  No cutoff state or search-path-prefix
+reproduction is claimed.  Retaining the failed strict determinism check is
+more honest than presenting censored work as deterministic.  For every
+observed row, `stop_polls = cooperative_checkpoints`.
+
+The counters show quantities of work only.  Without phase-local timing they do
+not establish elapsed-time dominance by candidate enumeration/net traversal,
+canonical conversion, cache copying, rule iteration, unification, equality,
+literal closing, or premise/search transitions.  Equality substitution has no
+successes in these profiles, literal attempts are largest for P42/P45, and
+candidate enumeration equals conversion attempts with only 3--12 percent as
+many formula-cache hits; these rank experiments but are not causal findings.
+
+The bounded next step is Task 7c: test the emergency-rollback hypothesis by
+making that cleanup observable and bounded while preserving state safety and
+ordinary search behavior, then rerun P34@7, P41@6 and P45@11 at the same
+30/60-second boundaries.  This does not guarantee that the rows return.  If
+any remains watchdog-censored, instrument the caller-continuation boundary to
+separate reconstruction/validation from the remaining indivisible search
+interval before attempting a search optimization.  Immutable per-theorem
+canonical-form memoization remains an unselected candidate; do not land it
+from work counts alone.  Complementary-literal indexing ranks behind it and
+likewise needs evidence separating literal scans from unification and
+transition work.
+
 ### M3 — Capability gaps
 
 M2 does not identify a cause.  The following are possible shared
