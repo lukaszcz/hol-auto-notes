@@ -1,0 +1,23 @@
+M2 diagnostic environment
+=========================
+
+Measurement date (UTC): 2026-07-19
+Outer revision: 16314dae049b24466ba20c44a1c899d2a27c9419
+Notes revision: d6078c527032716c34e21ab8fa1564f9496dde16
+Repository: /home/lukasz/dev/HOL/worktrees/isabelle-tactics
+
+Host: Linux ip-172-31-20-100 6.17.0-1012-aws #12~24.04.1-Ubuntu
+      SMP Mon Apr 6 17:38:24 UTC 2026 aarch64 GNU/Linux
+CPU: 32 online vCPUs, Arm Neoverse-V2, 1 thread/core, 1 socket
+Memory at capture: 247 GiB total, no swap
+Poly/ML: Poly/ML 5.9.2 Release
+Locale: C.UTF-8
+HOL runtime option: --gcthreads=1
+
+Each TSV row came from a fresh HOL/Poly process.  Runs were strictly
+sequential in schedule order, with no build or test started concurrently by
+this task.  The harness's timer starts immediately before the measured fixed-
+depth API call, after goal parsing and invocation-claset assembly.  The
+cooperative deadline is 30 seconds.  The driver has a separate 60-second
+whole-process watchdog solely to prevent an unbounded wait when the search is
+inside work between stop-predicate polls.

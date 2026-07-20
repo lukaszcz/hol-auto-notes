@@ -1,0 +1,13 @@
+run	position	problem	depth	debug	budget_seconds	completion	search_result	seconds	configured_depth	maximum_resource_cost	inferences_performed	branches_created	branches_closed	choices_pruned	rule_cache_hits	rule_conversions	stop_polls	trace_states	maximum_live_branches	maximum_state_formula_slots
+1	1	34	6	true	30	completed	none	0.013880	6	6	160	37	29	136	133	3300	515	515	9	96
+1	2	34	7	false	30	unobserved	watchdog_killed	>=60.000000	7	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+1	3	38	3	true	30	completed	none	0.004409	3	3	89	27	21	29	34	877	240	240	6	37
+1	4	38	4	true	30	completed	none	1.574552	4	4	624	140	210	233	314	5478	1631	1631	6	46
+1	5	41	5	true	30	completed	none	0.830665	5	5	97	6	13	0	63	1082	319	319	2	22
+1	6	41	6	false	30	unobserved	watchdog_killed	>=60.000000	6	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA
+1	7	42	3	true	30	completed	none	11.904454	3	3	451	34	97	11	637	6084	1405	1405	4	27
+1	8	42	4	false	30	interrupted	none	31.662027	4	4	623	35	141	10	924	7856	1889	0	0	0
+1	9	43	4	true	30	completed	none	0.002981	4	4	28	8	3	0	22	449	93	93	4	32
+1	10	43	5	true	30	completed	none	12.488194	5	5	191	40	42	45	243	2833	673	673	5	39
+1	11	45	10	true	30	completed	none	0.010878	10	10	312	115	89	92	73	2477	832	832	14	183
+1	12	45	11	false	30	unobserved	watchdog_killed	>=60.000000	11	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA	NA

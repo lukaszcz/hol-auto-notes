@@ -1,0 +1,30 @@
+M2 integrity checks (2026-07-19T23:58Z)
+==========================================
+
+TSV schema:
+  raw.tsv and repeat.tsv: every row has exactly 21 tab-separated fields
+
+Determinism:
+  all eight completed raw keys occur exactly once in raw.tsv and repeat.tsv
+  all eight have identical protocol fields, outcomes, counters, polls and
+  trace summaries
+  missing, duplicate and unexpected repeat-key negative checks: rejected
+
+Verifier portability:
+  GNU awk 5.2.1, mawk/nawk and BusyBox awk: OK
+
+Harness copy:
+  cmp -s retained m2benchmark.sml temporary compiled m2benchmark.sml: OK
+
+Checksums and source identity:
+  every entry in checksums.sha256: OK
+  retained harness, paper and three measured source files: exact hashes match
+
+Whitespace/style:
+  git diff --check: OK
+  git -C .agent-files diff --check: OK
+  tools/h4pedant/h4pedant src/auto/blast: OK
+
+The temporary harness copy was listed explicitly and removed after these
+checks; no m2benchmark build product remains under src/auto/blast.  The
+retained harness remains under benchmarks/m2/.

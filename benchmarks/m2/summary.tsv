@@ -1,0 +1,7 @@
+problem	probe_depth	probe_status	maximum_resource_cost	inferences_performed	branches_created	branches_closed	choices_pruned	rule_cache_hits	rule_conversions	published_depth	published_branches	comparison	verdict
+34	7	watchdog_killed	NA	NA	NA	NA	NA	NA	NA	7	100	censored; M2 proves only a measured-API polling blind spot	indeterminate; fixed-budget cause may be accounting/ordering or inner-loop computational cost; depth-7 capability is only an earlier unretained report
+38	4	completed_no_proof	4	624	140	210	233	314	5478	4	30	completed HOL4 140 versus Isabelle 30	indeterminate; observed completed branch surplus is consistent with accounting/ordering difference but does not exclude a capability difference
+41	6	watchdog_killed	NA	NA	NA	NA	NA	NA	NA	NA	NA	no published Table-1 row	indeterminate
+42	4	interrupted_no_proof	4	623	35	141	10	924	7856	NA	NA	partial counters; no published Table-1 row	indeterminate
+43	5	completed_no_proof	5	191	40	42	45	243	2833	5	24	completed HOL4 40 versus Isabelle 24	indeterminate; observed completed branch surplus is consistent with accounting/ordering difference but does not exclude a capability difference
+45	11	watchdog_killed	NA	NA	NA	NA	NA	NA	NA	NA	NA	no published Table-1 row	indeterminate

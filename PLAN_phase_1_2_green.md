@@ -40,9 +40,11 @@ Two facts worth carrying forward:
   seeds masked less than their presence suggested; do not assume every
   removal implies a capability gap.
 - **Every open Pelletier problem is a timeout, not a clean failure.**
-  P34 at depth 7 provably completes when the budget is lifted.  So the
-  dominant symptom is *search cost*, not missing inference power — a
-  hypothesis M1 tests directly and cheaply.
+  An earlier, unretained pre-M2 observation reportedly completed P34
+  at depth 7 when the budget was lifted.  Because its exact run was not
+  retained, it does not prove capability for this artifact.  Fixed-budget
+  search cost is the directly observed symptom that M1 tests; missing
+  inference capability and the cause of that cost remain open.
 
 ## 2. Milestones
 
@@ -187,16 +189,58 @@ and there is no complete inference counter.  M2 must add the missing
 instrumentation rather than infer those quantities from wall time.
 
 The discriminating question per problem: does our search explore
-*more* than Isabelle's at the same depth (an accounting or ordering
-defect — `lim`, `md`, penalty, `candidate_order`), or does it explore a
-comparable amount and still not close (a capability gap)?  Record the
-verdict per problem here before writing any fix.
+*more* than Isabelle's at the same depth (consistent with an accounting
+or ordering difference in `lim`, `md`, penalty or `candidate_order`),
+or does it explore a comparable amount and still not close (consistent
+with a capability difference)?  Branch counts alone do not establish
+either cause.  Record an indeterminate verdict whenever the evidence
+does not exclude the alternatives, before writing any fix.
+
+#### M2 diagnosis (2026-07-19)
+
+The authoritative comparison is the repository's local copy of Paulson's
+Blast paper, `papers/paulson1999-blast.txt` §9/Table 1.  It publishes
+depth/branch rows for only three open problems: 34@7/100, 38@4/30 and
+43@5/24.  Following the measured API contract, only configured depth and
+`branches_created` from one completed fixed-depth HOL4 run are compared with
+those columns.  HOL4 inferences are not Isabelle tactics, and partial timeout
+branches are not completed Isabelle branch counts.
+
+Each probe used `searchGoalMeasured` in a fresh process, a fixed explicit
+depth, the unchanged 30-second budget, reproducible ordering, and the same
+claset/reconstruction path as `BLAST_DEPTH_TAC depth []`.  A second fresh run
+of all eight completed diagnostic rows reproduced their outcomes, all
+counters, polls, compact trace summaries and debug/budget protocol fields
+exactly.  Full source, commands, environment,
+raw TSVs, schedules, checksums and integrity checks are retained under
+`benchmarks/m2/`.
+
+| Problem | Fixed-depth evidence | Verdict |
+|---|---|---|
+| 34 | Depth 6 completes without proof: max cost 6, 160 inferences, branches 37/29, 136 pruned, 133 hits, 3,300 conversions.  The published depth-7 measured-API run is watchdog-censored inside one interval between cooperative polls; no target-depth counter is available or compared with Isabelle's 100.  A pre-M2 lifted-budget completion is only an earlier unretained report. | **Indeterminate.**  M2 proves only the measured-API polling blind spot.  The fixed-budget cause remains indeterminate among accounting/ordering and inner-loop computational cost; depth-7 capability is only reportedly known. |
+| 38 | Published depth 4 completes without proof: max cost 4, 624 inferences, branches 140/210, 233 pruned, 314 hits, 5,478 conversions.  The comparable completed branch count is **140 versus Isabelle's 30**. | **Indeterminate; observed completed branch surplus is consistent with accounting/ordering difference but does not exclude a capability difference.** |
+| 41 | No published row.  Depth 5 completes without proof: max cost 5, 97 inferences, branches 6/13, no pruning, 63 hits, 1,082 conversions; depth 6 is watchdog-censored between polls. | **Indeterminate**; a cost cliff is established, but ordering and iff/gamma capability are not separable. |
+| 42 | No published row.  Depth 3 completes without proof: max cost 3, 451 inferences, branches 34/97, 11 pruned, 637 hits, 6,084 conversions.  Depth 4 reaches max cost 4 and cooperatively interrupts with partial counts 623, 35/141, 10, 924 and 7,856 respectively. | **Indeterminate**; repeated inner work per branch is visible, but there is no external comparator. |
+| 43 | Published depth 5 completes without proof: max cost 5, 191 inferences, branches 40/42, 45 pruned, 243 hits, 2,833 conversions.  The comparable completed branch count is **40 versus Isabelle's 24**. | **Indeterminate; observed completed branch surplus is consistent with accounting/ordering difference but does not exclude a capability difference.** |
+| 45 | No published row.  Depth 10 completes without proof: max cost 10, 312 inferences, branches 115/89, 92 pruned, 73 hits, 2,477 conversions; depth 11 is watchdog-censored between polls. | **Indeterminate**; depth-sensitive growth is established, but ordering and capability are not separable. |
+
+The completed debug runs retain only exact compact trace derivatives: poll/
+state count, maximum live branches, and maximum formula slots in a state.  No
+large trace log is needed.  P42@4 returned `Interrupted` after 31.662 seconds
+at the next poll; P34@7, P41@6 and P45@11 did not return to `prv` before the
+separate 60-second process watchdog.  Those three rows explicitly record
+`completion=unobserved` and `NA` counters.  This proves only that the
+cooperative measured API's polling at `prv` entry does not bound the inner
+interval between polls.  It neither localises the computation within that
+interval nor diagnoses production timeout behavior, and is not itself an M3
+fix.
 
 ### M3 — Capability gaps
 
-Scope only what M2 identifies.  The likely candidates, all shared by
-the open set (34, 38, 41, 42, 43, 45 are all nested-biconditional
-and/or diagonal problems):
+M2 does not identify a cause.  The following are possible shared
+mechanisms to investigate without treating an M2 verdict as evidence
+that any one is defective (34, 38, 41, 42, 43 and 45 are all
+nested-biconditional and/or diagonal problems):
 
 - **Biconditional handling.**  P41/42/43 nest `<=>` under quantifiers;
   P34 is Andrews's Challenge, essentially iff-nesting.  Check
