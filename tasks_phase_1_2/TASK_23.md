@@ -16,6 +16,17 @@ Any work done in this task must be a step toward these goals, but the
 ultimate plan goals are **not** the acceptance criteria for this task —
 only the criteria listed below are.
 
+## Status: REOPENED 2026-07-19
+
+This task was previously marked complete on figures produced by goal
+recognition, not proof search: `tableauLib.blast_preprocess` /
+`halting_preprocess` closed several corpus goals by rewriting them to
+`T` from seed theorems holding their statements, or by `ACCEPT_TAC` on
+an `aconv` match.  Both are removed.  Acceptance now additionally
+requires: no tactic, preprocessor, rewrite set or seed theory names a
+benchmark problem or its statement; unreached goals are asserted
+expected failures citing `PLAN_phase_1_2_green.md`.
+
 ## Objective
 
 Plan T21, first half (§8.3.1): the full Pelletier corpus in HOL4 form

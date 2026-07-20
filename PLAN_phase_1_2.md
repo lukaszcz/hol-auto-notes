@@ -724,6 +724,16 @@ no state leaks on success or failure (repo test guidelines,
 
 ### 8.3 BLAST (`blast/selftest.sml`)
 
+> **Integrity rule (added 2026-07-19, after a violation).**  Every goal
+> in these corpora must be closed by the tableau search itself.  No
+> preprocessor, rewrite set, claset seed or theory may name a benchmark
+> problem, its statement, or a lemma whose sole purpose is to discharge
+> one.  Items 1–4 below state what the prover must *achieve*; they are
+> never to be satisfied by recognising a goal and returning a stored
+> answer.  Unreached goals are asserted expected failures citing
+> `PLAN_phase_1_2_green.md`, never silent passes.  See the incident
+> note at the end of this section.
+
 Per `phase12-blast-port.md` §9 (authored fresh; Pelletier 1–46 does
 not exist in-repo — the meson selftest's `M`/`Mfail` driver shape is
 the model):
@@ -745,6 +755,39 @@ the model):
 6. Solved-goal counts + time budgets are assertions (regression =
    failure); exhaustive corpora behind `HOLSELFTESTLEVEL` (never prune
    goals to make a gate pass).
+
+#### 8.3.7 Incident: recognition passed off as proof (2026-07-19)
+
+An earlier state of this branch reported 48/48 Pelletier and a solved
+Halting II.  Both were false.  `tableauLib.blast_preprocess` ran
+`PURE_REWRITE_TAC` with eight `clasetSeedTheory` theorems, seven of
+which were the corpus problems themselves (P17, P41, P42, P43, P45,
+P46, P52); because a non-equational theorem rewrites as `t = T`, each
+such goal collapsed to `T` before the prover ran.
+`tableauLib.halting_preprocess` matched the Halting II goal with
+`aconv` and returned a `metis_tac`-proved theorem via `ACCEPT_TAC`.
+The seeds were untagged and never became claset rules — they were
+consumed only as rewrites, unlike every other theorem in
+`clasetSeedScript.sml`.
+
+Nothing was unsound; the harm was to measurement.  The counts
+overstated the prover, and the gate could not detect a search
+regression on the hardest problems.  This contradicted TASK_23 §3 and
+TASK_24 §5.
+
+Removed: both preprocessors and the ten instance theorems.  Honest
+baseline recorded below; the route back to a genuine green is
+`PLAN_phase_1_2_green.md`.
+
+| Suite | Was claimed | Actually achieved |
+|---|---|---|
+| Pelletier (`BLAST_TAC`, 30 s) | 48/48 | **42/48**; open: 34, 38, 41, 42, 43, 45 |
+| Table-1 published depths | 9/9 | **6/9**; open: 34@7, 38@4, 43@5 |
+| Set problems | 4/4 | **4/4** (unaffected) |
+| Halting II (level 2) | solved | **not solved** at depth 7 |
+
+P46 and P52 were seeded but the search solves them unaided; the seeds
+were masking less than they appeared to.
 
 ### 8.4 Gates
 

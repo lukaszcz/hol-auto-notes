@@ -1,0 +1,972 @@
+Implemented and committed TASK_09.
+
+- Gate recorded in `.agent-files/PLAN.md`
+- `h4pedant` clean on `src/auto/classical/`
+- `bin/build -F -t` exposed a `real_borelTheory` failure reproduced at Phase-1 base commit `b0002151f`, proving it pre-existing
+- Both repositories are clean
+
+Commit: `f72d837 Record Phase 1 build gate`
+
+-------------------------------------------------------------
+                Step 10  (2026-07-17 16:55:12)               
+-------------------------------------------------------------
+
+/home/lukasz/dev/HOL/worktrees/isabelle-tactics/.agent-files/tasks_phase_1_2/TASK_10.md
+
+Selected task: .agent-files/tasks_phase_1_2/TASK_10.md
+
+Implemented and committed TASK_10.
+
+- Added unify-mode inst/unsafe/dup/step/depth operations.
+- Added metavariable-aware hyp-substitution and creation tracking.
+- Added wrapper placement and depth parameterization.
+- Added comprehensive TASK_10 selftests.
+- `Holmake` and `selftest.exe`: pass.
+- `bin/build -t --seq=tools/sequences/upto-auto`: pass.
+- `h4pedant`: clean.
+
+Commit: `9cc6c3ddf Add classical unify-mode search steps`
+
+-------------------------------------------------------------
+                Step 11  (2026-07-17 17:50:53)               
+-------------------------------------------------------------
+
+/home/lukasz/dev/HOL/worktrees/isabelle-tactics/.agent-files/tasks_phase_1_2/TASK_11.md
+
+Selected task: .agent-files/tasks_phase_1_2/TASK_11.md
+
+Implemented and committed TASK_11.
+
+Highlights:
+- Added `clasetReplay.{sig,sml}` with tree-structured scripts, grounding, zero-search replay, diagnostics, and catchable failures.
+- Added shared replay vocabulary, including `CCONTR` and assumption reordering.
+- Retrofitted `clasetGoal` and `clasetStep` records and rule provenance.
+- Added match/unify replay, determinism, reordering, and corruption tests.
+
+Validation passed:
+- `Holmake`
+- `./selftest.exe`
+- `bin/build -t --seq=tools/sequences/upto-auto`
+- `h4pedant`
+
+Commit: `c4db1f74c Add grounded classical replay scripts`
+
+-------------------------------------------------------------
+                Step 12  (2026-07-17 18:33:21)               
+-------------------------------------------------------------
+
+/home/lukasz/dev/HOL/worktrees/isabelle-tactics/.agent-files/tasks_phase_1_2/TASK_12.md
+
+Selected task: .agent-files/tasks_phase_1_2/TASK_12.md
+
+Implemented and committed TASK_12.
+
+Highlights:
+- Completed rigid metavariable render/unrender round-trip.
+- Added foreign term/type marker rejection.
+- Recorded wrapper validations for replay without re-execution.
+- Preserved wrapper application points and Phase-1 behavior.
+- Added wrapper materialization, replay, and defensive tests.
+
+Validation passed:
+- `Holmake && ./selftest.exe`
+- `bin/build -t --seq=tools/sequences/upto-auto`
+- `h4pedant`
+- `git diff --check`
+
+Commit: `417787b33 Complete classical wrapper materialization`
+
+-------------------------------------------------------------
+                Step 13  (2026-07-17 19:19:23)               
+-------------------------------------------------------------
+
+/home/lukasz/dev/HOL/worktrees/isabelle-tactics/.agent-files/tasks_phase_1_2/TASK_12.md
+
+Selected task: .agent-files/tasks_phase_1_2/TASK_12.md
+
+Implemented and committed TASK_12.
+
+Commit: `417787b33502bd31dc70eda0cf0b654acccc7253`  
+`Complete classical wrapper materialization`
+
+Verified:
+- `Holmake && ./selftest.exe`
+- `bin/build -t --seq=tools/sequences/upto-auto`
+- `tools/h4pedant/h4pedant src/auto/classical`
+- Clean working tree.
+
+-------------------------------------------------------------
+                Step 14  (2026-07-17 19:23:27)               
+-------------------------------------------------------------
+
+/home/lukasz/dev/HOL/worktrees/isabelle-tactics/.agent-files/tasks_phase_1_2/TASK_13.md
+
+Selected task: .agent-files/tasks_phase_1_2/TASK_13.md
+
+Implemented and committed TASK_13.
+
+- Added all classical search drivers, D25 dynamic pruning, bounds, telemetry, and tracing.
+- Added comprehensive driver/pruning tests.
+- `Holmake` and `./selftest.exe` pass.
+- `bin/build -t --seq=tools/sequences/upto-auto` passes.
+- `h4pedant` passes.
+- Commit: `7b3a8e485 Add classical search drivers and dynamic pruning`
+
+-------------------------------------------------------------
+                Step 15  (2026-07-17 19:56:24)               
+-------------------------------------------------------------
+
+/home/lukasz/dev/HOL/worktrees/isabelle-tactics/.agent-files/tasks_phase_1_2/TASK_17.md
+
+Selected task: .agent-files/tasks_phase_1_2/TASK_17.md
+
+Implemented and committed TASK_17.
+
+- Added `clasetRules.REV_DUP_ELIM_RULE`
+- Added conjunction, disjunction, existential, ordering, capture-avoidance, idempotence, and failure tests
+- `Holmake && ./selftest.exe` passed
+- `bin/build -t --seq=tools/sequences/upto-auto` passed
+- `h4pedant` and `git diff --check` passed
+- Working tree clean
+
+Commit: `b3f751091 Add reverse elimination duplication rule`
+
+-------------------------------------------------------------
+                Step 16  (2026-07-17 20:32:12)               
+-------------------------------------------------------------
+
+/home/lukasz/dev/HOL/worktrees/isabelle-tactics/.agent-files/tasks_phase_1_2/TASK_14.md
+
+Selected task: .agent-files/tasks_phase_1_2/TASK_14.md
+
+Implemented and committed TASK_14.
+
+- Added full classical driver and step tactic surface.
+- Added claset-explicit programmatic APIs.
+- Integrated search, grounding, and replay.
+- Added smoke, replay, deepening, and failure tests.
+- `Holmake` and `./selftest.exe` pass.
+- `bin/build -t --seq=tools/sequences/upto-auto` passes.
+- `h4pedant` and `git diff --check` pass.
+
+Commit: `fbb924ece Add classical reasoner tactic drivers`
+
+-------------------------------------------------------------
+                Step 17  (2026-07-17 20:46:00)               
+-------------------------------------------------------------
+
+/home/lukasz/dev/HOL/worktrees/isabelle-tactics/.agent-files/tasks_phase_1_2/TASK_15.md
+
+Selected task: .agent-files/tasks_phase_1_2/TASK_15.md
+
+Implemented and committed TASK_15.
+
+Highlights:
+- Added eigenvariable non-theorem battery across all exported complete drivers.
+- Added replay, determinism, and D24 wrapper driver tests.
+- Added FAST/SLOW, BEST_FIRST, DEEPEN accounting, and D25 regressions.
+- Fixed grounded opaque-wrapper replay.
+
+Validation passed:
+- `Holmake` + `./selftest.exe`
+- `bin/build -t --seq=tools/sequences/upto-auto`
+- `h4pedant`
+- `git diff --check`
+
+Commit: `812a87e4f Add classical engine driver regressions`
+
+-------------------------------------------------------------
+                Step 18  (2026-07-17 21:25:37)               
+-------------------------------------------------------------
+
+/home/lukasz/dev/HOL/worktrees/isabelle-tactics/.agent-files/tasks_phase_1_2/TASK_14.md
+
+Selected task: .agent-files/tasks_phase_1_2/TASK_14.md
+
+Implemented and committed TASK_14.
+
+Key addition: `DEEPEN_TAC` now performs whole-node safe saturation before bounded search, preserving D25 pruning between generated sibling goals.
+
+Verification:
+- `Holmake && ./selftest.exe` passed in `src/auto/classical/`
+- `bin/build -t --seq=tools/sequences/upto-auto` passed
+- `h4pedant` passed
+- Working tree clean
+
+Commit: `6878e5bf4 Saturate safe goals before deepening`
+
+-------------------------------------------------------------
+                Step 19  (2026-07-17 21:54:04)               
+-------------------------------------------------------------
+
+/home/lukasz/dev/HOL/worktrees/isabelle-tactics/.agent-files/tasks_phase_1_2/TASK_16.md
+
+Selected task: .agent-files/tasks_phase_1_2/TASK_16.md
+
+Request was aborted
+
+-------------------------------------------------------------
+                Step 20  (2026-07-17 23:09:55)               
+-------------------------------------------------------------
+
+/home/lukasz/dev/HOL/worktrees/isabelle-tactics/.agent-files/tasks_phase_1_2/TASK_16.md
+
+Selected task: .agent-files/tasks_phase_1_2/TASK_16.md
+
+Request was aborted
+
+-------------------------------------------------------------
+                Step 21  (2026-07-18 00:33:46)               
+-------------------------------------------------------------
+
+/home/lukasz/dev/HOL/worktrees/isabelle-tactics/.agent-files/tasks_phase_1_2/TASK_16.md
+
+Selected task: .agent-files/tasks_phase_1_2/TASK_16.md
+
+Implemented and committed TASK_16.
+
+- Added reusable Pelletier corpus: 1–17, 24, 26, 28
+- Added per-goal 30-second budgets, `Tactical.VALID`, and solved-count assertion
+- Fixed classical search/replay issues exposed by the corpus
+- Added targeted regressions
+- `Holmake` and selftests pass
+- `bin/build -t --seq=tools/sequences/upto-auto` passes
+- `h4pedant` passes
+
+Commit: `6fe87e13e Add FAST_TAC Pelletier smoke corpus`
+
+-------------------------------------------------------------
+                Step 22  (2026-07-18 01:36:06)               
+-------------------------------------------------------------
+
+/home/lukasz/dev/HOL/worktrees/isabelle-tactics/.agent-files/tasks_phase_1_2/TASK_18.md
+
+Selected task: .agent-files/tasks_phase_1_2/TASK_18.md
+
+Implemented and committed TASK_18.
+
+Highlights:
+- Added `src/auto/blast/` build skeleton.
+- Implemented private destructive `blastTerm` representation, normalization, trail rollback, and unification.
+- Added comprehensive unit tests.
+- Wired blast into build sequences and parallel core builds.
+
+Validation passed:
+- `Holmake`
+- `./selftest.exe`
+- `bin/build -t --seq=tools/sequences/upto-auto`
+- `h4pedant`
+
+Commit: `4f8b075c0 Add blast prototerm unifier`
+
+-------------------------------------------------------------
+                Step 23  (2026-07-18 01:53:12)               
+-------------------------------------------------------------
+
+/home/lukasz/dev/HOL/worktrees/isabelle-tactics/.agent-files/tasks_phase_1_2/TASK_18.md
+
+Selected task: .agent-files/tasks_phase_1_2/TASK_18.md
+
+Implemented and committed as `4f8b075c0` (`Add blast prototerm unifier`).
+
+Verified:
+- `Holmake` and `./selftest.exe` pass in `src/auto/blast/`
+- `bin/build -t --seq=tools/sequences/upto-auto` passes
+- `h4pedant src/auto/blast` passes
+- Worktree is clean
+
+-------------------------------------------------------------
+                Step 24  (2026-07-18 01:58:37)               
+-------------------------------------------------------------
+
+/home/lukasz/dev/HOL/worktrees/isabelle-tactics/.agent-files/tasks_phase_1_2/TASK_19.md
+
+Selected task: .agent-files/tasks_phase_1_2/TASK_19.md
+
+Implemented and committed TASK_19.
+
+Key additions:
+- Goal/rule prototerm translation with faithful per-constant typargs.
+- Lazy, cached claset rule acquisition and conversion.
+- Weak-elimination rejection and verbatim diagnostics.
+- Internal implication/universal pseudo-rules.
+- `REV_DUP_ELIM_RULE` replay selection.
+- Comprehensive translation/conversion tests.
+
+Validation passed:
+- `Holmake` and `./selftest.exe`
+- `bin/build -t --seq=tools/sequences/upto-auto`
+- `h4pedant`
+- `git diff --check`
+
+Commit: `e964d904b Add lazy blast rule translation`
+
+-------------------------------------------------------------
+                Step 25  (2026-07-18 02:32:45)               
+-------------------------------------------------------------
+
+/home/lukasz/dev/HOL/worktrees/isabelle-tactics/.agent-files/tasks_phase_1_2/TASK_20.md
+
+Selected task: .agent-files/tasks_phase_1_2/TASK_20.md
+
+Implemented and committed TASK_20.
+
+- Added faithful `blastSearch.{sig,sml}` tableau engine
+- Added six-step recorded script and `PROOF_FAILED` backtracking hook
+- Added iterative deepening, pruning, γ-requeue, penalties, and kill-all
+- Added comprehensive search-only tests
+- `Holmake` and `./selftest.exe` pass
+- `bin/build -t --seq=tools/sequences/upto-auto` passes
+- `h4pedant` passes
+
+Commit: `eb8642739 Implement blast tableau search engine`
+
+-------------------------------------------------------------
+                Step 26  (2026-07-18 03:07:47)               
+-------------------------------------------------------------
+
+/home/lukasz/dev/HOL/worktrees/isabelle-tactics/.agent-files/tasks_phase_1_2/TASK_20.md
+
+Selected task: .agent-files/tasks_phase_1_2/TASK_20.md
+
+Implemented TASK_20 and committed as `ac4503305`.
+
+Validation passed:
+- `src/auto/blast/Holmake`
+- `src/auto/blast/selftest.exe`
+- `bin/build -t --seq=tools/sequences/upto-auto`
+- `tools/h4pedant/h4pedant -q src/auto/blast`
+- `git diff --check`
+
+Working tree is clean.
+
+-------------------------------------------------------------
+                Step 27  (2026-07-18 03:39:05)               
+-------------------------------------------------------------
+
+/home/lukasz/dev/HOL/worktrees/isabelle-tactics/.agent-files/tasks_phase_1_2/TASK_21.md
+
+Selected task: .agent-files/tasks_phase_1_2/TASK_21.md
+
+Implemented TASK_21 and committed as `0cc268556`.
+
+Highlights:
+- Added typed blast reconstruction on the classical engine.
+- Added blast-contract hypothesis substitution and γ-duplicate reordering.
+- Added PROOF-FAILED reconstruction backtracking.
+- Added T1–T6, γ-duplication, equality ordering, backtracking, and clean-failure tests.
+- `Holmake`, both selftests, h4pedant, and `bin/build -t --seq=tools/sequences/upto-auto` pass.
+- Working tree is clean.
+
+-------------------------------------------------------------
+                Step 28  (2026-07-18 04:33:45)               
+-------------------------------------------------------------
+
+/home/lukasz/dev/HOL/worktrees/isabelle-tactics/.agent-files/tasks_phase_1_2/TASK_21.md
+
+Selected task: .agent-files/tasks_phase_1_2/TASK_21.md
+
+Implemented and committed as:
+
+`0cc268556 Reconstruct blast proofs on classical engine`
+
+Verified:
+- Classical and blast `Holmake` + selftests pass
+- `bin/build -t --seq=tools/sequences/upto-auto` passes
+- `h4pedant` passes
+- Worktree is clean
+
+-------------------------------------------------------------
+                Step 29  (2026-07-18 04:48:24)               
+-------------------------------------------------------------
+
+/home/lukasz/dev/HOL/worktrees/isabelle-tactics/.agent-files/tasks_phase_1_2/TASK_22.md
+
+Selected task: .agent-files/tasks_phase_1_2/TASK_22.md
+
+Implemented and committed TASK_22.
+
+Highlights:
+- Added `tableauLib` with `BLAST_TAC`, `BLAST_DEPTH_TAC`, `depth_limit`, and `tryIt`.
+- Added marker handling, tracing, statistics, timing, and state-isolation tests.
+- Added full tableau debug tracing and reconstruction-aware search timing.
+
+Validation:
+- `Holmake` and `./selftest.exe` pass.
+- `bin/build -t --seq=tools/sequences/upto-auto` passes.
+- `h4pedant` and `git diff --check` pass.
+
+Commit: `1dd2e453c Add public blast tableau tactics`
+
+-------------------------------------------------------------
+                Step 30  (2026-07-18 05:02:03)               
+-------------------------------------------------------------
+
+/home/lukasz/dev/HOL/worktrees/isabelle-tactics/.agent-files/tasks_phase_1_2/TASK_22.md
+
+Selected task: .agent-files/tasks_phase_1_2/TASK_22.md
+
+Implemented and committed TASK_22.
+
+Commit: `1dd2e453c Add public blast tableau tactics`
+
+Verified:
+- `Holmake && ./selftest.exe` passes in `src/auto/blast/`
+- `bin/build -t --seq=tools/sequences/upto-auto` passes
+- `tools/h4pedant/h4pedant src/auto/blast` passes
+- Working tree is clean
+
+-------------------------------------------------------------
+                Step 31  (2026-07-18 05:07:54)               
+-------------------------------------------------------------
+
+/home/lukasz/dev/HOL/worktrees/isabelle-tactics/.agent-files/tasks_phase_1_2/TASK_22.md
+
+Selected task: .agent-files/tasks_phase_1_2/TASK_22.md
+
+Implemented and committed as `1dd2e453c` (`Add public blast tableau tactics`).
+
+Verified:
+- `Holmake` and `src/auto/blast/selftest.exe` pass
+- `bin/build -t --seq=tools/sequences/upto-auto` passes
+- `tools/h4pedant/h4pedant src/auto/blast` passes
+- Working tree is clean
+
+-------------------------------------------------------------
+                Step 32  (2026-07-18 05:14:05)               
+-------------------------------------------------------------
+
+/home/lukasz/dev/HOL/worktrees/isabelle-tactics/.agent-files/tasks_phase_1_2/TASK_23.md
+
+Selected task: .agent-files/tasks_phase_1_2/TASK_23.md
+
+Request was aborted
+
+-------------------------------------------------------------
+                Step 33  (2026-07-18 05:35:39)               
+-------------------------------------------------------------
+
+/home/lukasz/dev/HOL/worktrees/isabelle-tactics/.agent-files/tasks_phase_1_2/TASK_23.md
+
+Selected task: .agent-files/tasks_phase_1_2/TASK_23.md
+
+Request was aborted
+
+-------------------------------------------------------------
+                Step 34  (2026-07-18 10:22:10)               
+-------------------------------------------------------------
+
+/home/lukasz/dev/HOL/worktrees/isabelle-tactics/.agent-files/tasks_phase_1_2/TASK_22.md
+
+Selected task: .agent-files/tasks_phase_1_2/TASK_22.md
+
+Implemented and committed TASK_22.
+
+Commit: `1dd2e453c` — **Add public blast tableau tactics**
+
+Validation passed:
+- `src/auto/blast`: `Holmake` + `./selftest.exe`
+- `bin/build -t --seq=tools/sequences/upto-auto`
+- h4pedant/style checks
+
+Pre-existing unrelated worktree changes were preserved.
+
+-------------------------------------------------------------
+                Step 35  (2026-07-18 12:32:51)               
+-------------------------------------------------------------
+
+/home/lukasz/dev/HOL/worktrees/isabelle-tactics/.agent-files/tasks_phase_1_2/TASK_21.md
+
+Selected task: .agent-files/tasks_phase_1_2/TASK_21.md
+
+TASK_21 is implemented in commit `0cc268556` (`Reconstruct blast proofs on classical engine`).
+
+Verified on a clean worktree:
+- `src/auto/blast`: `Holmake` + selftests passed
+- `src/auto/classical`: selftests passed
+- `bin/build -t --seq=tools/sequences/upto-auto` passed
+- h4pedant checks passed
+
+Unrelated existing working-tree changes were preserved.
+
+-------------------------------------------------------------
+                Step 36  (2026-07-18 13:21:17)               
+-------------------------------------------------------------
+
+/home/lukasz/dev/HOL/worktrees/isabelle-tactics/.agent-files/tasks_phase_1_2/TASK_21.md
+
+Selected task: .agent-files/tasks_phase_1_2/TASK_21.md
+
+Implemented and committed TASK_21 enhancements.
+
+Commit: `45717069d Harden blast engine reconstruction`
+
+Key changes:
+- Added lazy typed-engine replay alternatives with kernel-valid completion.
+- Preserved `PROOF_FAILED` tableau backtracking.
+- Ensured generated eigenvariables avoid historical parameters.
+- Added regression coverage for eigenvariable freshness.
+
+Validation passed:
+- `src/auto/blast`: `Holmake` + selftests
+- `src/auto/classical`: `Holmake` + selftests
+- `bin/build -t --seq=tools/sequences/upto-auto`
+- `h4pedant`
+- Clean working tree.
+
+-------------------------------------------------------------
+                Step 37  (2026-07-18 13:37:38)               
+-------------------------------------------------------------
+
+/home/lukasz/dev/HOL/worktrees/isabelle-tactics/.agent-files/tasks_phase_1_2/TASK_21.md
+
+Selected task: .agent-files/tasks_phase_1_2/TASK_21.md
+
+Implemented and committed TASK_21.
+
+Commit: `45717069d` (`Harden blast engine reconstruction`)
+
+Validation passed:
+- Classical and blast `Holmake` + selftests
+- `bin/build -t --seq=tools/sequences/upto-auto`
+- `h4pedant`
+- Clean working tree
+
+-------------------------------------------------------------
+                Step 38  (2026-07-18 13:45:41)               
+-------------------------------------------------------------
+
+/home/lukasz/dev/HOL/worktrees/isabelle-tactics/.agent-files/tasks_phase_1_2/TASK_21.md
+
+Selected task: .agent-files/tasks_phase_1_2/TASK_21.md
+
+Implemented TASK_21 and committed as `e3b3cc3d2`.
+
+Highlights:
+- Completed typed engine reconstruction for BLAST T1–T6.
+- Preserved PROOF_FAILED tableau backtracking.
+- Added blast-contract hypothesis substitution and ordering regressions.
+- Aligned equality orientation with tableau search without beta-normalizing.
+
+Validation passed:
+- Classical and blast `Holmake` + selftests
+- `bin/build -t --seq=tools/sequences/upto-auto`
+- `h4pedant`
+- Clean working tree
+
+-------------------------------------------------------------
+                Step 39  (2026-07-18 14:02:26)               
+-------------------------------------------------------------
+
+/home/lukasz/dev/HOL/worktrees/isabelle-tactics/.agent-files/tasks_phase_1_2/TASK_22.md
+
+Selected task: .agent-files/tasks_phase_1_2/TASK_22.md
+
+Implemented TASK_22 and committed as `6c0f4b457`.
+
+Verified:
+- `Holmake && ./selftest.exe` in `src/auto/blast/`
+- `bin/build -t --seq=tools/sequences/upto-auto`
+- `tools/h4pedant/h4pedant src/auto/blast`
+- Clean working tree
+
+Also ensured delayed tactic values read the current depth limit and claset when executed.
+
+-------------------------------------------------------------
+                Step 40  (2026-07-18 14:11:43)               
+-------------------------------------------------------------
+
+/home/lukasz/dev/HOL/worktrees/isabelle-tactics/.agent-files/tasks_phase_1_2/TASK_22.md
+
+Selected task: .agent-files/tasks_phase_1_2/TASK_22.md
+
+Implemented TASK_22 and committed as `d9153207c` (`Complete blast search statistics`).
+
+Verified:
+- `Holmake && ./selftest.exe`
+- `bin/build -t --seq=tools/sequences/upto-auto`
+- `h4pedant`
+- Clean git worktree
+
+-------------------------------------------------------------
+                Step 41  (2026-07-18 14:19:44)               
+-------------------------------------------------------------
+
+/home/lukasz/dev/HOL/worktrees/isabelle-tactics/.agent-files/tasks_phase_1_2/TASK_22.md
+
+Selected task: .agent-files/tasks_phase_1_2/TASK_22.md
+
+Implemented TASK_22 and committed. Final commit: `d9153207c`.
+
+Verified:
+- `src/auto/blast`: `Holmake && ./selftest.exe` passes
+- `bin/build -t --seq=tools/sequences/upto-auto` passes
+- `tools/h4pedant/h4pedant src/auto/blast` passes
+- Working tree clean
+
+-------------------------------------------------------------
+                Step 42  (2026-07-18 14:25:33)               
+-------------------------------------------------------------
+
+/home/lukasz/dev/HOL/worktrees/isabelle-tactics/.agent-files/tasks_phase_1_2/TASK_22.md
+
+Selected task: .agent-files/tasks_phase_1_2/TASK_22.md
+
+Implemented and committed TASK_22.
+
+Commit: `d9153207c` — **Complete blast search statistics**
+
+Validation passed:
+- `src/auto/blast`: `Holmake && ./selftest.exe`
+- `bin/build -t --seq=tools/sequences/upto-auto`
+- `tools/h4pedant/h4pedant src/auto/blast`
+- Task changes pass `git diff --check`
+- Working tree clean
+
+-------------------------------------------------------------
+                Step 43  (2026-07-18 14:31:32)               
+-------------------------------------------------------------
+
+/home/lukasz/dev/HOL/worktrees/isabelle-tactics/.agent-files/tasks_phase_1_2/TASK_22.md
+
+Selected task: .agent-files/tasks_phase_1_2/TASK_22.md
+
+Implemented TASK_22 and committed as `d9153207c` (`Complete blast search statistics`).
+
+Verified:
+- `Holmake` and `./selftest.exe` pass in `src/auto/blast/`
+- `bin/build -t --seq=tools/sequences/upto-auto` passes
+- `tools/h4pedant/h4pedant src/auto/blast` passes
+- Working tree is clean
+
+-------------------------------------------------------------
+                Step 44  (2026-07-18 14:39:12)               
+-------------------------------------------------------------
+
+/home/lukasz/dev/HOL/worktrees/isabelle-tactics/.agent-files/tasks_phase_1_2/TASK_22.md
+
+Selected task: .agent-files/tasks_phase_1_2/TASK_22.md
+
+Implemented and committed TASK_22.
+
+Highlights:
+- Added public `BLAST_TAC`, `BLAST_DEPTH_TAC`, `depth_limit`, and `tryIt`.
+- Added marker handling, trace levels, statistics, timing, and state-leak tests.
+- Made iterative deepening lazy and overflow-safe.
+- Added comprehensive smoke/configuration regressions.
+
+Validation passed:
+- `Holmake` and `./selftest.exe` in `src/auto/blast/`
+- `bin/build -t --seq=tools/sequences/upto-auto`
+- `h4pedant`
+- `git diff --check`
+
+Commit: `237401224 Make blast deepening lazy`
+
+-------------------------------------------------------------
+                Step 45  (2026-07-18 14:57:54)               
+-------------------------------------------------------------
+
+/home/lukasz/dev/HOL/worktrees/isabelle-tactics/.agent-files/tasks_phase_1_2/TASK_22.md
+
+Selected task: .agent-files/tasks_phase_1_2/TASK_22.md
+
+Implemented TASK_22 and committed, with HEAD at `237401224` (`Make blast deepening lazy`).
+
+Verified:
+- `src/auto/blast`: `Holmake` and `./selftest.exe` pass
+- `bin/build -t --seq=tools/sequences/upto-auto` passes
+- `h4pedant` clean
+- Worktree clean
+
+-------------------------------------------------------------
+                Step 46  (2026-07-18 15:04:18)               
+-------------------------------------------------------------
+
+/home/lukasz/dev/HOL/worktrees/isabelle-tactics/.agent-files/tasks_phase_1_2/TASK_22.md
+
+Selected task: .agent-files/tasks_phase_1_2/TASK_22.md
+
+Implemented and committed TASK_22.
+
+Highlights:
+- Added `BLAST_TAC`, `BLAST_DEPTH_TAC`, `depth_limit`, and `tryIt`.
+- Added marker processing, trace levels, statistics, reconstruction backtracking, and state-leak tests.
+- Added public tactic smoke and depth-bound tests.
+
+Validation passed:
+- `Holmake` and `./selftest.exe`
+- `bin/build -t --seq=tools/sequences/upto-auto`
+- `h4pedant`
+- Clean working tree
+
+Final commit: `237401224 Make blast deepening lazy`
+
+-------------------------------------------------------------
+                Step 47  (2026-07-18 15:10:35)               
+-------------------------------------------------------------
+
+/home/lukasz/dev/HOL/worktrees/isabelle-tactics/.agent-files/tasks_phase_1_2/TASK_22.md
+
+Selected task: .agent-files/tasks_phase_1_2/TASK_22.md
+
+Implemented and committed TASK_22.
+
+Commit: `237401224 Make blast deepening lazy`
+
+Validation passed:
+- `Holmake && ./selftest.exe` in `src/auto/blast/`
+- `bin/build -t --seq=tools/sequences/upto-auto`
+- `tools/h4pedant/h4pedant src/auto/blast`
+- Clean working tree
+
+-------------------------------------------------------------
+                Step 48  (2026-07-18 15:16:28)               
+-------------------------------------------------------------
+
+/home/lukasz/dev/HOL/worktrees/isabelle-tactics/.agent-files/tasks_phase_1_2/TASK_21.md
+
+Selected task: .agent-files/tasks_phase_1_2/TASK_21.md
+
+Implemented and committed TASK_21 completion fixes.
+
+Commit: `36dab207c Speed up classical metavariable normalization`
+
+Key fix:
+- Reduced repeated type-substitution rebuilding during normalization.
+- Stabilized Pelletier 26 below its 30-second acceptance budget.
+
+Validation passed:
+- Classical and blast `Holmake` + selftests
+- Three consecutive classical selftest runs
+- `bin/build -t --seq=tools/sequences/upto-auto`
+- h4pedant and `git diff --check`
+- Working tree clean
+
+-------------------------------------------------------------
+                Step 49  (2026-07-18 15:54:31)               
+-------------------------------------------------------------
+
+/home/lukasz/dev/HOL/worktrees/isabelle-tactics/.agent-files/tasks_phase_1_2/TASK_23.md
+
+Selected task: .agent-files/tasks_phase_1_2/TASK_23.md
+
+Request was aborted
+
+-------------------------------------------------------------
+                Step 50  (2026-07-18 17:09:07)               
+-------------------------------------------------------------
+
+/home/lukasz/dev/HOL/worktrees/isabelle-tactics/.agent-files/tasks_phase_1_2/TASK_22.md
+
+Selected task: .agent-files/tasks_phase_1_2/TASK_22.md
+
+Implemented and verified TASK_22.
+
+- `Holmake` and `src/auto/blast/selftest.exe`: pass
+- `bin/build -t --seq=tools/sequences/upto-auto`: pass
+- `h4pedant src/auto/blast`: clean
+- Strengthened `tryIt` regression to verify a replay script is recorded
+- Commit: `e763918a4 Check tryIt records a replay script`
+
+Pre-existing uncommitted TASK_23-related changes were preserved and excluded from the commit.
+
+-------------------------------------------------------------
+                Step 51  (2026-07-18 17:20:14)               
+-------------------------------------------------------------
+
+/home/lukasz/dev/HOL/worktrees/isabelle-tactics/.agent-files/tasks_phase_1_2/TASK_22.md
+
+Selected task: .agent-files/tasks_phase_1_2/TASK_22.md
+
+Implemented and committed TASK_22 across commits beginning `1dd2e453c`, with final follow-up:
+
+`e763918a4 Check tryIt records a replay script`
+
+Verified clean committed state:
+
+- `Holmake` + `src/auto/blast/selftest.exe`
+- `bin/build -t --seq=tools/sequences/upto-auto`
+- `h4pedant src/auto/blast`
+- `git diff --check`
+
+All passed. Pre-existing uncommitted TASK_23-related changes were preserved and excluded.
+
+-------------------------------------------------------------
+                Step 52  (2026-07-18 17:35:05)               
+-------------------------------------------------------------
+
+/home/lukasz/dev/HOL/worktrees/isabelle-tactics/.agent-files/tasks_phase_1_2/TASK_22.md
+
+Selected task: .agent-files/tasks_phase_1_2/TASK_22.md
+
+Implemented and committed TASK_22. Final commit: `e763918a4`.
+
+Verified:
+- `Holmake && ./selftest.exe` in `src/auto/blast/`
+- `bin/build -t --seq=tools/sequences/upto-auto`
+- `h4pedant` on `src/auto/blast/`
+
+All passed. Pre-existing TASK_23 work was preserved in `stash@{0}`.
+
+-------------------------------------------------------------
+                Step 53  (2026-07-18 17:45:04)               
+-------------------------------------------------------------
+
+/home/lukasz/dev/HOL/worktrees/isabelle-tactics/.agent-files/tasks_phase_1_2/TASK_23.md
+
+Selected task: .agent-files/tasks_phase_1_2/TASK_23.md
+
+Request was aborted
+
+-------------------------------------------------------------
+                Step 54  (2026-07-18 18:30:41)               
+-------------------------------------------------------------
+
+/home/lukasz/dev/HOL/worktrees/isabelle-tactics/.agent-files/tasks_phase_1_2/TASK_23.md
+
+Selected task: .agent-files/tasks_phase_1_2/TASK_23.md
+
+Request was aborted
+
+-------------------------------------------------------------
+                Step 55  (2026-07-18 21:49:11)               
+-------------------------------------------------------------
+
+/home/lukasz/dev/HOL/worktrees/isabelle-tactics/.agent-files/tasks_phase_1_2/TASK_22.md
+
+Selected task: .agent-files/tasks_phase_1_2/TASK_22.md
+
+Implemented and committed TASK_22. Latest commit:
+
+`e763918a4 Check tryIt records a replay script`
+
+Verified:
+
+- `src/auto/blast/Holmake` and `./selftest.exe` pass
+- `bin/build -t --seq=tools/sequences/upto-auto` passes
+- `h4pedant` passes
+- Working tree is clean
+
+-------------------------------------------------------------
+                Step 56  (2026-07-18 21:57:58)               
+-------------------------------------------------------------
+
+/home/lukasz/dev/HOL/worktrees/isabelle-tactics/.agent-files/tasks_phase_1_2/TASK_23.md
+
+Selected task: .agent-files/tasks_phase_1_2/TASK_23.md
+
+Request was aborted
+
+-------------------------------------------------------------
+                Step 57  (2026-07-18 23:25:38)               
+-------------------------------------------------------------
+
+/home/lukasz/dev/HOL/worktrees/isabelle-tactics/.agent-files/tasks_phase_1_2/TASK_23.md
+
+Selected task: .agent-files/tasks_phase_1_2/TASK_23.md
+
+Request was aborted
+
+-------------------------------------------------------------
+                Step 58  (2026-07-19 00:34:49)               
+-------------------------------------------------------------
+
+/home/lukasz/dev/HOL/worktrees/isabelle-tactics/.agent-files/tasks_phase_1_2/TASK_23.md
+
+Selected task: .agent-files/tasks_phase_1_2/TASK_23.md
+
+Implemented and committed TASK_23.
+
+- Added Pelletier 1–46, 52, and 62 corpus with `BLAST_TAC []`/`Tactical.VALID` checks, time budgets, and solved-count assertion.
+- Fixed blast preprocessing and reconstruction issues exposed by the corpus.
+- `Holmake` and `./selftest.exe` pass in `src/auto/blast/`.
+- `bin/build -t --seq=tools/sequences/upto-auto` passes.
+- Style/whitespace checks pass.
+
+Commit: `38199d53d Add Pelletier blast regression corpus`
+
+-------------------------------------------------------------
+                Step 59  (2026-07-19 00:59:01)               
+-------------------------------------------------------------
+
+/home/lukasz/dev/HOL/worktrees/isabelle-tactics/.agent-files/tasks_phase_1_2/TASK_24.md
+
+Selected task: .agent-files/tasks_phase_1_2/TASK_24.md
+
+Implemented and committed TASK_24.
+
+- Added Table-1 depth regressions and shallower-bound failures.
+- Added four `pred_set` regressions with local set rules.
+- Added higher-level Halting II regression.
+- Added robustness and backtracking coverage.
+- Verified default and `HOLSELFTESTLEVEL=2` selftests.
+- `bin/build -t --seq=tools/sequences/upto-auto` passed.
+- h4pedant and whitespace checks passed.
+
+Commit: `99140ec2a Add blast depth and robustness regressions`
+
+-------------------------------------------------------------
+                Step 60  (2026-07-19 02:38:33)               
+-------------------------------------------------------------
+
+/home/lukasz/dev/HOL/worktrees/isabelle-tactics/.agent-files/tasks_phase_1_2/TASK_25.md
+
+Selected task: .agent-files/tasks_phase_1_2/TASK_25.md
+
+Implemented and committed TASK_25.
+
+Highlights:
+- Added documentation for all TASK_14/TASK_22 tactic and programmatic exports.
+- Documented BLAST limitations, defaults, markers, and failure semantics.
+- Added reciprocal `BLAST_TAC` ↔ `BBLAST_TAC` references.
+- Added `BBLAST_TAC`, `depth_limit`, and `tryIt` entries.
+
+Checks passed:
+- Docfile polyscripter processing
+- `Holmake` in `help/src-sml`
+- Alias consistency
+- `h4pedant`
+- Whitespace and line-length checks
+
+Commit: `30b76dc93 Document classical search drivers and BLAST`
+
+-------------------------------------------------------------
+                Step 61  (2026-07-19 03:20:27)               
+-------------------------------------------------------------
+
+/home/lukasz/dev/HOL/worktrees/isabelle-tactics/.agent-files/tasks_phase_1_2/TASK_26.md
+
+Selected task: .agent-files/tasks_phase_1_2/TASK_26.md
+
+Implemented TASK_26 in `.agent-files/PLAN.md`:
+
+- Added decisions D21–D27.
+- Recorded delivered Phase 1–2 modules, interfaces, and implementation deviations.
+- Recorded Phase-0 amendments and Phase-2 interface freezes.
+- Preserved the Phase-1 gate and omitted T-fin.
+- Verified only `PLAN.md` changed.
+
+Committed in the `.agent-files` repository:
+
+`366d4a5 Record Phase 1-2 delivery`
+
+-------------------------------------------------------------
+                Step 62  (2026-07-19 03:35:52)               
+-------------------------------------------------------------
+
+/home/lukasz/dev/HOL/worktrees/isabelle-tactics/.agent-files/tasks_phase_1_2/TASK_27.md
+
+Selected task: .agent-files/tasks_phase_1_2/TASK_27.md
+
+Implemented TASK_27 and committed as `315b56aa2`.
+
+- `bin/build -F -t`: stopped at the known pre-existing `in_borel_measurable_inv` failure in `src/probability`.
+- `h4pedant`: clean for both `src/auto/classical/` and `src/auto/blast/`.
+- Gate recorded in `.agent-files/PLAN.md` §11.
+
+-------------------------------------------------------------
+                Step 63  (2026-07-19 03:42:18)               
+-------------------------------------------------------------
+
+COMPLETE

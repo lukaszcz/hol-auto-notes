@@ -133,6 +133,13 @@ All decided 2026-07-14, one-by-one, with alternatives presented:
 | D25 | **Dynamic pruning** (supersedes the static `safe_depth_tac` DETERM-polarity question, where upstream Isabelle has carried an inverted branch since 2009 — see `phase12-classical-search-port.md` §8): the engine implements the real invariant — *when a subgoal's complete solve instantiated no metavariable visible in the remaining goals, discard its alternatives* — i.e. blast's `prune`/`clashVar` rule (`blast.ML:841–865`) applied to the classical drivers.  This subsumes the corrected 2005 semantics (HOL4 entry goals are metavariable-free, so the outer solve is deterministic by the invariant) and prunes losslessly deep inside metavariable-laden states.  No compatibility flags. |
 | D26 | **Full driver surface**: export `FAST_TAC`, `SLOW_TAC`, `BEST_TAC`, `SLOW_BEST_TAC`, `FIRST_BEST_TAC`, `ASTAR_TAC`, `SLOW_ASTAR_TAC`, `DEEPEN_TAC`, plus the step tactics `SAFE_STEP_TAC`, `CLARIFY_STEP_TAC`, `STEP_TAC`, `SLOW_STEP_TAC`, `INST_STEP_TAC`.  All are thin instantiations of the one engine; all names collision-checked free (2026-07-16, whole-tree grep). |
 | D27 | **Failure semantics**: `SAFE_TAC` and `CLARIFY_TAC` fail exactly when they change nothing (`CHANGED_PROP` semantics — what Isabelle users actually experience of the `safe`/`clarify` *methods*, `classical.ML:834,843–844`).  The raw never-fail behavior is reachable as `TRY SAFE_TAC`. |
+| D28 | *(2026-07-19, Phase 3)* **Clasimpset**: the stateful clasimp tactics use a cached derived value of `srw_ss()` plus layer config (`cond_depth` 40, safe-solver stack, `split_ss`); lowercase claset+simpset-explicit forms throughout.  Details: `PLAN_phase_3.md` §4. |
+| D29 | *(2026-07-19, Phase 3)* **`[iff]` persistence**: clasimp-owned `ThmSetData` settype `"iff"` whose delta carries only the source theorem; both derived views (claset rules, simpset rewrite) are recomputed by the apply hook on load.  Declaration = source of truth; claset `cdelta` v1 and rules/⊥simp layering untouched; removal function writes RM. |
+| D30 | *(2026-07-19, Phase 3)* **Uniform insertion semantics** (revises the Phase-2 plain-theorem convention): unmarked theorems in any `src/auto` tactic argument are inserted as assumptions (Isabelle's chained-fact channel; HOL4 prover-family habit); explicit roles via markers only.  `classicalLib`/`tableauLib` refactored accordingly; marker vocabulary gains `Simp`/`Iff` (Phase-0/2 freeze amendments). |
+| D31 | *(2026-07-19, Phase 3)* **Safe asm-full-simp**: `GEN_GLOBAL_SIMP_TAC` takes `simp_mode` as first argument (uniform with D16's `GEN_SIMP_TAC` shape; Phase-S freeze amendment; existing entries keep signatures via `{safe=false}`).  Clasimp's asm-full-simp = the D17 mut_impc-parity configuration. |
+| D32 | *(2026-07-19, Phase 3)* **`classicalLib.depth_solve_tac {dup} n cs`** additively exported (Phase-2 freeze amendment): the one implementation of Isabelle's `depth_tac`/`nodup_depth_tac` recipe; internal uses refactored onto it. |
+| D33 | *(2026-07-19, Phase 3)* **`tableauLib.blast_depth_tac`** additively exported (Phase-2 freeze amendment): raw claset-explicit fixed-depth tableau entry (no preprocessing, no deepening) for `AUTO_TAC`'s inner loop; public `BLAST_TAC` packaging unchanged. |
+| D34 | *(2026-07-19, Phase 3)* **Names**: module `clasimpLib`; `AUTO_TAC`, `AUTO_DEPTH_TAC`, `FORCE_TAC`, `FASTFORCE_TAC`, `SLOWSIMP_TAC`, `BESTSIMP_TAC`, `CLARSIMP_TAC` (collision-checked).  `AUTO`/`CLARSIMP` fail iff unchanged (D27 semantics); the FORCE family must close the goal. |
 
 Overarching (owner clarification): judge every design by resulting tactic
 strength, not by resemblance to Isabelle's user syntax.
@@ -472,6 +479,14 @@ and the shared search forest of §6.2:
 
 ## 7. Phase 3 — Clasimp layer: AUTO/FORCE/FASTFORCE/CLARSIMP (`src/auto/clasimp/`)
 
+**Detailed implementation plan: `PLAN_phase_3.md` (2026-07-19; owner
+decisions D28–D34).**  It corrects three details of the sketch below
+against the source (`force`'s clarify phase sees only safe wrappers, so
+`addss` is inert there; `[iff]` classifies safe/unsafe purely by premise
+count and derives an intro+*dest* pair for equivalences, feeding the
+simpset in every branch; `auto` has a `prune_params_tac` step, vacuous
+in HOL4).
+
 Port of `Provers/clasimp.ML` semantics, given §5 and §6:
 
 - **Simp-as-wrapper**: `addss` (full simp as unsafe wrapper before every
@@ -692,6 +707,13 @@ arithmetic.  Each gets its own plan when reached.
   public `classicalLib` tactic signatures; and `tableauLib`'s complete
   surface are frozen at Phase-2 completion.  Changes require an owner
   decision; module internals remain private.
+- **Phase 3 amendments to earlier freeze lists** (all owner-approved
+  2026-07-19, D30–D33): marker vocabulary +`Simp`/`Iff` (Phase 0);
+  layer-wide plain-theorem convention changed to insertion, affecting
+  `classicalLib`/`tableauLib` behavior (Phase 2); additive exports
+  `classicalLib.depth_solve_tac` and `tableauLib.blast_depth_tac`
+  (Phase 2); `GEN_GLOBAL_SIMP_TAC` gains a leading `simp_mode`
+  parameter (Phase S §12).
 - **In-engine `mut_impc` revisit**: if Phase 8's Isabelle-translated
   benchmarks show gaps attributable to mutuality inside `SIMP_RULE`, under
   binders, or in nested implications, an engine port becomes its own
