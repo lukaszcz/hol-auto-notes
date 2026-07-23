@@ -1,0 +1,14 @@
+{
+  "launcher_path": "/usr/bin/unshare",
+  "launcher_sha256": "d6380bede9030d3c776ce658b40373c7edf36717ea37e4f2b4c32a8e814c6816",
+  "launcher_version": "unshare from util-linux 2.39.3",
+  "options": [
+    "--user",
+    "--map-root-user",
+    "--pid",
+    "--fork",
+    "--kill-child=KILL",
+    "--mount-proc"
+  ],
+  "protocol_version": 8
+}

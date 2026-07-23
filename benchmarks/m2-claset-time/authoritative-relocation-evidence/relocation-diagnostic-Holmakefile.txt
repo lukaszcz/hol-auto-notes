@@ -1,0 +1,4 @@
+INCLUDES =
+PRE_INCLUDES =
+relocation-target:
+	printf "%s\n" "relocation diagnostic target created below copied root" > relocation-target

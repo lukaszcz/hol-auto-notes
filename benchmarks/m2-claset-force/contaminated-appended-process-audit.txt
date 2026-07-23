@@ -1,0 +1,29 @@
+M2 exact stored-rule forcing process/lock audit
+================================================
+
+Lock protocol: atomic mkdir /home/lukasz/dev/HOL/worktrees/isabelle-tactics/.agent-files/benchmarks/m2-claset-force/driver.lock
+Lock acquisition: 2026-07-20T07:24:35Z
+Lock owner PID: 3
+Scope: held before the pre-run endpoint audit, across the complete
+sequential schedule, and through the post-run endpoint audit.
+Guarantee: excludes overlapping cooperating invocations of this driver.
+Limit: endpoint snapshots do not prove that no unrelated or manual
+matching process existed between the two snapshots.
+
+Pre-run endpoint audit: 2026-07-20T07:24:35Z
+Command: pgrep -af '[m]2clasetforce'
+Result: no other matching process at this endpoint.
+
+Post-run endpoint audit: 2026-07-20T07:26:26Z
+Command: pgrep -af '[m]2clasetforce'
+Result: no other matching process at this endpoint.
+
+Lock release: 2026-07-20T07:26:26Z
+Driver exit status: 0
+
+Post-run endpoint audit: 2026-07-20T07:32:07Z
+Command: pgrep -af '[m]2clasetforce'
+Result: no other matching process at this endpoint.
+
+Lock release: 2026-07-20T07:32:07Z
+Driver exit status: 0

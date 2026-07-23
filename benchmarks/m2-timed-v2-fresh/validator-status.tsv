@@ -1,0 +1,35 @@
+label	category	started_utc	status	expected_status	command
+synthetic-cal-valid	validator	2026-07-20T19:47:15Z	0	0	validate-calibration.awk synthetic valid
+cal-header	validator-adversary	2026-07-20T19:47:15Z	1	1	validate-calibration.awk cal-header.tsv
+cal-schema	validator-adversary	2026-07-20T19:47:15Z	1	1	validate-calibration.awk cal-schema.tsv
+cal-elapsed	validator-adversary	2026-07-20T19:47:15Z	1	1	validate-calibration.awk cal-elapsed.tsv
+cal-problem	validator-adversary	2026-07-20T19:47:15Z	1	1	validate-calibration.awk cal-problem.tsv
+cal-depth	validator-adversary	2026-07-20T19:47:15Z	1	1	validate-calibration.awk cal-depth.tsv
+cal-mode	validator-adversary	2026-07-20T19:47:15Z	1	1	validate-calibration.awk cal-mode.tsv
+cal-repetition	validator-adversary	2026-07-20T19:47:15Z	1	1	validate-calibration.awk cal-repetition.tsv
+cal-reorder	validator-adversary	2026-07-20T19:47:15Z	1	1	validate-calibration.awk cal-reorder.tsv
+cal-signature_width	validator-adversary	2026-07-20T19:47:15Z	1	1	validate-calibration.awk cal-signature_width.tsv
+cal-signature_token	validator-adversary	2026-07-20T19:47:15Z	1	1	validate-calibration.awk cal-signature_token.tsv
+synthetic-target-valid	validator	2026-07-20T19:47:15Z	0	0	verify-target.awk synthetic valid
+target-problem	validator-adversary	2026-07-20T19:47:15Z	1	1	verify-target.awk target-problem.tsv
+target-depth	validator-adversary	2026-07-20T19:47:15Z	1	1	verify-target.awk target-depth.tsv
+target-attempt	validator-adversary	2026-07-20T19:47:15Z	1	1	verify-target.awk target-attempt.tsv
+target-outer_boundary	validator-adversary	2026-07-20T19:47:15Z	1	1	verify-target.awk target-outer_boundary.tsv
+target-outer_phase	validator-adversary	2026-07-20T19:47:15Z	1	1	verify-target.awk target-outer_phase.tsv
+target-step_kind	validator-adversary	2026-07-20T19:47:15Z	1	1	verify-target.awk target-step_kind.tsv
+target-duplicate_vocab	validator-adversary	2026-07-20T19:47:15Z	1	1	verify-target.awk target-duplicate_vocab.tsv
+target-safe_duplicate	validator-adversary	2026-07-20T19:47:15Z	1	1	verify-target.awk target-safe_duplicate.tsv
+target-stored_boundary	validator-adversary	2026-07-20T19:47:15Z	1	1	verify-target.awk target-stored_boundary.tsv
+target-stored_phase	validator-adversary	2026-07-20T19:47:15Z	1	1	verify-target.awk target-stored_phase.tsv
+target-rule_kind	validator-adversary	2026-07-20T19:47:15Z	1	1	verify-target.awk target-rule_kind.tsv
+target-intro_assumption	validator-adversary	2026-07-20T19:47:15Z	1	1	verify-target.awk target-intro_assumption.tsv
+target-elim_assumption	validator-adversary	2026-07-20T19:47:15Z	1	1	verify-target.awk target-elim_assumption.tsv
+target-major_intro	validator-adversary	2026-07-20T19:47:15Z	1	1	verify-target.awk target-major_intro.tsv
+target-partial_context	validator-adversary	2026-07-20T19:47:15Z	1	1	verify-target.awk target-partial_context.tsv
+target-outer_partition	validator-adversary	2026-07-20T19:47:15Z	1	1	verify-target.awk target-outer_partition.tsv
+target-minor_partition	validator-adversary	2026-07-20T19:47:15Z	1	1	verify-target.awk target-minor_partition.tsv
+target-elapsed_grammar	validator-adversary	2026-07-20T19:47:15Z	1	1	verify-target.awk target-elapsed_grammar.tsv
+target-stats_width	validator-adversary	2026-07-20T19:47:15Z	1	1	verify-target.awk target-stats_width.tsv
+target-status	validator-adversary	2026-07-20T19:47:15Z	1	1	verify-target.awk target-status.tsv
+target-append	validator-adversary	2026-07-20T19:47:15Z	1	1	verify-target.awk target-append.tsv
+summary-drift	validator-adversary	2026-07-20T19:47:41Z	1	1	TMPDIR=.../task7g-measure-fix/selfcheck/tmp verify-summaries.sh synthetic summary drift

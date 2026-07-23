@@ -1,0 +1,4 @@
+captured_utc=2026-07-20T19:36:32Z
+lock=/tmp/isabelle-tactics-task7f-20260720-root/task7g-measure-fix/schedule.lock
+pattern=[t]ask7gcalibration.exe
+matches=none

@@ -1,0 +1,16 @@
+--- frozen-inputs/collect.sh
++++ future-protocol/collect-v2.sh
+@@
+-set -eu
++set -u
++# An unconditional EXIT/HUP/INT/TERM state-machine finalizer seals raw
++# stdout/stderr/supervisor bytes first, then always invokes endpoint and
++# artifact audits, records outer and segment status separately, preserves
++# the work directory, and exits with the recorded terminal classification.
+@@
+-cp -R "$work" "$dir/collection"
++# No post hoc package copy is required for authority. A later fresh collector
++# must retain the already-sealed preserved work directory as one unit.
+
+The executable full replacement is `collect-v2.sh`. This compact mapping is
+not asserted to be an apply-ready complete diff. It did not collect a target.

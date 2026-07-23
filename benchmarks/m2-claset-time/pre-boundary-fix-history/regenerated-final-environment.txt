@@ -1,0 +1,21 @@
+Captured UTC: 2026-07-20
+Host: Linux aarch64; Poly/ML 5.9.2 Release
+Target option: --gcthreads=1
+Target order: fresh sequential P34@7, P41@6, P45@11
+Target boundaries: 30 s cooperative, 60 s watchdog
+Clock: Time.now wall clock
+Calibration watchdog: none predeclared or used
+
+Final source hashes:
+932f33bc66da0a4a91015db69d705d51ea1b4fa5783e3df6c1617e0ed2ed08c7  clasetStep.sig
+5001c9696b936b3df92c2dcf4b9d0a4a837909ef5eefac849068eded77751f8c  clasetStep.sml
+431edd6370ab2abc1ddfbe8986c1bcfbdfa5c3b0caa2dfd18cabf54759be66ba  classical/selftest.sml
+68876bf67fb491eaa39b63fd092065a3bbf1068729d61799510a85c5152f41fa  blastReconstruct.sig
+9f930a241465486c4cd69c48559c268c8da3508a7a6fe5c6e7d8a62f223f992d  blastReconstruct.sml
+e328e2cc7bdfdd6dcdc168ca017ebd7c9e5ceddbe901599fbd0a289f2794124d  blast/selftest.sml
+
+Regenerated object/executable correspondence and hashes are retained in
+REPAIRED_BUILD_PROVENANCE.md.  Temporary installed measurement sources,
+objects, dependency files, locks, rules and executables were removed after
+the schedules.  The retained harness sources remain byte-identical to those
+used for the build.

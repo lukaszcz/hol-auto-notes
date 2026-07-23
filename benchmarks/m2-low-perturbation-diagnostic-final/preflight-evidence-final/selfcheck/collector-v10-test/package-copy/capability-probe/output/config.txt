@@ -1,0 +1,5 @@
+frequency_hz=9
+call_graph=dwarf
+probe_child=/bin/sleep 2
+minimum_samples=10
+minimum_symbol_and_dso_fraction=0.90

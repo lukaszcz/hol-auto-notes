@@ -1,0 +1,39 @@
+label	category	started_utc	status	command
+input-verification	identity	2026-07-21T03:05:48Z	0	sha256sum -c INPUTS.sha256 (live inputs and frozen full bodies)
+representative-pre-artifacts	identity	2026-07-21T03:05:48Z	0	artifact-manifest.sh representative-pre-artifacts.tsv; cmp ARTIFACTS-FROZEN.tsv
+representative-pre-processes	process-audit	2026-07-21T03:05:49Z	0	pgrep -af '[t]ask7hcalibration'
+representative-1	representative-process	2026-07-21T03:05:49Z	0	cd /home/lukasz/dev/HOL/worktrees/isabelle-tactics/.agent-files/benchmarks/m2-timed-v3-final && env T7H_REPETITION=1 T7H_PROBLEM=38 T7H_DEPTH=4 T7H_MODE=v2 ./task7hcalibration.exe
+representative-2	representative-process	2026-07-21T03:05:58Z	0	cd /home/lukasz/dev/HOL/worktrees/isabelle-tactics/.agent-files/benchmarks/m2-timed-v3-final && env T7H_REPETITION=1 T7H_PROBLEM=38 T7H_DEPTH=4 T7H_MODE=v3 ./task7hcalibration.exe
+representative-3	representative-process	2026-07-21T03:06:23Z	0	cd /home/lukasz/dev/HOL/worktrees/isabelle-tactics/.agent-files/benchmarks/m2-timed-v3-final && env T7H_REPETITION=1 T7H_PROBLEM=43 T7H_DEPTH=5 T7H_MODE=v2 ./task7hcalibration.exe
+representative-4	representative-process	2026-07-21T03:06:43Z	0	cd /home/lukasz/dev/HOL/worktrees/isabelle-tactics/.agent-files/benchmarks/m2-timed-v3-final && env T7H_REPETITION=1 T7H_PROBLEM=43 T7H_DEPTH=5 T7H_MODE=v3 ./task7hcalibration.exe
+representative-5	representative-process	2026-07-21T03:19:54Z	0	cd /home/lukasz/dev/HOL/worktrees/isabelle-tactics/.agent-files/benchmarks/m2-timed-v3-final && env T7H_REPETITION=2 T7H_PROBLEM=43 T7H_DEPTH=5 T7H_MODE=v3 ./task7hcalibration.exe
+representative-6	representative-process	2026-07-21T03:32:41Z	0	cd /home/lukasz/dev/HOL/worktrees/isabelle-tactics/.agent-files/benchmarks/m2-timed-v3-final && env T7H_REPETITION=2 T7H_PROBLEM=43 T7H_DEPTH=5 T7H_MODE=v2 ./task7hcalibration.exe
+representative-7	representative-process	2026-07-21T03:33:01Z	0	cd /home/lukasz/dev/HOL/worktrees/isabelle-tactics/.agent-files/benchmarks/m2-timed-v3-final && env T7H_REPETITION=2 T7H_PROBLEM=38 T7H_DEPTH=4 T7H_MODE=v3 ./task7hcalibration.exe
+representative-8	representative-process	2026-07-21T03:33:26Z	0	cd /home/lukasz/dev/HOL/worktrees/isabelle-tactics/.agent-files/benchmarks/m2-timed-v3-final && env T7H_REPETITION=2 T7H_PROBLEM=38 T7H_DEPTH=4 T7H_MODE=v2 ./task7hcalibration.exe
+representative-9	representative-process	2026-07-21T03:33:35Z	0	cd /home/lukasz/dev/HOL/worktrees/isabelle-tactics/.agent-files/benchmarks/m2-timed-v3-final && env T7H_REPETITION=3 T7H_PROBLEM=38 T7H_DEPTH=4 T7H_MODE=v2 ./task7hcalibration.exe
+representative-10	representative-process	2026-07-21T03:33:44Z	0	cd /home/lukasz/dev/HOL/worktrees/isabelle-tactics/.agent-files/benchmarks/m2-timed-v3-final && env T7H_REPETITION=3 T7H_PROBLEM=38 T7H_DEPTH=4 T7H_MODE=v3 ./task7hcalibration.exe
+representative-11	representative-process	2026-07-21T03:34:09Z	0	cd /home/lukasz/dev/HOL/worktrees/isabelle-tactics/.agent-files/benchmarks/m2-timed-v3-final && env T7H_REPETITION=3 T7H_PROBLEM=43 T7H_DEPTH=5 T7H_MODE=v2 ./task7hcalibration.exe
+representative-12	representative-process	2026-07-21T03:34:29Z	0	cd /home/lukasz/dev/HOL/worktrees/isabelle-tactics/.agent-files/benchmarks/m2-timed-v3-final && env T7H_REPETITION=3 T7H_PROBLEM=43 T7H_DEPTH=5 T7H_MODE=v3 ./task7hcalibration.exe
+representative-post-artifacts	identity	2026-07-21T03:42:15Z	0	artifact-manifest.sh representative-post-artifacts.tsv; cmp ARTIFACTS-FROZEN.tsv
+representative-post-processes	process-audit	2026-07-21T03:42:16Z	0	pgrep -af '[t]ask7hcalibration'
+active-pre-artifacts	identity	2026-07-21T03:42:16Z	0	artifact-manifest.sh active-pre-artifacts.tsv; cmp ARTIFACTS-FROZEN.tsv
+active-pre-processes	process-audit	2026-07-21T03:42:18Z	0	pgrep -af '[t]ask7hactive'
+active-1	active-process	2026-07-21T03:42:18Z	0	cd /home/lukasz/dev/HOL/worktrees/isabelle-tactics/.agent-files/benchmarks/m2-timed-v3-final && env T7H_REPETITION=1 T7H_BATCH=1000 T7H_MODE=v2 ./task7hactive.exe
+active-2	active-process	2026-07-21T03:42:25Z	0	cd /home/lukasz/dev/HOL/worktrees/isabelle-tactics/.agent-files/benchmarks/m2-timed-v3-final && env T7H_REPETITION=1 T7H_BATCH=1000 T7H_MODE=v3 ./task7hactive.exe
+active-3	active-process	2026-07-21T03:42:33Z	0	cd /home/lukasz/dev/HOL/worktrees/isabelle-tactics/.agent-files/benchmarks/m2-timed-v3-final && env T7H_REPETITION=2 T7H_BATCH=1000 T7H_MODE=v3 ./task7hactive.exe
+active-4	active-process	2026-07-21T03:42:40Z	0	cd /home/lukasz/dev/HOL/worktrees/isabelle-tactics/.agent-files/benchmarks/m2-timed-v3-final && env T7H_REPETITION=2 T7H_BATCH=1000 T7H_MODE=v2 ./task7hactive.exe
+active-5	active-process	2026-07-21T03:42:48Z	0	cd /home/lukasz/dev/HOL/worktrees/isabelle-tactics/.agent-files/benchmarks/m2-timed-v3-final && env T7H_REPETITION=3 T7H_BATCH=1000 T7H_MODE=v2 ./task7hactive.exe
+active-6	active-process	2026-07-21T03:42:56Z	0	cd /home/lukasz/dev/HOL/worktrees/isabelle-tactics/.agent-files/benchmarks/m2-timed-v3-final && env T7H_REPETITION=3 T7H_BATCH=1000 T7H_MODE=v3 ./task7hactive.exe
+active-7	active-process	2026-07-21T03:43:03Z	0	cd /home/lukasz/dev/HOL/worktrees/isabelle-tactics/.agent-files/benchmarks/m2-timed-v3-final && env T7H_REPETITION=4 T7H_BATCH=1000 T7H_MODE=v3 ./task7hactive.exe
+active-8	active-process	2026-07-21T03:43:11Z	0	cd /home/lukasz/dev/HOL/worktrees/isabelle-tactics/.agent-files/benchmarks/m2-timed-v3-final && env T7H_REPETITION=4 T7H_BATCH=1000 T7H_MODE=v2 ./task7hactive.exe
+active-9	active-process	2026-07-21T03:43:18Z	0	cd /home/lukasz/dev/HOL/worktrees/isabelle-tactics/.agent-files/benchmarks/m2-timed-v3-final && env T7H_REPETITION=5 T7H_BATCH=1000 T7H_MODE=v2 ./task7hactive.exe
+active-10	active-process	2026-07-21T03:43:26Z	0	cd /home/lukasz/dev/HOL/worktrees/isabelle-tactics/.agent-files/benchmarks/m2-timed-v3-final && env T7H_REPETITION=5 T7H_BATCH=1000 T7H_MODE=v3 ./task7hactive.exe
+active-post-artifacts	identity	2026-07-21T03:43:33Z	0	artifact-manifest.sh active-post-artifacts.tsv; cmp ARTIFACTS-FROZEN.tsv
+active-post-processes	process-audit	2026-07-21T03:43:35Z	0	pgrep -af '[t]ask7hactive'
+calibration-validator	validator	2026-07-21T03:43:35Z	0	validate-calibration.awk calibration-raw active-calibration-raw frozen schedules
+target-pre-artifacts	identity	2026-07-21T03:43:35Z	0	artifact-manifest.sh target-pre-artifacts.tsv; cmp ARTIFACTS-FROZEN.tsv
+target-pre-processes	process-audit	2026-07-21T03:43:36Z	0	pgrep -af '[t]ask7hmeasurement'
+target-1-process	target-process	2026-07-21T03:43:36Z	143	run-target.sh T7H_POSITION=1 T7H_PROBLEM=34 T7H_DEPTH=7 T7H_BUDGET_SECONDS=30 ./task7hmeasurement.exe
+target-1-watchdog	target-watchdog	2026-07-21T03:43:36Z	124	timeout 60s run-target.sh 1 34 7 30
+target-post-artifacts	identity	2026-07-21T03:44:36Z	0	artifact-manifest.sh target-post-artifacts.tsv; cmp ARTIFACTS-FROZEN.tsv
+target-post-processes	process-audit	2026-07-21T03:44:38Z	0	pgrep -af '[t]ask7hmeasurement'

@@ -1,0 +1,9 @@
+captured_utc=2026-07-21T03:05:25Z
+revision=d23e4ba254929547dd601186b9fb72b199706610
+host=Linux ip-172-31-20-100 6.17.0-1012-aws #12~24.04.1-Ubuntu SMP Mon Apr  6 17:38:24 UTC 2026 aarch64 aarch64 aarch64 GNU/Linux
+poly=Poly/ML 5.9.2 Release
+clock=Time.now
+process_option=--gcthreads=1
+heap=bin/hol.state0
+scratch=/tmp/isabelle-tactics-task7f-20260720-root/task7h-measure
+endpoint_patterns=[t]ask7hcalibration,[t]ask7hactive,[t]ask7hmeasurement

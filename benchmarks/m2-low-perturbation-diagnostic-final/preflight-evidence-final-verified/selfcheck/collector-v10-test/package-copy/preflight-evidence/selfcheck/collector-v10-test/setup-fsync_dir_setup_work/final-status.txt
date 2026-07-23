@@ -1,0 +1,6 @@
+benchmark_launched=false
+transaction_preflight=false
+setup_signal_count=0
+cleanup_or_audit_failure=1
+final_status=125
+primary_status_file_best_effort=true

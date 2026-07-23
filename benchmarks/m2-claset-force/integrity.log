@@ -1,0 +1,110 @@
+M2 exact stored-rule forcing final integrity record
+==================================================
+
+Provenance
+----------
+Outer base revision: 699c8576ced289ad78a7d8ba1b856ef3b8f57040
+Notes base revision: 681adf67fb525ebc6d3528bcf5b417c928b0cbd5
+
+Final source/API
+----------------
+Task 7d public statistics and measured_result have their original closed
+record shapes.  reconstructWithMeasured/reconstructMeasured use the exact
+699c8576c worker and ordinary stored-rule forcing.  Task 7e counters and
+snapshot are confined to detailed_statistics/detailed_measured_result and
+the two detailed entry points.
+
+Final measured source/object freshness
+--------------------------------------
+clasetStep.sig/sml hashes:
+  84565a8130d05d5d6eeb9882afe6f15bd1be7b3913f3a17116f6c61f4be848e4
+  0dfccfcffca2a1629a6dd18ebb527d3e628014aa4abd7171cfd8dd1f0b3f4130
+clasetStep.ui/uo hashes:
+  99a90ba3b76a69581b7119466a4eacdd436c2a5ddb9fb4f598598c994fc1a904
+  26ccc6eb57f4344aff96d27a6bdc136f6dc7108bf973680264d98401597826c5
+blastReconstruct.sig/sml hashes:
+  289c2b91a2b120ea455ceb1409f03816d024b81e8faf086c21bd2798e8d69985
+  b251c948311b07301ada5f9eb0a43c32043dbc637d605e2d332fe93d1e54afb7
+blastReconstruct.ui/uo hashes:
+  7bc48d7b9e0428b855cc3882d0849fc5ff218fcaa3ebde714e0c970b34ea89b4
+  0f8173d32e0ca18c9fb00ef66ab9f834f6b18571eaa3a30f2246f61189bb493b
+The compiled pairs are newer than their final sources.  Retained/installed
+m2clasetforce.sml were byte-identical (f04bf1a4a07ab9eac8d67fc3b0848568
+1584cdb386c778abd1b260e78c38c094); its compiled object was newer.
+
+Tests
+-----
+(cd src/auto/classical && Holmake selftest.exe && ./selftest.exe): exit 0.
+Complete final output: classical-selftest.log.
+(cd src/auto/blast && Holmake selftest.exe && ./selftest.exe): exit 0.
+Complete final output: blast-selftest.log.  The legacy closed-shape/counter/
+checkpoint compatibility guards and detailed parity/cutoff/callback tests
+are all OK; default corpus assertions are unchanged and OK.
+
+Authoritative benchmark
+-----------------------
+The chronologically first complete locked final-source run is authoritative.
+Builds finished by 2026-07-20T07:24:25Z.  Lock acquisition was 07:24:35Z,
+before the pre-run endpoint audit; release was 07:26:26Z after the post-run
+endpoint audit.  Both endpoint snapshots found no m2clasetforce process.
+The lock excludes overlapping cooperating driver invocations only; endpoint
+snapshots do not establish absence of unrelated/manual processes throughout.
+Every row had status 0 and reconstruction_interrupted under the unchanged
+30-second shared cooperative deadline and 60-second watchdog.
+
+The original completion-only validator rejected this same authoritative raw
+capture because valid cutoff prefixes need not have equal adjacent phase
+entry counts.  The identical rejected raw/audit are retained as diagnostics.
+A later complete locked replication audit and extracted stdout/status ledger
+are retained and explicitly non-authoritative.  Its full marker raw was
+overwritten before the stop-selection-bias direction arrived and is not
+claimed retained.  No authoritative run was selected for a convenient cutoff.
+
+The authoritative `process-audit.txt` is restored byte-for-byte from the
+22-line `rejected-schema-process-audit.txt`; `cmp` exits 0.  The previously
+current 29-line ledger is preserved without alteration as
+`contaminated-appended-process-audit.txt`.  It consists of the authoritative
+22 lines followed by a 07:32:07 post-run endpoint/release block.  The retained
+evidence does not identify the process or mechanism that appended that block,
+so the contamination cause is unknown.  The manifest labels and hashes the
+authoritative, contaminated, rejected-schema and later-replication artifacts.
+
+Mechanical validation
+---------------------
+verify-claset-force.awk checks exact schema/order/status/observer identities,
+exact phase/kind subtotals, entry/exit and non-nested forcing-prefix relations,
+coherent absent/concrete stored context, major-at-most-minor, SafeRule
+non-duplication, and positive current outer/stored boundary counts.  It does
+not require completion equalities and does not purport to reject every
+semantically impossible state.  Each fixed-order problem block requires its
+exact one/three/one attempt-enter/result pairs before its sole stdout; no
+active/missing attempt or later marker is allowed.  The one status row follows
+stdout and terminates the block.  Fixed positive schedule/control numerals are
+canonical `[1-9][0-9]*` lexemes equal to their scheduled literals, and status
+is exactly `0`.  Elapsed seconds accept `[0-9]+(\.[0-9]+)?` in `[30,60)`;
+arbitrary natural counters remain `[0-9]+`, including leading zeroes.  It also
+checks:
+  stop_polls = search cooperative checkpoints +
+               sum(reconstruction cooperative checkpoints).
+test-validator.sh: exit 0; attempts.tsv reproduced exactly.  The synthetic
+pre-stored interruption and all eleven classical phases at Enter and Exit
+(23 positive cases total) were accepted.  bad-header, unknown-phase,
+reordered-record, bad-stdout, bad-status, bad-counter, bad-global-poll,
+bad-prefix and bad-entry-balance were retained and rejected with diagnostics.
+Six generated-and-retained negatives for major-over-minor, SafeRule
+duplication, partial and absent-but-counted stored context, and bad
+outer/stored current counts reproduced byte-for-byte and rejected with
+diagnostics (15 prior negative cases total).  Six new generated-and-retained
+fixtures for stdout before any attempt/result completion, marker after stdout,
+and noncanonical run/attempt/status numerals also reproduced byte-for-byte and
+rejected with diagnostics (21 negative cases total).
+
+Hygiene
+-------
+sh -n driver/validator scripts and awk parse checks: exit 0.
+tools/h4pedant/h4pedant -q src/auto/classical src/auto/blast: exit 0.
+git diff --check and git -C .agent-files diff --check: exit 0.
+Checksum manifest verification: exit 0.
+Installed harness/source/object/dependency and driver-lock residue: none.
+Authoritative process-audit/rejected-schema cmp: exit 0.
+No Task 7e evidence artifact is staged or committed.

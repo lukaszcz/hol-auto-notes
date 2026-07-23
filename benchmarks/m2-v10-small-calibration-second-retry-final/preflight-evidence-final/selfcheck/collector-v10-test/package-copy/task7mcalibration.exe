@@ -1,0 +1,4 @@
+#!/bin/sh
+set -e
+/home/lukasz/dev/HOL/worktrees/isabelle-tactics/bin/hol --gcthreads=1 run --holstate=/home/lukasz/dev/HOL/worktrees/isabelle-tactics/bin/hol.state0  /home/lukasz/dev/HOL/worktrees/isabelle-tactics/.agent-files/benchmarks/m2-v10-small-calibration-second-retry-final/task7mcalibration
+exit 0

@@ -1,0 +1,3 @@
+sequence	status	command	diagnostic
+1	1	mkdir/cp then status=0; diff ...	zsh:1: read-only variable: status
+2	0	mkdir/cp then rc=0; two labeled diff commands	completed repair evidence generation

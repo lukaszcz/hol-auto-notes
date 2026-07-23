@@ -1,0 +1,51 @@
+source_root=/home/lukasz/dev/HOL/worktrees/isabelle-tactics
+output=/var/tmp/final-authoritative-relocation-ptrace
+copy_method=GNU-cp--archive
+system_path_audit status=0 file=path-tool-audit.txt
+external_ancestor_metadata status=0 audit=external-ancestor-metadata.txt
+source_tree_manifest_before status=0 hash_metadata=mode,mtime,ctime,uid,gid
+input_manifest_before status=0
+invoked_script_manifest status=0 file=invoked-script-manifest.txt
+copy status=0 destination=/var/tmp/final-authoritative-relocation-ptrace/worktree
+copied_git_metadata action=removed status=0
+external_metadata status=0 audit=external-metadata-neutralization.txt
+copied_symlinks status=0 audit=copied-symlink-audit.txt
+absolute_symlinks status=0 total=1636 required_contained=1636 external_other=0 audit=remaining-absolute-symlinks.txt
+isolated_tools status=0
+input_stability label=after-copy result=PASS
+copy_manifest_match status=0
+smart_configure cwd=/var/tmp/final-authoritative-relocation-ptrace/worktree command="poly < tools/smart-configure.sml"
+supervisor_start label=smart_configure cwd=/var/tmp/final-authoritative-relocation-ptrace/worktree/. pid=2427591 log=smart-configure.log events=smart-configure.log.supervisor-events
+supervisor_event supervisor_start pid=2427591 cwd=/var/tmp/final-authoritative-relocation-ptrace/worktree/.
+supervisor_event command_group_start leader=2427594 pgid=2427594
+supervisor_event command_group_gone pgid=2427594 result=PASS
+supervisor_event command_exit raw_status=0 normalized_status=0
+supervisor_quiescent pid=2427591 evidence=smart-configure.log.supervisor-events result=PASS
+smart_configure status=0 log=smart-configure.log
+supervisor_start label=holmake_startup_diagnostic cwd=/var/tmp/final-authoritative-relocation-ptrace/worktree/. pid=2430559 log=holmake-startup.log events=holmake-startup.log.supervisor-events
+supervisor_event supervisor_start pid=2430559 cwd=/var/tmp/final-authoritative-relocation-ptrace/worktree/.
+supervisor_event command_group_start leader=2430562 pgid=2430562
+supervisor_event command_group_gone pgid=2430562 result=PASS
+supervisor_event command_exit raw_status=0 normalized_status=0
+supervisor_quiescent pid=2430559 evidence=holmake-startup.log.supervisor-events result=PASS
+holmake_startup_diagnostic status=0 log=holmake-startup.log
+supervisor_start label=hol_heapname_diagnostic cwd=/var/tmp/final-authoritative-relocation-ptrace/worktree/. pid=2430606 log=hol-heapname.log events=hol-heapname.log.supervisor-events
+supervisor_event supervisor_start pid=2430606 cwd=/var/tmp/final-authoritative-relocation-ptrace/worktree/.
+supervisor_event command_group_start leader=2430611 pgid=2430611
+supervisor_event command_group_gone pgid=2430611 result=PASS
+supervisor_event command_exit raw_status=0 normalized_status=0
+supervisor_quiescent pid=2430606 evidence=hol-heapname.log.supervisor-events result=PASS
+hol_heapname_diagnostic status=0 log=hol-heapname.log
+real_target_controls preexecs=disabled project=disabled overlay=disabled recursive_prereqs=disabled includes=empty pre_includes=empty debug=builddepgraph
+supervisor_start label=holmake_real_target cwd=/var/tmp/final-authoritative-relocation-ptrace/worktree/. pid=2430682 log=holmake-real-target.log events=holmake-real-target.log.supervisor-events
+supervisor_event supervisor_start pid=2430682 cwd=/var/tmp/final-authoritative-relocation-ptrace/worktree/.
+supervisor_event command_group_start leader=2430684 pgid=2430684
+supervisor_event command_group_gone pgid=2430684 result=PASS
+supervisor_event command_exit raw_status=0 normalized_status=0
+supervisor_quiescent pid=2430682 evidence=holmake-real-target.log.supervisor-events result=PASS
+holmake_real_target status=0 log=holmake-real-target.log
+relocation_preflight status=0 configure_log=smart-configure.log startup_log=holmake-startup.log target_log=holmake-real-target.log strace=holmake-real-target.strace assertions=relocation-assertions.txt
+source_tree_stability label=after-relocation-preflight result=PASS
+disposable_copy action=removed status=0
+source_tree_stability label=after-relocation-cleanup result=PASS
+relocation_check_complete status=0 raw_output=/var/tmp/final-authoritative-relocation-ptrace

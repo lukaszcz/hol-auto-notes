@@ -1,0 +1,17 @@
+run	position	problem	depth	debug	budget_seconds	watchdog_seconds	record	payload
+1	1	34	7	false	30	60	marker	34|attempt_enter|1
+1	1	34	7	false	30	60	stdout	1|1|34|7|false|30|reconstruction_interrupted|30.044047|1|3846595|3835238|503|100|100
+1	1	34	7	false	30	60	marker	34|attempt_result|1|interrupted|none|enter|alternative_enumeration|348|unsafe_rule|true|exit|minor_unification|1|elim|18|2549|8808|4787|4021|11357|1449|1100|351|354|351|0|13|41|151|69|77|159|158|76|0|0|0|0|8808|4787|4021|925|925|925|906|158|158|158|158|158|158|158|18|907|154|771
+1	1	34	7	false	30	60	status	0
+1	2	41	6	false	30	60	marker	41|attempt_enter|1
+1	2	41	6	false	30	60	marker	41|attempt_result|1|completed|none|exit|replay_recursion|2|safe_rule|false|exit|minor_unification|1|intro|none|2994|9325|5102|4223|12319|1499|1495|281|557|277|0|22|54|107|45|49|128|144|100|4|4|4|0|9325|5102|4223|1024|1024|1024|1022|144|144|144|144|144|144|144|2|1022|642|382
+1	2	41	6	false	30	60	marker	41|attempt_enter|2
+1	2	41	6	false	30	60	marker	41|attempt_result|2|completed|none|exit|replay_recursion|2|safe_rule|false|exit|minor_unification|1|intro|none|3258|9765|5322|4443|13023|1631|1627|303|601|299|0|0|76|129|45|49|150|166|100|4|4|4|0|9765|5322|4443|1046|1046|1046|1022|166|166|166|166|166|166|166|24|1022|664|382
+1	2	41	6	false	30	60	marker	41|attempt_enter|3
+1	2	41	6	false	30	60	marker	41|attempt_result|3|interrupted|none|enter|alternative_enumeration|30|safe_rule|false|exit|child_store_construction|1|elim|1|143071|628632|350836|277796|771703|71686|71385|15053|29806|14783|0|8773|596|4862|248|304|4919|5335|980|270|270|270|0|628632|350836|277796|78376|78376|78376|78361|5336|5336|5335|5335|5335|5335|5335|15|78361|74243|4133
+1	2	41	6	false	30	60	stdout	1|2|41|6|false|30|reconstruction_interrupted|30.000441|3|10776369|9979324|1576|245|645
+1	2	41	6	false	30	60	status	0
+1	3	45	11	false	30	60	marker	45|attempt_enter|1
+1	3	45	11	false	30	60	marker	45|attempt_result|1|interrupted|none|enter|alternative_enumeration|378|safe_rule|false|exit|attempt_selection|1|elim|1|3103|12198|6607|5591|15301|1741|1362|398|418|398|0|84|30|177|36|71|225|234|68|0|0|0|0|12198|6607|5591|1251|1250|1250|1218|234|234|234|234|234|234|234|32|1219|365|886
+1	3	45	11	false	30	60	stdout	1|3|45|11|false|30|reconstruction_interrupted|30.000635|1|3827319|3812018|739|237|237
+1	3	45	11	false	30	60	status	0

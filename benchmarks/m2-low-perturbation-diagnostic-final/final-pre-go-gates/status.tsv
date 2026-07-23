@@ -1,0 +1,7 @@
+label	status	command
+scoped-seal	0	verify-go-seal.py --package PACKAGE --seal GO-SEAL.txt
+recursive-read-only	0	audit-read-only.py --package PACKAGE
+exact-endpoint	0	endpoint-audit.py --output final-pre-go-gates/exact-endpoint.txt
+head	0	git rev-parse HEAD
+index-clean	0	git diff --cached --quiet
+tracked-clean	0	git diff --quiet

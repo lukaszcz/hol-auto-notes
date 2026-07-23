@@ -1,0 +1,19 @@
+./AUTHORITATIVE-PACKAGE-MANIFEST-AFTER.tsv: OK
+./AUTHORITATIVE-PACKAGE-MANIFEST-BEFORE.tsv: OK
+./PACKAGE-INVENTORY.tsv: OK
+./REFERENCES.sha256: OK
+./REVIEWED-PACKAGES.tsv: OK
+./REVIEW_RESOLUTION.md: OK
+./inventory.py: OK
+./verify-closure.sh: OK
+../m2-v10-small-calibration-second-retry-final/PACKAGE-INVENTORY.tsv: OK
+../m2-v10-small-calibration-second-retry-final/checksums.sha256: OK
+../m2-v10-small-calibration-retry-final/PACKAGE-INVENTORY.tsv: OK
+../m2-v10-small-calibration-retry-final/checksums.sha256: OK
+../m2-v10-small-calibration-retry-final-review/PACKAGE-INVENTORY.tsv: OK
+../m2-v10-small-calibration-retry-final-review/checksums.sha256: OK
+../m2-v10-small-calibration-final/PACKAGE-INVENTORY.tsv: OK
+../m2-v10-small-calibration-final/checksums.sha256: OK
+../m2-v10-small-calibration-final-review/PACKAGE-INVENTORY.tsv: OK
+../m2-v10-small-calibration-final-review/checksums.sha256: OK
+external Task7m review resolution closure: PASS

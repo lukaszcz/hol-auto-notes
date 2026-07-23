@@ -1,0 +1,105 @@
+Task 7f post-terminal-boundary integrity ledger
+================================================
+
+Implementation
+- Timed detailed reconstruction reads and validates the terminal clock at
+  Completed SOME, Completed NONE and Interrupted before aggregating detailed
+  statistics or classical snapshots.  A fixed attempt_wall_time is passed to
+  report construction.
+- The signature documents that attempt minus classical excludes diagnostic
+  report aggregation and covers unmeasured outer/observer/timing work only up
+  to the terminal outcome.
+- A deterministic fake-clock test covers all three outcomes, exactly two
+  outer reads, a pinned terminal boundary and failure on any later read.
+- Clock exception identity, classical phase accounting, timed/untimed parity,
+  ordinary reconstruction/search/tactic paths and proof validity are retained.
+
+Build and tests
+- Forced classical dependency/test rebuild: status 0; exact hashes and
+  freshness are in POST_BOUNDARY_FIX_BUILD_PROVENANCE.md.
+- Forced blast reconstruction/test and three-harness rebuild: status 0.
+- Full HOLSELFTESTLEVEL=2 classical suite: status 0; retained complete log.
+- Full HOLSELFTESTLEVEL=2 blast suite: status 0; retained complete log; the new
+  boundary test and unchanged expected-failure/corpus counts are green.
+
+Reproduction safety repair
+- Authoritative current-script namespace relocation preflight status 0:
+  copied .git was removed, internal
+  absolute links were rebased, smart-configure ran in COPY with HOLDIR unset,
+  and copied Holmake/hol diagnostics resolved HOLDIR, states, sigobj, tools and
+  generated target below COPY with no original-root launcher/config strings.
+- PATH is COPY/bin:/usr/local/bin:/usr/bin:/bin with every system and copied
+  executable resolution audited.  All 1,636 sigobj links resolve below COPY.
+- The current reproducer and supervisor match the retained input manifest;
+  the 241-line real-target strace has zero original-root accesses and the
+  actual created target is retained under authoritative-relocation-evidence/.
+- Comprehensive before/after manifests include hash, mode, mtime, ctime, uid
+  and gid and matched exactly after preflight and disposable-copy removal.
+- Harness/rule installation, forced removals, builds, and tests occur only in
+  the isolated copy.  Success, failure, HUP, INT, TERM, and a repeated signal
+  retain output; no source backup, lock, restoration, or deletion exists.
+- The 16-outer-case plus two-helper synthetic adversarial suite retained raw
+  stdout/stderr/status and
+  whole-source before/after manifests.  It is not relocation evidence. Print,
+  self-check, synthetic success,
+  path aliases, symlink parent, existing/contained output, harness/orphan
+  conflicts, input drift, HUP/INT/TERM, and repeated signal all passed.
+  Supervisors forwarded TERM for HUP/INT/TERM and TERM then KILL for the second
+  signal; every group and delayed marker was absent afterward.
+- Reproduction hash/stat/freshness capture explicitly enumerates clasetStep,
+  classicalLib, classical selftest, blastReconstruct, tableauLib, blast
+  selftest, and all three harness source/UI/UO/executable chains.  Every direct
+  edge uses non-strict same-second ordering plus removal/build-start evidence.
+- The historical command-status document is explicitly reconstructed prose,
+  not runnable shell history.  The reproducer is the sole runnable procedure.
+- The archive claim is scoped to the 14 byte-identical data/log files; five
+  narrative bodies have archive banners and new hashes.
+- Pre-relocation safety logs are explicitly non-authoritative under
+  pre-relocation-history/.
+
+Calibration mechanics
+- summarize-calibrations.awk portably derives retained/final representative
+  and active medians, full ranges, timed/untimed ratios and percentage changes.
+- calibration-summary.tsv locks the retained pre-review pair; regenerated-
+  final-calibration-summary.tsv locks the post-boundary final pair.
+- validate-calibrations.sh retains exact schedule/order/mode/pair/work/result
+  checks, regenerates the selected summary and cmp-checks it byte-for-byte.
+- test-validator.sh accepts all positives and rejects 13 adversaries.  The new
+  generated summary-drift case changes one elapsed field only, leaving exact
+  schedule and work unchanged, and is rejected by locked summary comparison.
+
+Historical preservation and sequence
+- The complete preceding regenerated-final chain, pre-boundary repaired
+  build/selftest logs and provenance/summary documents are retained only at
+  their paths under pre-boundary-fix-history/.  Its README inventories and
+  labels those artifacts historical and non-authoritative.
+- After both full suites and validators were green, the unchanged active
+  10-process schedule ran once, followed by the unchanged representative
+  18-process schedule once, followed by exactly one unchanged locked
+  P34@7/P41@6/P45@11 target schedule.  There was no rerun or selection.
+- Exact calibration pairs/work/results and the generated summary validate.
+
+Target and audits
+- The atomic driver lock held 2026-07-20T11:14:26Z--11:16:19Z across the full
+  target schedule and both literal `pgrep -af '[m]2clasetime'` endpoints.
+- Both endpoints found no other matching process; lock release status was 0.
+- All process status rows are 0; attempt protocol is exactly 1/3/1.  P34/P45
+  interrupt once; P41 completes NONE twice then interrupts once.
+- verify-claset-time.awk accepts regenerated-final-raw.tsv and generates five
+  exact attempt rows.  regenerated-final-expectations.tsv is locked from those
+  rows; verify-final-expectations.awk accepts the exact comparison.
+- REGENERATED_FINAL_LOCKED_SUMMARY.md records final process/attempt/classical
+  values, phase totals/shares, calibration statistics and hashes.
+- The corrected boundary changes the meaning of the outer remainder but does
+  not justify or land an optimization.
+
+Final validation and residue
+- validate-calibrations.sh: status 0.
+- test-validator.sh: status 0; 13 adversaries rejected.
+- verify-claset-time.awk: status 0.
+- verify-final-expectations.awk: status 0.
+- git diff --check, shell syntax, h4pedant, checksum, process/lock residue,
+  temporary harness/build-rule residue and staging audits are run at final
+  packaging; their results are retained in the checksum/integrity evidence.
+- No file is staged or committed.  .agent-files remains outside the outer
+  repository index.

@@ -1,0 +1,1 @@
+.agent-files/benchmarks/m2-low-perturbation-diagnostic-final/capability-probe.sh /tmp/isabelle-tactics-task7f-20260720-root/task7n_low_perturbation_diagnostic_fresh/capability/output

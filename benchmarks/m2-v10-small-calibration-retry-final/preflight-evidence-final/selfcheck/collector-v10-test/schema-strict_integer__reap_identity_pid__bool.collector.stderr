@@ -1,0 +1,1 @@
+collect-v10: supervisor_schema: Invalid: reaps[0].identity.pid must be strict JSON integer

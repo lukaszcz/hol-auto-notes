@@ -1,0 +1,23 @@
+Task 7f supervised synthetic adversarial suite
+==============================================
+
+Command: test-reproduction-isolation.sh
+         /tmp/isabelle-tactics-task7f-20260720-root/final-current-synthetic-suite
+Status: 0.  No HOL build, selftest, calibration, or timing process ran.
+
+All 16 outer cases and two direct-supervisor helper cases passed with retained
+raw data.  Print, self-check, hostile external ancestor, synthetic success,
+relative and dotdot aliases, symlink parent, existing and contained outputs,
+harness and orphan conflicts, concurrent input mutation, HUP, INT, TERM, and
+repeated TERM all produced their exact expected status and source-tree result.
+The unrelated host /tmp/Holmakefile was only observed by the hostile-ancestor
+negative case and was not modified.
+
+HUP/INT/TERM/repeated TERM returned 129/130/143/143.  Each full outer case
+signaled the published actual shell PID; the supervisor owned and reaped the
+new session/process group and recorded group-gone PASS.  Repeated TERM recorded
+TERM then KILL.  Every delayed marker and signaled process group was absent
+afterward.  The direct helper cases pinned ordinary exit 7 and an independently
+SIGTERM-killed child normalized to 143.
+
+outer_cases=16 helper_cases=2 failures=0

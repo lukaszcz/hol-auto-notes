@@ -1,0 +1,4 @@
+The authoritative repair is the diff between
+`full-bodies/task7lcalibration.sml` and `../../task7lcalibration.sml`; it
+removes the over-specific record annotation and passes the three common
+fields explicitly.

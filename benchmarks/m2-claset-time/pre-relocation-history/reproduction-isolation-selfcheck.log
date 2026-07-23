@@ -1,0 +1,15 @@
+Task 7f pre-relocation reproduction self-check (obsolete)
+=========================================================
+
+This synthetic filesystem check predates true HOL4 relocation and is retained
+only as non-authoritative history.
+
+No HOL build, selftest, or timing process was run.
+
+sh_syntax=PASS
+dash_syntax=PASS
+print_mode=PASS_NON_MUTATING
+type_preserving_copy=PASS
+isolated_mutation=PASS
+source_content_unchanged=PASS
+isolated_copy_self_check=PASS

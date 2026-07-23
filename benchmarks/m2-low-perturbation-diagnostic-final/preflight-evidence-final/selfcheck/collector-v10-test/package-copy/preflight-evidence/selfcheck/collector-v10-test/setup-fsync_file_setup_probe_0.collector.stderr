@@ -1,0 +1,1 @@
+collect-v10: collector_setup: OSError: injected fsync_file_setup_probe_0 failure

@@ -1,0 +1,3 @@
+wrapper_assessment=requires_successful_recording_before_v10_probe
+containment_model=perf_must_be_supervised_launch-vector program
+decision_rule=any_failed_criterion_selects_fallback

@@ -1,0 +1,38 @@
+label	category	status	command
+cal-valid	validator	0	validate-calibration.awk synthetic calibration and active positives
+target-valid	validator	0	verify-target.awk synthetic target positive
+summary-valid	validator	0	verify-summaries.sh synthetic positive summaries
+cal-header	validator	1	validate-calibration.awk cal-header.tsv
+cal-schema	validator	1	validate-calibration.awk cal-schema.tsv
+cal-elapsed	validator	1	validate-calibration.awk cal-elapsed.tsv
+cal-problem	validator	1	validate-calibration.awk cal-problem.tsv
+cal-depth	validator	1	validate-calibration.awk cal-depth.tsv
+cal-mode	validator	1	validate-calibration.awk cal-mode.tsv
+cal-repetition	validator	1	validate-calibration.awk cal-repetition.tsv
+cal-reorder	validator	1	validate-calibration.awk cal-reorder.tsv
+cal-signature_width	validator	1	validate-calibration.awk cal-signature_width.tsv
+cal-signature_token	validator	1	validate-calibration.awk cal-signature_token.tsv
+target-problem	validator	1	verify-target.awk target-problem.tsv
+target-problem_noncanonical	validator	1	verify-target.awk target-problem_noncanonical.tsv
+target-depth	validator	1	verify-target.awk target-depth.tsv
+target-depth_noncanonical	validator	1	verify-target.awk target-depth_noncanonical.tsv
+target-attempt	validator	1	verify-target.awk target-attempt.tsv
+target-outer_boundary	validator	1	verify-target.awk target-outer_boundary.tsv
+target-outer_phase	validator	1	verify-target.awk target-outer_phase.tsv
+target-step_kind	validator	1	verify-target.awk target-step_kind.tsv
+target-duplicate_vocab	validator	1	verify-target.awk target-duplicate_vocab.tsv
+target-safe_duplicate	validator	1	verify-target.awk target-safe_duplicate.tsv
+target-stored_boundary	validator	1	verify-target.awk target-stored_boundary.tsv
+target-stored_phase	validator	1	verify-target.awk target-stored_phase.tsv
+target-rule_kind	validator	1	verify-target.awk target-rule_kind.tsv
+target-intro_assumption	validator	1	verify-target.awk target-intro_assumption.tsv
+target-elim_assumption	validator	1	verify-target.awk target-elim_assumption.tsv
+target-major_intro	validator	1	verify-target.awk target-major_intro.tsv
+target-partial_context	validator	1	verify-target.awk target-partial_context.tsv
+target-outer_partition	validator	1	verify-target.awk target-outer_partition.tsv
+target-minor_partition	validator	1	verify-target.awk target-minor_partition.tsv
+target-elapsed_grammar	validator	1	verify-target.awk target-elapsed_grammar.tsv
+target-stats_width	validator	1	verify-target.awk target-stats_width.tsv
+target-status	validator	1	verify-target.awk target-status.tsv
+target-append	validator	1	verify-target.awk target-append.tsv
+summary-drift	validator	1	verify-summaries.sh calibration-summary-drift

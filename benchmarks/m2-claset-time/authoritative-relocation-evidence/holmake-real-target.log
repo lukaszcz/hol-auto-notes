@@ -1,0 +1,16 @@
+[builddepgraph] recursively: call in $(HOLDIR)/.task7f-relocation-diagnostic
+[builddepgraph] recursively: includes (pre- & normal) = []
+[builddepgraph] recursively: incdmap on dir $(HOLDIR)/.task7f-relocation-diagnostic = {}
+[builddepgraph] recursively: ancestor chain = $(HOLDIR)/.task7f-relocation-diagnostic
+[builddepgraph] Extending graph in directory $(HOLDIR)/.task7f-relocation-diagnostic
+[builddepgraph] || Target = $(HOLDIR)/.task7f-relocation-diagnostic/relocation-target
+[builddepgraph] || Extra = heap=/var/tmp/final-authoritative-relocation-ptrace/worktree/bin/hol.state0
+[builddepgraph] || /var/tmp/final-authoritative-relocation-ptrace/worktree/.task7f-relocation-diagnostic/relocation-target has rule
+[builddepgraph] || No star for /var/tmp/final-authoritative-relocation-ptrace/worktree/.task7f-relocation-diagnostic/relocation-target
+[builddepgraph] |/var/tmp/final-authoritative-relocation-ptrace/worktree/.task7f-relocation-diagnostic/relocation-target| Target = $(HOLDIR)/bin/hol.state0
+[builddepgraph] |/var/tmp/final-authoritative-relocation-ptrace/worktree/.task7f-relocation-diagnostic/relocation-target| Extra = heap=/var/tmp/final-authoritative-relocation-ptrace/worktree/bin/hol.state0
+[builddepgraph] |/var/tmp/final-authoritative-relocation-ptrace/worktree/.task7f-relocation-diagnostic/relocation-target| /var/tmp/final-authoritative-relocation-ptrace/worktree/bin/hol.state0 appears foreign; adding placeholdir NoCmd
+[builddepgraph] recursively: Finished work in $(HOLDIR)/.task7f-relocation-diagnostic
+[builddepgraph] Finished building complete dep graph (has 2 nodes)
+Starting work on relocation-target
+relocation-target                                           (0s)             OK

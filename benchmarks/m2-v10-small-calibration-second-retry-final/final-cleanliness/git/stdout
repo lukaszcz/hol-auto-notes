@@ -1,0 +1,15 @@
+## isabelle-tactics...origin/isabelle-tactics [ahead 49]
+## main...origin/main [ahead 97]
+ M PLAN_phase_1_2_green.md
+?? benchmarks/m2-claset-force/
+?? benchmarks/m2-claset-time/
+?? benchmarks/m2-timed-v2-final/
+?? benchmarks/m2-timed-v2-fresh/
+?? benchmarks/m2-timed-v2/
+?? benchmarks/m2-timed-v3-final/
+?? benchmarks/m2-timed-v4-final/
+?? benchmarks/m2-v10-small-calibration-final-review/
+?? benchmarks/m2-v10-small-calibration-final/
+?? benchmarks/m2-v10-small-calibration-retry-final-review/
+?? benchmarks/m2-v10-small-calibration-retry-final/
+?? benchmarks/m2-v10-small-calibration-second-retry-final/

@@ -1,0 +1,41 @@
+--- .agent-files/benchmarks/m2-timed-v4-final/frozen-inputs/collect.sh	2026-07-21 05:37:36.402665048 +0000
++++ .agent-files/benchmarks/m2-timed-v4-final/collect.sh	2026-07-21 05:38:21.031688495 +0000
+@@ -28,6 +28,15 @@
+   record "$label" process-audit 0 'pgrep task7j endpoints'
+ }
+ 
++identity() {
++  label=$1
++  out=$work/audits/$label-artifacts.tsv
++  ROOT=$root "$dir/artifact-manifest.sh" "$out"
++  cmp "$dir/ARTIFACTS-FROZEN.tsv" "$out" >/dev/null
++  record "$label-artifacts" identity 0 \
++    'artifact-manifest.sh; cmp ARTIFACTS-FROZEN.tsv'
++}
++
+ run_child() {
+   label=$1; timeout=$2; stdout=$3; stderr=$4; shift 4
+   child_status=$work/status/$label.json
+@@ -44,6 +53,7 @@
+ cp "$dir/INPUTS.sha256" "$work/INPUTS.sha256"
+ (cd "$root" && sha256sum -c "$dir/INPUTS.sha256") > "$work/input-check.log"
+ audit pre-collection
++identity pre-collection
+ 
+ cal=$work/calibration-raw.tsv
+ printf 'repetition\tproblem\tdepth\tmode\toutcome\telapsed\tattempts\tsearch_counters\treconstruction_signatures\n' > "$cal"
+@@ -79,6 +89,7 @@
+ set -e
+ record calibration-gate stop-go "$gate_rc" 'calibration-gate.awk calibration-summary.tsv'
+ audit post-calibration
++identity post-calibration
+ if [ "$gate_rc" -ne 0 ]; then
+   echo FAIL > "$work/GATE-RESULT"
+   cp -R "$work" "$dir/collection"
+@@ -110,5 +121,6 @@
+   "$work/calibration-summary.tsv" "$work/target-summary.tsv" \
+   > "$work/summary-validation.log"
+ audit post-target
++identity post-target
+ cp -R "$work" "$dir/collection"
+ echo 'fresh v4 collection: PASS'

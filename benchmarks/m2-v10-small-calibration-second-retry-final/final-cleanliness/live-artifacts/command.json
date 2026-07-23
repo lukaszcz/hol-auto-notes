@@ -1,0 +1,1 @@
+["sh", "-c", "P=\"$1\"; test ! -e \"$P/task7mcalibration.exe\"; test ! -e \"$P/.hol\"; ! pgrep -af \"[/]task7mcalibration[.]exe|task7mcalibration$\"", "sh", "/home/lukasz/dev/HOL/worktrees/isabelle-tactics/.agent-files/benchmarks/m2-v10-small-calibration-second-retry-final"]

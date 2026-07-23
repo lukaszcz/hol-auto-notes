@@ -1,0 +1,15 @@
+label	category	status	command
+root-index-clean	identity	0	git diff --cached --quiet
+source-worktree-clean	identity	0	git diff --quiet -- src/auto
+classical-clean	build	0	bin/Holmake -C src/auto/classical clean
+classical-build	build	0	bin/Holmake -C src/auto/classical
+classical-selftest	selftest	0	cd src/auto/classical; HOLSELFTESTLEVEL=2 ./selftest.exe
+blast-clean	build	0	bin/Holmake -C src/auto/blast clean
+blast-build	build	0	bin/Holmake -C src/auto/blast
+blast-selftest-attempt0	selftest	unobserved	chained run yielded during long expected-failure; retained partial log
+blast-selftest-final	selftest	0	cd src/auto/blast; HOLSELFTESTLEVEL=2 ./selftest.exe
+harness-clean	build	0	bin/Holmake -C package clean
+harness-build	build	0	bin/Holmake -C package task7jmeasurement.exe task7jcalibration.exe task7jactive.exe
+validator-synthetic	validator	0	test-validators.sh
+endpoint-synthetic	process-audit	0	endpoint-preflight.sh
+v4-controls	validator-supervisor	0	test-v4-controls.sh

@@ -1,0 +1,15 @@
+mode	median_external	minimum_external	maximum_external
+A	9.189388257	9.172840055	9.256204405
+B	9.237345589	9.221508007	9.249071647
+C	11.027194246	10.933404789	11.032468973
+D	16.328066360	16.296102393	16.332424610
+metric	value
+B_over_A	1.005219
+C_over_A	1.199992
+D_over_C	1.480709
+total_v4_increment_D_minus_A	7.138678103
+constant_clock_increment_C_minus_A	1.837805989
+real_clock_increment_D_minus_C	5.300872114
+clock_share	0.742557
+ba_sanity	PASS
+classification	mixed/indeterminate

@@ -1,0 +1,1 @@
+13	python3 -B /home/lukasz/dev/HOL/worktrees/isabelle-tactics/.agent-files/benchmarks/m2-low-perturbation-diagnostic-final/future-protocol/collect-v10.py -- /home/lukasz/dev/HOL/worktrees/isabelle-tactics/.agent-files/benchmarks/m2-low-perturbation-diagnostic-final/task7nclock.exe

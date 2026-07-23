@@ -1,0 +1,30 @@
+Captured UTC: 2026-07-20T11:18:34Z
+Host: Linux ip-172-31-20-100 6.17.0-1012-aws aarch64 GNU/Linux
+Poly/ML: 5.9.2 Release
+Logical processors: 32
+MemTotal: 259235904 kB
+Outer revision: 58fe553dac257099ede885175f2ae4997f14cfc0
+Branch: isabelle-tactics
+Target process option: --gcthreads=1
+Target order: active 10-process calibration, representative 18-process
+calibration, then one fresh sequential P34@7, P41@6, P45@11 target schedule
+Target boundaries: shared 30 s cooperative deadline, 60 s watchdog
+Clock: Time.now wall clock
+
+Freshness (integer seconds; every object/executable is newer than its source):
+classical sources 1784545154; clasetStep UI/UO 1784545154.640/.659
+classical selftest UO/exe 1784545154.678/.679
+blast reconstruction/test/harness sources 1784545189
+blastReconstruct UI/UO 1784545241.492/.498
+blast/harness UI/UO/executables 1784545317.459--.514
+
+Final source hashes:
+clasetStep.sig 932f33bc66da0a4a91015db69d705d51ea1b4fa5783e3df6c1617e0ed2ed08c7
+clasetStep.sml 5001c9696b936b3df92c2dcf4b9d0a4a837909ef5eefac849068eded77751f8c
+blastReconstruct.sig 8eba44194bc93b27f6ac157f0a8acffcd83a69a0b01bdfdfed110b4e7c94e113
+blastReconstruct.sml 6c2dda62a4ccbe3390cd8d17e06ca613f284f5e3ccfa5023a9e31643082faa6d
+
+Retained harness hashes match installed measurement sources:
+m2clasetime.sml ef2e6077e641153ccc5731371c905f290830ab9b19d5512baac27c67dd4811af
+activecalibration.sml 92c8a1ae41eabf7fe163a69693d1c1003f31c44bab1b19ba42c6a544a43f6dd6
+workcalibration.sml 6e5a57c241d622fc635f1816c42fc94c541653d74a1b8499d0a106c5fc7343e3

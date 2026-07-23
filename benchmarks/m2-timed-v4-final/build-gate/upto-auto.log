@@ -1,0 +1,410 @@
+*** Using kernel spec --stdknl from earlier build command;
+    use one of --expk, --stdknl, --otknl, --trknl to override
+*** Reduced build sequence (tools/sequences/upto-auto); skipping help-doc build.
+Cleaning out /home/lukasz/dev/HOL/worktrees/isabelle-tactics/sigobj
+/home/lukasz/dev/HOL/worktrees/isabelle-tactics/sigobj cleaned
+[1mBuilding directory tools/check-builds [21 Jul, 06:18:06]
+[0mUploading files to /home/lukasz/dev/HOL/worktrees/isabelle-tactics/sigobj
+[1mBuilding directory tools/Holmake/tests/holdep [21 Jul, 06:18:06]
+[0mScanning [1m$(HOLDIR)/tools/cmp[0m
+Scanned 2 directories
+Starting work on test
+test                                                        (0s)             OK
+Starting work on test
+test                                                        (0s)             OK
+Self-test directory /home/lukasz/dev/HOL/worktrees/isabelle-tactics/tools/Holmake/tests/holdep built successfully.
+[1mBuilding directory tools/Holmake/tests/depchainloop [21 Jul, 06:18:06]
+[0mSelf-test directory /home/lukasz/dev/HOL/worktrees/isabelle-tactics/tools/Holmake/tests/depchainloop built successfully.
+[1mBuilding directory tools/Holmake/tests/recursiveclean [21 Jul, 06:18:07]
+[0mSelf-test directory /home/lukasz/dev/HOL/worktrees/isabelle-tactics/tools/Holmake/tests/recursiveclean built successfully.
+[1mBuilding directory tools/Holmake/tests/dirs [21 Jul, 06:18:07]
+[0mSelf-test directory /home/lukasz/dev/HOL/worktrees/isabelle-tactics/tools/Holmake/tests/dirs built successfully.
+[1mBuilding directory tools/Holmake/tests/wildcard [21 Jul, 06:18:07]
+[0mStarting work on test1
+Starting work on test2
+Starting work on test3
+Starting work on test4
+test1                                                       (0s)             OK
+test2                                                       (0s)             OK
+Starting work on test5
+Starting work on test6
+test3                                                       (0s)             OK
+test4                                                       (0s)             OK
+Starting work on test7
+Starting work on test8
+test5                                                       (0s)             OK
+test6                                                       (0s)             OK
+test7                                                       (0s)             OK
+test8                                                       (0s)             OK
+Self-test directory /home/lukasz/dev/HOL/worktrees/isabelle-tactics/tools/Holmake/tests/wildcard built successfully.
+[1mBuilding directory tools/Holmake/tests/dashn_works [21 Jul, 06:18:07]
+[0mDependency graph{Already built {
+  
+  0:/home/lukasz/dev/HOL/worktrees/isabelle-tactics/tools/Holmake/tests/dashn_works/emptyScript.sml
+ }
+ Others:
+  [1], /home/lukasz/dev/HOL/worktrees/isabelle-tactics/sigobj/Overlay.ui(0) deps{}[Failed{needed=true}]] : <no command>,
+  [2], /home/lukasz/dev/HOL/worktrees/isabelle-tactics/tools/Holmake/tests/dashn_works/emptyTheory.sml(0) deps{1,0}[Pending{needed=true}]] : <BIC_Build /home/lukasz/dev/HOL/worktrees/isabelle-tactics/tools/Holmake/tests/dashn_works/empty>,
+  [3], /home/lukasz/dev/HOL/worktrees/isabelle-tactics/tools/Holmake/tests/dashn_works/emptyTheory.dat(0) deps{1,0}[Pending{needed=true}]] : <BIC_Build /home/lukasz/dev/HOL/worktrees/isabelle-tactics/tools/Holmake/tests/dashn_works/empty>,
+  [4], /home/lukasz/dev/HOL/worktrees/isabelle-tactics/tools/Holmake/tests/dashn_works/emptyTheory.sig(0) deps{1,0}[Pending{needed=true}]] : <BIC_Build /home/lukasz/dev/HOL/worktrees/isabelle-tactics/tools/Holmake/tests/dashn_works/empty>,
+  [5], /home/lukasz/dev/HOL/worktrees/isabelle-tactics/tools/Holmake/tests/dashn_works/emptyTheory.ui(0) deps{1,4}[Pending{needed=true}]] : <BIC_Compile>,
+  [6], /home/lukasz/dev/HOL/worktrees/isabelle-tactics/tools/Holmake/tests/dashn_works/emptyTheory.uo(0) deps{5,3,1,2}[Pending{needed=true}]] : <BIC_Compile>
+}
+
+Top-sorted:
+$(HOLDIR)/tools/Holmake/tests/dashn_works - /home/lukasz/dev/HOL/worktrees/isabelle-tactics/tools/Holmake/tests/dashn_works/emptyTheory.uo
+$(HOLDIR)/tools/Holmake/tests/dashn_works - /home/lukasz/dev/HOL/worktrees/isabelle-tactics/tools/Holmake/tests/dashn_works/emptyTheory.dat
+$(HOLDIR)/tools/Holmake/tests/dashn_works - /home/lukasz/dev/HOL/worktrees/isabelle-tactics/tools/Holmake/tests/dashn_works/emptyTheory.ui
+$(HOLDIR)/tools/Holmake/tests/dashn_works - /home/lukasz/dev/HOL/worktrees/isabelle-tactics/tools/Holmake/tests/dashn_works/emptyTheory.sig
+$(HOLDIR)/tools/Holmake/tests/dashn_works - /home/lukasz/dev/HOL/worktrees/isabelle-tactics/tools/Holmake/tests/dashn_works/emptyTheory.sml
+Self-test directory /home/lukasz/dev/HOL/worktrees/isabelle-tactics/tools/Holmake/tests/dashn_works built successfully.
+[1mBuilding directory tools/Holmake/tests/dupcommands [21 Jul, 06:18:07]
+[0mScanning [1m$(HOLDIR)/tools/Holmake/tests/dupcommands/sub1[0m
+Scanning [1m$(HOLDIR)/tools/Holmake/tests/dupcommands/sub2[0m
+Scanned 3 directories
+Starting work on test1
+Starting work on test2
+Finished $(HOLDIR)/tools/Holmake/tests/dupcommands/sub1                (0.001s) 
+test1                 tools/Holmake/tests/dupcommands/sub1  (0s)             OK
+Finished $(HOLDIR)/tools/Holmake/tests/dupcommands/sub2                (0.000s) 
+test2                 tools/Holmake/tests/dupcommands/sub2  (0s)             OK
+Starting work on final_test
+Finished $(HOLDIR)/tools/Holmake/tests/dupcommands                     (0.000s) 
+final_test                 tools/Holmake/tests/dupcommands  (0s)             OK
+Self-test directory /home/lukasz/dev/HOL/worktrees/isabelle-tactics/tools/Holmake/tests/dupcommands built successfully.
+[1mBuilding directory tools/Holmake/tests/varextension [21 Jul, 06:18:07]
+[0m[ "foo bar baz" = "foo bar baz" ] && [ "foo bar baz" = "foo bar baz" ]
+Self-test directory /home/lukasz/dev/HOL/worktrees/isabelle-tactics/tools/Holmake/tests/varextension built successfully.
+[1mBuilding directory tools/set_mtime [21 Jul, 06:18:07]
+[0mUploading files to /home/lukasz/dev/HOL/worktrees/isabelle-tactics/sigobj
+[1mBuilding directory tools/mlyacc/mlyacclib [21 Jul, 06:18:07]
+[0mUploading files to /home/lukasz/dev/HOL/worktrees/isabelle-tactics/sigobj
+[1mBuilding directory src/portableML/poly [21 Jul, 06:18:07]
+[0mUploading files to /home/lukasz/dev/HOL/worktrees/isabelle-tactics/sigobj
+[1mBuilding directory src/portableML [21 Jul, 06:18:07]
+[0mUploading files to /home/lukasz/dev/HOL/worktrees/isabelle-tactics/sigobj
+[1mBuilding directory src/portableML/monads [21 Jul, 06:18:07]
+[0mUploading files to /home/lukasz/dev/HOL/worktrees/isabelle-tactics/sigobj
+[1mBuilding directory src/portableML/rawtheory [21 Jul, 06:18:07]
+[0mUploading files to /home/lukasz/dev/HOL/worktrees/isabelle-tactics/sigobj
+[1mBuilding directory src/portableML/json [21 Jul, 06:18:07]
+[0mUploading files to /home/lukasz/dev/HOL/worktrees/isabelle-tactics/sigobj
+[1mBuilding directory src/portableML/poly/concurrent [21 Jul, 06:18:07]
+[0mUploading files to /home/lukasz/dev/HOL/worktrees/isabelle-tactics/sigobj
+[1mBuilding directory src/portableML/testsrc [21 Jul, 06:18:07]
+[0mScanning [1m$(HOLDIR)/tools/Holmake/core[0m
+Scanning [1m$(HOLDIR)/tools/Holmake/toml[0m
+Scanning [1m$(HOLDIR)/tools/h4pedant[0m
+Scanned 4 directories
+Starting work on all
+all                                                         (2s)             OK
+Self-test directory /home/lukasz/dev/HOL/worktrees/isabelle-tactics/src/portableML/testsrc built successfully.
+[1mBuilding directory src/prekernel [21 Jul, 06:18:10]
+[0mUploading files to /home/lukasz/dev/HOL/worktrees/isabelle-tactics/sigobj
+[1mBuilding directory src/0 [21 Jul, 06:18:10]
+[0mUploading files to /home/lukasz/dev/HOL/worktrees/isabelle-tactics/sigobj
+[1mBuilding directory src/thm [21 Jul, 06:18:10]
+[0mUploading files to /home/lukasz/dev/HOL/worktrees/isabelle-tactics/sigobj
+[1mBuilding directory src/tracing [21 Jul, 06:18:10]
+[0mUploading files to /home/lukasz/dev/HOL/worktrees/isabelle-tactics/sigobj
+[1mBuilding directory src/tracing/no [21 Jul, 06:18:10]
+[0mUploading files to /home/lukasz/dev/HOL/worktrees/isabelle-tactics/sigobj
+[1mBuilding directory src/postkernel [21 Jul, 06:18:10]
+[0mUploading files to /home/lukasz/dev/HOL/worktrees/isabelle-tactics/sigobj
+[1mBuilding directory src/postkernel/prooftrace [21 Jul, 06:18:10]
+[0m*** Doing nothing when no mlton
+Uploading files to /home/lukasz/dev/HOL/worktrees/isabelle-tactics/sigobj
+[1mBuilding directory src/parse [21 Jul, 06:18:10]
+[0mUploading files to /home/lukasz/dev/HOL/worktrees/isabelle-tactics/sigobj
+[1mBuilding directory tools/Holmake/tests/badincludes [21 Jul, 06:18:11]
+[0mSelf-test directory /home/lukasz/dev/HOL/worktrees/isabelle-tactics/tools/Holmake/tests/badincludes built successfully.
+[1mBuilding directory src/opentheory [21 Jul, 06:18:11]
+[0mUploading files to /home/lukasz/dev/HOL/worktrees/isabelle-tactics/sigobj
+[1mBuilding directory src/bool [21 Jul, 06:18:11]
+[0mUploading files to /home/lukasz/dev/HOL/worktrees/isabelle-tactics/sigobj
+[1mBuilding directory src/1 [21 Jul, 06:18:11]
+[0mUploading files to /home/lukasz/dev/HOL/worktrees/isabelle-tactics/sigobj
+[1mBuilding directory src/proofman [21 Jul, 06:18:11]
+[0mUploading files to /home/lukasz/dev/HOL/worktrees/isabelle-tactics/sigobj
+[1mBuilding directory src/proofman/tests [21 Jul, 06:18:11]
+[0mScanning [1m$(HOLDIR)/tools/cmp[0m
+Scanned 2 directories
+Starting work on gh725
+gh725                                                       (0s)             OK
+Self-test directory /home/lukasz/dev/HOL/worktrees/isabelle-tactics/src/proofman/tests built successfully.
+[1mBuilding directory tools/Holmake/tests/preexec [21 Jul, 06:18:11]
+[0mExecuting /home/lukasz/dev/HOL/worktrees/isabelle-tactics/tools/Holmake/tests/preexec/.hol_preexec:
+  HOLORIG=/home/lukasz/dev/HOL/worktrees/isabelle-tactics/tools/Holmake/tests/preexec /bin/rm -f sibling/sibling-tgt
+Executing /home/lukasz/dev/HOL/worktrees/isabelle-tactics/tools/Holmake/tests/preexec/sibling/.hol_preexec:
+  HOLORIG=/home/lukasz/dev/HOL/worktrees/isabelle-tactics/tools/Holmake/tests/preexec echo test > sibling-tgt
+Scanning [1m$(HOLDIR)/tools/Holmake/tests/preexec/sibling[0m
+Scanned 2 directories
+Self-test directory /home/lukasz/dev/HOL/worktrees/isabelle-tactics/tools/Holmake/tests/preexec built successfully.
+[1mBuilding directory tools/Holmake/tests/parallel_tests [21 Jul, 06:18:11]
+[0mScanning [1m$(HOLDIR)/tools/Holmake/tests/altquote1[0m
+Scanning [1m$(HOLDIR)/tools/Holmake/tests/brokenstrings[0m
+Scanning [1m$(HOLDIR)/tools/Holmake/tests/cache_reflink[0m
+Scanning [1m$(HOLDIR)/tools/Holmake/tests/cachefetch[0m
+Scanning [1m$(HOLDIR)/tools/Holmake/tests/cachekey[0m
+Scanning [1m$(HOLDIR)/tools/Holmake/tests/cachekey_transitive_parent[0m
+Scanning [1m$(HOLDIR)/tools/cmp[0m
+Scanning [1m$(HOLDIR)/tools/Holmake/tests/cheatspotting[0m
+Scanning [1m$(HOLDIR)/tools/Holmake/tests/clinevars[0m
+Scanning [1m$(HOLDIR)/tools/Holmake/tests/commandmacros/subdir[0m
+Scanning [1m$(HOLDIR)/tools/Holmake/tests/commandmacros[0m
+Scanning [1m$(HOLDIR)/tools/Holmake/tests/condifeq[0m
+Scanning [1m$(HOLDIR)/tools/Holmake/tests/coproduct[0m
+Scanning [1m$(HOLDIR)/tools/Holmake/tests/cross_dir_rule/description[0m
+Scanning [1m$(HOLDIR)/tools/Holmake/tests/cross_dir_rule/tutorial[0m
+Scanning [1m$(HOLDIR)/tools/Holmake/tests/cross_dir_rule[0m
+Scanning [1m$(HOLDIR)/tools/Holmake/tests/dashC_lastmaker[0m
+Scanning [1m$(HOLDIR)/tools/Holmake/tests/dashC_works[0m
+Scanning [1m$(HOLDIR)/tools/Holmake/tests/depchain1/dir2/dir1[0m
+Scanning [1m$(HOLDIR)/tools/Holmake/tests/depchain1/dir2[0m
+Scanning [1m$(HOLDIR)/tools/Holmake/tests/depchain1/dir3[0m
+Scanning [1m$(HOLDIR)/tools/Holmake/tests/depchain2[0m
+Scanning [1m$(HOLDIR)/tools/Holmake/tests/depchain2/dir1/dir2[0m
+Scanning [1m$(HOLDIR)/tools/Holmake/tests/depchain2/dir1[0m
+Scanning [1m$(HOLDIR)/tools/Holmake/tests/depchain_heap[0m
+Scanning [1m$(HOLDIR)/tools/Holmake/tests/depchain_heap/dir2[0m
+Scanning [1m$(HOLDIR)/tools/Holmake/tests/deps_of_depthys[0m
+Scanning [1m$(HOLDIR)/tools/Holmake/tests/dirlock[0m
+Scanning [1m$(HOLDIR)/tools/Holmake/tests/doublecrnl[0m
+Scanning [1m$(HOLDIR)/tools/Holmake/tests/dumpheap[0m
+Scanning [1m$(HOLDIR)/tools/Holmake/tests/empty_script[0m
+Scanning [1m$(HOLDIR)/tools/Holmake/tests/gh1353[0m
+Scanning [1m$(HOLDIR)/tools/Holmake/tests/gh1979[0m
+Scanning [1m$(HOLDIR)/tools/Holmake/tests/gh1993[0m
+Scanning [1m$(HOLDIR)/tools/Holmake/tests/gh1993-lib[0m
+Scanning [1m$(HOLDIR)/tools/Holmake/tests/gh569_error[0m
+Scanning [1m$(HOLDIR)/tools/Holmake/tests/gh569_info[0m
+Scanning [1m$(HOLDIR)/tools/Holmake/tests/gh604[0m
+Scanning [1m$(HOLDIR)/tools/Holmake/tests/gh679[0m
+Scanning [1m$(HOLDIR)/tools/Holmake/tests/h4pedant_config[0m
+Scanning [1m$(HOLDIR)/tools/Holmake/tests/heap-size[0m
+Scanning [1m$(HOLDIR)/tools/Holmake/tests/holdep[0m
+Scanning [1m$(HOLDIR)/tools/Holmake/tests/hollogs/base[0m
+Scanning [1m$(HOLDIR)/tools/Holmake/tests/hollogs[0m
+Scanning [1m$(proj1)/subdir[0m
+Scanning [1m$(projroot)/proj1[0m
+Scanning [1m$(proj2)/heaptest[0m
+Scanning [1m$(projroot)/proj2[0m
+Scanning [1m$(proj2)/proj2A[0m
+Scanning [1m$(HOLDIR)/tools/Holmake/tests/ignore_errors/j1[0m
+Scanning [1m$(HOLDIR)/tools/Holmake/tests/ignore_errors/j4[0m
+Scanning [1m$(HOLDIR)/tools/Holmake/tests/indepchildren/base[0m
+Scanning [1m$(HOLDIR)/tools/Holmake/tests/indepchildren/intermediate[0m
+Scanning [1m$(HOLDIR)/tools/Holmake/tests/indepchildren/dir1[0m
+Scanning [1m$(HOLDIR)/tools/Holmake/tests/indepchildren/dir2[0m
+Scanning [1m$(HOLDIR)/tools/Holmake/tests/indepchildren[0m
+Scanning [1m$(HOLDIR)/tools/Holmake/tests/issue1903[0m
+Scanning [1m$(HOLDIR)/tools/Holmake/tests/json-strings[0m
+Scanning [1m$(HOLDIR)/tools/Holmake/tests/lastmaker_propagation[0m
+Scanning [1m$(HOLDIR)/tools/Holmake/tests/local_parallelism_limit[0m
+Scanning [1m$(HOLDIR)/tools/Holmake/tests/longcmdlock[0m
+Scanning [1m$(HOLDIR)/tools/Holmake/tests/noprereqs/dir1[0m
+Scanning [1m$(HOLDIR)/tools/Holmake/tests/noprereqs/dir2[0m
+Scanning [1m$(HOLDIR)/tools/Holmake/tests/noprereqs/dir3[0m
+Scanning [1m$(HOLDIR)/tools/Holmake/tests/noprereqs/dir4[0m
+Scanning [1m$(HOLDIR)/tools/Holmake/tests/nullary_tgt[0m
+Scanning [1m$(HOLDIR)/tools/Holmake/tests/patrule_e2e[0m
+Scanning [1m$(HOLDIR)/tools/Holmake/tests/patrule_match[0m
+Scanning [1m$(HOLDIR)/tools/Holmake/tests/patrule_parse[0m
+Scanning [1m$(HOLDIR)/tools/Holmake/tests/phony_tgt[0m
+Scanning [1m$(HOLDIR)/tools/Holmake/tests/projclean_loop[0m
+Scanning [1m$(HOLDIR)/tools/Holmake/tests/projfile_basic[0m
+Scanning [1m$(HOLDIR)/tools/Holmake/tests/projfile_holmake_false[0m
+Scanning [1m$(HOLDIR)/tools/Holmake/tests/projfile_holpath_override[0m
+Scanning [1m$(HOLDIR)/tools/Holmake/tests/projfile_module[0m
+Scanning [1m$(HOLDIR)/tools/Holmake/tests/projfile_name_clash[0m
+Scanning [1m$(HOLDIR)/tools/Holmake/tests/projfile_open_resolution[0m
+Scanning [1m$(HOLDIR)/tools/Holmake/tests/projfile_synthetic[0m
+Scanning [1m$(HOLDIR)/tools/Holmake/tests/qfreadTheoremsyntax[0m
+Scanning [1m$(HOLDIR)/tools/Holmake/tests/quote-filter[0m
+Scanning [1m$(HOLDIR)/tools/Holmake/tests/rebuild_cachekey[0m
+Scanning [1m$(HOLDIR)/tools/Holmake/tests/theorytarget[0m
+Scanning [1m$(HOLDIR)/tools/Holmake/tests/time-logging[0m
+Scanning [1m$(HOLDIR)/tools/Holmake/tests/use-fnf[0m
+Scanned 85 directories
+Starting work on test
+Starting work on test1
+Starting work on test2
+Starting work on test
+Finished $(HOLDIR)/tools/Holmake/tests/commandmacros/subdir            (0.001s) 
+test              tools/Holmake/tests/commandmacros/subdir  (0s)             OK
+Starting work on check
+test1                    tools/Holmake/tests/commandmacros  (0s)             OK
+Starting work on all
+Finished $(HOLDIR)/tools/Holmake/tests/commandmacros                   (0.004s) 
+test2                    tools/Holmake/tests/commandmacros  (0s)             OK
+Starting work on all
+test                            tools/Holmake/tests/holdep  (0s)             OK
+Starting work on test
+Finished $(proj1)/subdir                                               (0.000s) 
+all                                                 subdir  (0s)             OK
+Starting work on gen_call_count_test
+check                          tools/Holmake/tests/hollogs  (0s)             OK
+Starting work on check
+Finished $(HOLDIR)/tools/Holmake/tests/indepchildren/base              (0.000s) 
+gen_call_count_test tools/Holmake/tests/indepchildren/base  (0s)             OK
+Starting work on test_callcount
+Finished $(HOLDIR)/tools/Holmake/tests/holdep                          (0.000s) 
+test                            tools/Holmake/tests/holdep  (0s)             OK
+Starting work on all
+Finished $(HOLDIR)/tools/Holmake/tests/indepchildren                   (0.000s) 
+test_callcount           tools/Holmake/tests/indepchildren  (0s)             OK
+Finished $(HOLDIR)/tools/Holmake/tests/hollogs                         (0.004s) 
+check                          tools/Holmake/tests/hollogs  (0s)             OK
+all                       tools/Holmake/tests/quote-filter  (0s)             OK
+Starting work on all
+all                                               heaptest  (0s)             OK
+Starting work on all
+Finished $(HOLDIR)/tools/Holmake/tests/quote-filter                    (0.003s) 
+all                       tools/Holmake/tests/quote-filter  (0s)             OK
+Finished $(proj2)/heaptest                                             (0.002s) 
+all                                               heaptest  (0s)             OK
+Self-test directory /home/lukasz/dev/HOL/worktrees/isabelle-tactics/tools/Holmake/tests/parallel_tests built successfully.
+[1mBuilding directory tools/Holmake/tests/repl [21 Jul, 06:18:11]
+[0mHolmake: HOL state-file already set; ignoring earlier spec
+Scanning [1m$(HOLDIR)/tools/cmp[0m
+Scanned 2 directories
+Self-test directory /home/lukasz/dev/HOL/worktrees/isabelle-tactics/tools/Holmake/tests/repl built successfully.
+[1mBuilding directory src/1/theory_tests [21 Jul, 06:18:11]
+[0mHolmake: HOL state-file already set; ignoring earlier spec
+Self-test directory /home/lukasz/dev/HOL/worktrees/isabelle-tactics/src/1/theory_tests built successfully.
+[1mBuilding directory src/compute/src [21 Jul, 06:18:11]
+[0mUploading files to /home/lukasz/dev/HOL/worktrees/isabelle-tactics/sigobj
+[1mBuilding directory src/HolSat/sat_solvers/minisat [21 Jul, 06:18:11]
+[0mBuilding minisat (release)
+Uploading files to /home/lukasz/dev/HOL/worktrees/isabelle-tactics/sigobj
+[1mBuilding directory src/HolSat/sat_solvers/zc2hs [21 Jul, 06:18:11]
+[0mmake: Nothing to be done for 'all'.
+Uploading files to /home/lukasz/dev/HOL/worktrees/isabelle-tactics/sigobj
+[1mBuilding directory src/HolSat [21 Jul, 06:18:11]
+[0mUploading files to /home/lukasz/dev/HOL/worktrees/isabelle-tactics/sigobj
+[1mBuilding directory src/taut [21 Jul, 06:18:12]
+[0mUploading files to /home/lukasz/dev/HOL/worktrees/isabelle-tactics/sigobj
+[1mBuilding directory tools/Holmake/tests/incs_vs_sigobj/dir2 [21 Jul, 06:18:12]
+[0mScanning [1m$(HOLDIR)/tools/Holmake/tests/incs_vs_sigobj/dir1[0m
+Scanned 2 directories
+Self-test directory /home/lukasz/dev/HOL/worktrees/isabelle-tactics/tools/Holmake/tests/incs_vs_sigobj/dir2 built successfully.
+[1mBuilding directory src/marker [21 Jul, 06:18:12]
+[0mUploading files to /home/lukasz/dev/HOL/worktrees/isabelle-tactics/sigobj
+[1mBuilding directory src/q [21 Jul, 06:18:12]
+[0mUploading files to /home/lukasz/dev/HOL/worktrees/isabelle-tactics/sigobj
+[1mBuilding directory src/combin [21 Jul, 06:18:12]
+[0mUploading files to /home/lukasz/dev/HOL/worktrees/isabelle-tactics/sigobj
+[1mBuilding directory src/lite [21 Jul, 06:18:12]
+[0mUploading files to /home/lukasz/dev/HOL/worktrees/isabelle-tactics/sigobj
+[1mBuilding directory src/refute [21 Jul, 06:18:12]
+[0mUploading files to /home/lukasz/dev/HOL/worktrees/isabelle-tactics/sigobj
+[1mBuilding directory src/simp/src/poly [21 Jul, 06:18:12]
+[0mUploading files to /home/lukasz/dev/HOL/worktrees/isabelle-tactics/sigobj
+[1mBuilding directory src/simp/src [21 Jul, 06:18:12]
+[0mUploading files to /home/lukasz/dev/HOL/worktrees/isabelle-tactics/sigobj
+[1mBuilding directory src/metis [21 Jul, 06:18:12]
+[0mUploading files to /home/lukasz/dev/HOL/worktrees/isabelle-tactics/sigobj
+[1mBuilding directory src/meson/src [21 Jul, 06:18:12]
+[0mUploading files to /home/lukasz/dev/HOL/worktrees/isabelle-tactics/sigobj
+[1mBuilding directory src/IndDef [21 Jul, 06:18:12]
+[0mUploading files to /home/lukasz/dev/HOL/worktrees/isabelle-tactics/sigobj
+[1mBuilding directory src/basicProof [21 Jul, 06:18:12]
+[0mUploading files to /home/lukasz/dev/HOL/worktrees/isabelle-tactics/sigobj
+[1mBuilding directory src/basicProof/theory_tests [21 Jul, 06:18:12]
+[0mSelf-test directory /home/lukasz/dev/HOL/worktrees/isabelle-tactics/src/basicProof/theory_tests built successfully.
+[1mBuilding directory src/relation [21 Jul, 06:18:12]
+[0mUploading files to /home/lukasz/dev/HOL/worktrees/isabelle-tactics/sigobj
+[1mBuilding directory src/quotient/src [21 Jul, 06:18:12]
+[0mUploading files to /home/lukasz/dev/HOL/worktrees/isabelle-tactics/sigobj
+[1mBuilding directory src/coretypes [21 Jul, 06:18:12]
+[0mUploading files to /home/lukasz/dev/HOL/worktrees/isabelle-tactics/sigobj
+[1mBuilding directory src/tfl/src [21 Jul, 06:18:13]
+[0mUploading files to /home/lukasz/dev/HOL/worktrees/isabelle-tactics/sigobj
+[1mBuilding directory src/num/theories [21 Jul, 06:18:13]
+[0mUploading files to /home/lukasz/dev/HOL/worktrees/isabelle-tactics/sigobj
+[1mBuilding directory src/num/theories/cv_compute [21 Jul, 06:18:13]
+[0mUploading files to /home/lukasz/dev/HOL/worktrees/isabelle-tactics/sigobj
+[1mBuilding directory src/num/theories/cv_compute/soundness_check [21 Jul, 06:18:13]
+[0mSelf-test directory /home/lukasz/dev/HOL/worktrees/isabelle-tactics/src/num/theories/cv_compute/soundness_check built successfully.
+[1mBuilding directory src/num/reduce/conv [21 Jul, 06:18:13]
+[0mUploading files to /home/lukasz/dev/HOL/worktrees/isabelle-tactics/sigobj
+[1mBuilding directory src/num/reduce/src [21 Jul, 06:18:13]
+[0mUploading files to /home/lukasz/dev/HOL/worktrees/isabelle-tactics/sigobj
+[1mBuilding directory src/num/arith/src [21 Jul, 06:18:13]
+[0mUploading files to /home/lukasz/dev/HOL/worktrees/isabelle-tactics/sigobj
+[1mBuilding directory src/num [21 Jul, 06:18:13]
+[0mUploading files to /home/lukasz/dev/HOL/worktrees/isabelle-tactics/sigobj
+[1mBuilding directory src/num/termination [21 Jul, 06:18:13]
+[0mUploading files to /home/lukasz/dev/HOL/worktrees/isabelle-tactics/sigobj
+[1mBuilding directory src/num/extra_theories [21 Jul, 06:18:13]
+[0mUploading files to /home/lukasz/dev/HOL/worktrees/isabelle-tactics/sigobj
+[1mBuilding directory src/unwind [21 Jul, 06:18:13]
+[0mUploading files to /home/lukasz/dev/HOL/worktrees/isabelle-tactics/sigobj
+[1mBuilding directory src/pred_set/src [21 Jul, 06:18:13]
+[0mUploading files to /home/lukasz/dev/HOL/worktrees/isabelle-tactics/sigobj
+[1mBuilding directory src/datatype/record [21 Jul, 06:18:13]
+[0mUploading files to /home/lukasz/dev/HOL/worktrees/isabelle-tactics/sigobj
+[1mBuilding directory src/datatype [21 Jul, 06:18:14]
+[0mUploading files to /home/lukasz/dev/HOL/worktrees/isabelle-tactics/sigobj
+[1mBuilding directory src/datatype/theory_tests [21 Jul, 06:18:14]
+[0mSelf-test directory /home/lukasz/dev/HOL/worktrees/isabelle-tactics/src/datatype/theory_tests built successfully.
+[1mBuilding directory src/monad [21 Jul, 06:18:14]
+[0mUploading files to /home/lukasz/dev/HOL/worktrees/isabelle-tactics/sigobj
+[1mBuilding directory src/list/src [21 Jul, 06:18:14]
+[0mUploading files to /home/lukasz/dev/HOL/worktrees/isabelle-tactics/sigobj
+[1mBuilding directory src/quantHeuristics [21 Jul, 06:18:14]
+[0mUploading files to /home/lukasz/dev/HOL/worktrees/isabelle-tactics/sigobj
+[1mBuilding directory src/pattern_matches [21 Jul, 06:18:14]
+[0mUploading files to /home/lukasz/dev/HOL/worktrees/isabelle-tactics/sigobj
+[1mBuilding directory src/pattern_matches/interactive_tests [21 Jul, 06:18:14]
+[0mSelf-test directory /home/lukasz/dev/HOL/worktrees/isabelle-tactics/src/pattern_matches/interactive_tests built successfully.
+[1mBuilding directory src/HolSat/vector_def_CNF [21 Jul, 06:18:14]
+[0mUploading files to /home/lukasz/dev/HOL/worktrees/isabelle-tactics/sigobj
+[1mBuilding directory src/boss/ml_evaluation [21 Jul, 06:18:14]
+[0mUploading files to /home/lukasz/dev/HOL/worktrees/isabelle-tactics/sigobj
+[1mBuilding directory src/opentheory/reader [21 Jul, 06:18:14]
+[0mUploading files to /home/lukasz/dev/HOL/worktrees/isabelle-tactics/sigobj
+[1mBuilding directory src/boss [21 Jul, 06:18:14]
+[0mUploading files to /home/lukasz/dev/HOL/worktrees/isabelle-tactics/sigobj
+[1mBuilding directory src/AI [21 Jul, 06:18:14]
+[0mUploading files to /home/lukasz/dev/HOL/worktrees/isabelle-tactics/sigobj
+[1mBuilding directory src/AI/sml_inspection [21 Jul, 06:18:14]
+[0mUploading files to /home/lukasz/dev/HOL/worktrees/isabelle-tactics/sigobj
+[1mBuilding directory src/AI/proof_search [21 Jul, 06:18:14]
+[0mUploading files to /home/lukasz/dev/HOL/worktrees/isabelle-tactics/sigobj
+[1mBuilding directory src/AI/machine_learning [21 Jul, 06:18:15]
+[0mUploading files to /home/lukasz/dev/HOL/worktrees/isabelle-tactics/sigobj
+[1mBuilding directory src/tactictoe/src [21 Jul, 06:18:15]
+[0mUploading files to /home/lukasz/dev/HOL/worktrees/isabelle-tactics/sigobj
+[1mBuilding directory src/tactictoe/selftest [21 Jul, 06:18:15]
+[0mUploading files to /home/lukasz/dev/HOL/worktrees/isabelle-tactics/sigobj
+[1mBuilding directory src/holyhammer [21 Jul, 06:18:15]
+[0mUploading files to /home/lukasz/dev/HOL/worktrees/isabelle-tactics/sigobj
+[1mBuilding directory src/auto/rules [21 Jul, 06:18:15]
+[0mUploading files to /home/lukasz/dev/HOL/worktrees/isabelle-tactics/sigobj
+[1mBuilding directory src/auto/classical [21 Jul, 06:18:15]
+[0mScanning [1m$(HOLDIR)/src/auto/rules[0m
+Scanning [1m$(HOLDIR)/src/metis[0m
+Scanned 3 directories
+Starting work on classical-selftest.log
+classical-selftest.log                                     (46s)             OK
+Uploading files to /home/lukasz/dev/HOL/worktrees/isabelle-tactics/sigobj
+[1mBuilding directory src/auto/blast [21 Jul, 06:19:04]
+[0mScanning [1m$(HOLDIR)/src/auto/rules[0m
+Scanning [1m$(HOLDIR)/src/metis[0m
+Scanning [1m$(HOLDIR)/src/auto/classical[0m
+Scanned 4 directories
+Starting work on blast-selftest.log
+blast-selftest.log                                        (239s)             OK
+Uploading files to /home/lukasz/dev/HOL/worktrees/isabelle-tactics/sigobj
+[1mBuilding directory src/auto/rules/theory_tests [21 Jul, 06:23:09]
+[0mScanning [1m$(HOLDIR)/src/auto/rules[0m
+Scanned 2 directories
+Starting work on reload-check
+Starting work on state-replay-check
+reload-check                                                (0s)             OK
+state-replay-check                                          (0s)             OK
+Self-test directory /home/lukasz/dev/HOL/worktrees/isabelle-tactics/src/auto/rules/theory_tests built successfully.
+Skipping help documentation build (--no-helpdocs).
+
+Hol built successfully.

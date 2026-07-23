@@ -1,0 +1,65 @@
+[startup] Started and have initial diagnostic/messaging functions
+[startup] CommandLine.name() = /var/tmp/final-authoritative-relocation-ptrace/worktree/bin/Holmake
+[startup] CommandLine.arguments() = --dbg=startup, --help, --holstate=/var/tmp/final-authoritative-relocation-ptrace/worktree/bin/hol.state0
+[startup] HOLDIR = /var/tmp/final-authoritative-relocation-ptrace/worktree
+[startup] Targets = []
+[startup] Additional includes = []
+[startup] Additional Holmake variables = []
+[startup] POLYMLLIBDIR = /usr/local/lib
+Usage:
+  /var/tmp/final-authoritative-relocation-ptrace/worktree/bin/Holmake [targets]
+
+Special targets are: clean, cleanDeps and cleanAll
+
+Extra options:
+  -C DIR        --directory=DIR           change to DIR before doing anything
+  -I directory                            include directory
+                --cache-dir=directory     set cache directory
+                --cachekey=theory         print cache key for a theory target
+  -d[diag-cat]  --dbg[=diag-cat]          turn on diagnostic messages
+                --dirs                    treat positional args as root
+                                          directories
+                --fast                    fast build (replace tactics w/cheat)
+                --force-lastmaker         overwrite any conflicting
+                                          .hol/make-deps/lastmaker without
+                                          prompting
+  -h            --help                    show this message
+                --heap-size=size          max heap size for builds (in MB)
+                --holdir=directory        use different HOLDIR
+                --holmakefile=file        use different holmakefile
+                --holstate=holstate       specify HOL state
+  -i            --interactive             make session 'interactive'
+  -j n          --jobs=n                  max number of parallel jobs
+                --json                    emit JSON of dep. graph (then stop)
+  -k            --keep-going              try to build all targets
+                --logging                 enable time logging
+                --mt[=c]                  thread count (0/none = max h/w count)
+  -n            --no_action               print what would be executed
+                --no-cache                disable build caching (default)
+                --no-project              ignore holproject.toml even if present
+                --no_hmakefile            don't use a Holmakefile
+                --no_overlay              don't use Overlay.sml file
+                --no_preexecs             don't find/use .holpre_exec files
+                --no_prereqs              don't build recursively in INCLUDES
+                --nolmbc                  don't check which Holmake was last
+                                          used
+                --noqof                   don't quit on failure
+                --ot=file                 use file as opentheory logging .uo
+                --poly=executable         specify Poly executable
+                --poly_not_hol            use poly rather than a HOL heap
+                --polymllibdir=directory  specify Poly/ML lib directory
+  -q            --quiet                   be quieter with output
+                --qof                     quit on failure
+  -r                                      both --recursive-{build,clean}
+                --rebuild=strategy        rebuild-decision strategy for theory
+                                          targets (mtime [default] or cachekey)
+                --rebuild_deps            rebuild cached dependency files
+                --recursive-build         build all targets recursively
+                --recursive-clean         clean recursively
+                --relocbuild              perform a relocation build
+  -t delay      --time_limit=delay        set time limit (in seconds)
+                --thmsrc=dat|tr           theorem source (dat or tr)
+                --use-cache               enable build caching: use default
+                                          cache directory and cachekey-based
+                                          rebuild decisions
+  -v            --verbose                 verbose output

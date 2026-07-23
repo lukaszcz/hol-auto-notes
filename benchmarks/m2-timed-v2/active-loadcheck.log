@@ -1,0 +1,3 @@
+error in quse /home/lukasz/dev/HOL/worktrees/isabelle-tactics/.agent-files/benchmarks/m2-timed-v2/task7gactive.sml : Fail "missing T7G_MODE"
+error in load task7gactive : Fail "missing T7G_MODE"
+Uncaught exception at /home/lukasz/dev/HOL/worktrees/isabelle-tactics/.agent-files/benchmarks/m2-timed-v2/task7gactive.sml:4: Fail "missing T7G_MODE"

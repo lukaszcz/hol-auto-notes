@@ -1,0 +1,50 @@
+Poly/ML 5.9.2 Release
+
+HOL smart configuration.
+
+Determining configuration parameters: holdir OS poly GNUMAKE polymllibdir 
+OS:                 linux
+poly:               /usr/local/bin/poly
+polyc:              /usr/local/bin/polyc
+polymllibdir:       /usr/local/lib
+holdir:             /var/tmp/final-authoritative-relocation-ptrace/worktree
+DOT_PATH:           NONE
+MLTON:              NONE
+GNUMAKE:            make
+
+Configuration will begin with above values.  If they are wrong
+press Control-C.
+
+Will continue in 3 seconds.Will continue in 2 seconds.Will continue in 1 seconds.
+
+Loading system specific functions
+Note: Int.maxInt = SOME 4611686018427387903
+Compiling system specific functions (sml)
+Beginning configuration.
+Removing old quotation filter from bin/
+Making mllex
+Making mlyacc
+
+Number of states = 95
+Number of distinct rows = 47
+Approx. memory size of trans. table = 6063 bytes
+Making Holmake
+
+Number of states = 991
+Number of distinct rows = 837
+Approx. memory size of trans. table = 1714176 bytes
+Making unquote
+Making holdeptool
+Making build
+Making comparelogs
+comparelogs.sml:61: warning: Pattern is not exhaustive.
+Found near val [thyname, number_s] = String.tokens Char.isSpace s
+comparelogs.sml:154: warning: Pattern is not exhaustive. Found near val [file1, file2] = args
+Making hol
+Making genscriptdep
+Making linkToSigobj
+Making hol-mode.el (for Emacs)
+Making tools/editor-modes/vim/*
+
+Finished configuration!
+val it = (): unit

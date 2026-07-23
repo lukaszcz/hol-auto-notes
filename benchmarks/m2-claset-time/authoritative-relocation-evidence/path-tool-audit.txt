@@ -1,0 +1,42 @@
+system_tool name=cp command=/usr/bin/cp resolved=/usr/bin/cp result=PASS
+system_tool name=stat command=/usr/bin/stat resolved=/usr/bin/stat result=PASS
+system_tool name=realpath command=/usr/bin/realpath resolved=/usr/bin/realpath result=PASS
+system_tool name=find command=/usr/bin/find resolved=/usr/bin/find result=PASS
+system_tool name=sha256sum command=/usr/bin/sha256sum resolved=/usr/bin/sha256sum result=PASS
+system_tool name=sed command=/usr/bin/sed resolved=/usr/bin/sed result=PASS
+system_tool name=grep command=/usr/bin/grep resolved=/usr/bin/grep result=PASS
+system_tool name=dirname command=/usr/bin/dirname resolved=/usr/bin/dirname result=PASS
+system_tool name=cmp command=/usr/bin/cmp resolved=/usr/bin/cmp result=PASS
+system_tool name=rm command=/usr/bin/rm resolved=/usr/bin/rm result=PASS
+system_tool name=mkdir command=/usr/bin/mkdir resolved=/usr/bin/mkdir result=PASS
+system_tool name=date command=/usr/bin/date resolved=/usr/bin/date result=PASS
+system_tool name=env command=/usr/bin/env resolved=/usr/bin/env result=PASS
+system_tool name=setsid command=/usr/bin/setsid resolved=/usr/bin/setsid result=PASS
+system_tool name=ps command=/usr/bin/ps resolved=/usr/bin/ps result=PASS
+system_tool name=sleep command=/usr/bin/sleep resolved=/usr/bin/sleep result=PASS
+system_tool name=sort command=/usr/bin/sort resolved=/usr/bin/sort result=PASS
+system_tool name=readlink command=/usr/bin/readlink resolved=/usr/bin/readlink result=PASS
+system_tool name=chmod command=/usr/bin/chmod resolved=/usr/bin/chmod result=PASS
+system_tool name=ln command=/usr/bin/ln resolved=/usr/bin/ln result=PASS
+system_tool name=uname command=/usr/bin/uname resolved=/usr/bin/uname result=PASS
+system_tool name=make command=/usr/bin/make resolved=/usr/bin/make result=PASS
+system_tool name=cc command=/usr/bin/cc resolved=/usr/bin/aarch64-linux-gnu-gcc-13 result=PASS
+system_tool name=poly command=/usr/local/bin/poly resolved=/usr/local/bin/poly result=PASS
+system_tool name=polyc command=/usr/local/bin/polyc resolved=/usr/local/bin/polyc result=PASS
+system_tool name=strings command=/usr/bin/strings resolved=/usr/bin/aarch64-linux-gnu-strings result=PASS
+system_tool name=awk command=/usr/bin/awk resolved=/usr/bin/gawk result=PASS
+system_tool name=python3 command=/usr/bin/python3 resolved=/usr/bin/python3.12 result=PASS
+system_tool name=sh command=/usr/bin/sh resolved=/usr/bin/dash result=PASS
+system_tool name=cat command=/usr/bin/cat resolved=/usr/bin/cat result=PASS
+system_tool name=diff command=/usr/bin/diff resolved=/usr/bin/diff result=PASS
+system_tool name=mktemp command=/usr/bin/mktemp resolved=/usr/bin/mktemp result=PASS
+system_tool name=mv command=/usr/bin/mv resolved=/usr/bin/mv result=PASS
+system_tool name=wc command=/usr/bin/wc resolved=/usr/bin/wc result=PASS
+system_tool name=strace command=/usr/bin/strace resolved=/usr/bin/strace result=PASS
+sanitized_system_path=/usr/local/bin:/usr/bin:/bin
+copied_executable path=bin/hol resolved=/var/tmp/final-authoritative-relocation-ptrace/worktree/bin/hol result=PASS
+copied_executable path=bin/Holmake resolved=/var/tmp/final-authoritative-relocation-ptrace/worktree/bin/Holmake result=PASS
+effective_path=/var/tmp/final-authoritative-relocation-ptrace/worktree/bin:/usr/local/bin:/usr/bin:/bin
+holdir_environment=UNSET
+copied_executable path=bin/hol resolved=/var/tmp/final-authoritative-relocation-ptrace/worktree/bin/hol result=PASS
+copied_executable path=bin/Holmake resolved=/var/tmp/final-authoritative-relocation-ptrace/worktree/bin/Holmake result=PASS

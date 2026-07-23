@@ -1,0 +1,56 @@
+/home/lukasz/dev/HOL/worktrees/isabelle-tactics/.agent-files/benchmarks/m2-v10-small-calibration-retry-final/task7lcalibration.sml:113: error: Type error in function application.
+   Function: finish : blastReconstruct.detailed_measured_result -> 'a -> 'a
+   Argument: base : blastReconstruct.timed_detailed_measured_result
+   Reason:
+      Can't unify
+         {completion: blastReconstruct.completion,
+           current_phase: blastReconstruct.observation option,
+           current_stored_rule:
+           blastReconstruct.stored_rule_observation option,
+           result: (goal list * blastReconstruct.validation) option,
+           statistics: blastReconstruct.detailed_statistics} to
+         {attempt_wall_time: Time.time,
+           classical_times: blastReconstruct.classical_phase_times,
+           completion: blastReconstruct.completion,
+           current_phase: blastReconstruct.observation option,
+           current_stored_rule:
+           blastReconstruct.stored_rule_observation option,
+           result: (goal list * blastReconstruct.validation) option,
+           statistics: blastReconstruct.detailed_statistics}
+         (Different number of fields)
+Found near
+  if mode = "A" then finish (... ... goal proof) proof else
+  if mode = "B" then
+  let val timed = ... ...; val ... = ...; val ... in finish base proof end
+  else
+  if mode = "C" orelse mode = "D" then
+  let val ... = ...; val ...; ... in ... ... proof end else
+  raise Fail "unknown mode"
+/home/lukasz/dev/HOL/worktrees/isabelle-tactics/.agent-files/benchmarks/m2-v10-small-calibration-retry-final/task7lcalibration.sml:141: error: Type error in function application.
+   Function: finish : blastReconstruct.detailed_measured_result -> 'a -> 'a
+   Argument: base : blastReconstruct.timed_detailed_measured_result
+   Reason:
+      Can't unify
+         {completion: blastReconstruct.completion,
+           current_phase: blastReconstruct.observation option,
+           current_stored_rule:
+           blastReconstruct.stored_rule_observation option,
+           result: (goal list * blastReconstruct.validation) option,
+           statistics: blastReconstruct.detailed_statistics} to
+         {attempt_wall_time: Time.time,
+           classical_times: blastReconstruct.classical_phase_times,
+           completion: blastReconstruct.completion,
+           current_phase: blastReconstruct.observation option,
+           current_stored_rule:
+           blastReconstruct.stored_rule_observation option,
+           result: (goal list * blastReconstruct.validation) option,
+           statistics: blastReconstruct.detailed_statistics}
+         (Different number of fields)
+Found near
+  if mode = "A" then finish (... ... goal proof) proof else
+  if mode = "B" then
+  let val timed = ... ...; val ... = ...; val ... in finish base proof end
+  else
+  if mode = "C" orelse mode = "D" then
+  let val ... = ...; val ...; ... in ... ... proof end else
+  raise Fail "unknown mode"

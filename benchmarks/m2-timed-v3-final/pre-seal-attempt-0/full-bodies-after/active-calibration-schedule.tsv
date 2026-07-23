@@ -1,0 +1,11 @@
+sequence	repetition	fixture	batch	mode
+1	1	stored_elim	1000	v2
+2	1	stored_elim	1000	v3
+3	2	stored_elim	1000	v3
+4	2	stored_elim	1000	v2
+5	3	stored_elim	1000	v2
+6	3	stored_elim	1000	v3
+7	4	stored_elim	1000	v3
+8	4	stored_elim	1000	v2
+9	5	stored_elim	1000	v2
+10	5	stored_elim	1000	v3

@@ -1,0 +1,125 @@
+#!/usr/bin/env python3
+"""Validate future bounded-v2 order and bind it to the main raw ledger."""
+import re
+import sys
+
+
+NATURAL = re.compile(r"0|[1-9][0-9]*")
+POSITIVE = re.compile(r"[1-9][0-9]*")
+TARGETS = [("1", "34", "7", 1), ("2", "41", "6", 3),
+           ("3", "45", "11", 1)]
+BOUNDED_HEADER = "Task7j timed-v4 bounded protocol v2"
+RAW_HEADER = "Task7j timed-v4 raw protocol v2"
+
+
+def fail(message):
+    print("verify-bounded-v2: " + message, file=sys.stderr)
+    raise SystemExit(1)
+
+
+def lines(path):
+    try:
+        with open(path, encoding="utf-8", newline="") as source:
+            return [line.removesuffix("\n") for line in source]
+    except (OSError, UnicodeError):
+        fail("input read")
+
+
+def lexical(parts, kind):
+    expected = 7 if kind == "BOUNDED" else 7
+    if len(parts) != expected:
+        fail("bounded schema")
+    if not all(POSITIVE.fullmatch(x) for x in parts[1:4]):
+        fail("bounded canonical identifiers")
+    if not all(NATURAL.fullmatch(x) for x in parts[4:]):
+        fail("bounded natural grammar")
+    if kind == "BOUNDED" and parts[5] != "1":
+        fail("terminal summary read identity")
+    if parts[6] != "0":
+        fail("retained trace allocation zero")
+
+
+def parse_bounded(path):
+    data = lines(path)
+    if not data or data[0] != BOUNDED_HEADER:
+        fail("exact bounded header")
+    cursor = 1
+    attempts = []
+    for pos, problem, _depth, count in TARGETS:
+        sums = [0, 0, 0]
+        for attempt in range(1, count + 1):
+            if cursor >= len(data):
+                fail("bounded incomplete/order")
+            parts = data[cursor].split("|")
+            if not parts or parts[0] != "BOUNDED":
+                fail("bounded attempt order")
+            lexical(parts, "BOUNDED")
+            if parts[1:4] != [pos, problem, str(attempt)]:
+                fail("bounded exact target/attempt order")
+            values = tuple(int(x) for x in parts[4:7])
+            sums = [a + b for a, b in zip(sums, values)]
+            attempts.append((pos, problem, str(attempt), *parts[4:7]))
+            cursor += 1
+        if cursor >= len(data):
+            fail("bounded summary missing")
+        parts = data[cursor].split("|")
+        if not parts or parts[0] != "BOUNDED_SUMMARY":
+            fail("bounded summary must immediately follow attempts")
+        lexical(parts, "BOUNDED_SUMMARY")
+        if parts[1:4] != [pos, problem, str(count)]:
+            fail("bounded summary identifiers")
+        if tuple(int(x) for x in parts[4:7]) != tuple(sums):
+            fail("bounded attempt/summary arithmetic")
+        cursor += 1
+    if cursor >= len(data) or data[cursor] != "EOF|" + BOUNDED_HEADER:
+        fail("exact bounded EOF")
+    if cursor + 1 != len(data):
+        fail("bounded record after EOF")
+    return attempts
+
+
+def parse_raw(path):
+    data = lines(path)
+    if not data or data[0] != RAW_HEADER:
+        fail("exact raw header")
+    cursor = 1
+    attempts = []
+    for pos, problem, depth, count in TARGETS:
+        for attempt in range(1, count + 1):
+            if cursor >= len(data):
+                fail("raw incomplete/order")
+            parts = data[cursor].split("|")
+            if len(parts) != 10 or parts[0] != "ATTEMPT_BOUNDS":
+                fail("raw attempt-bounds schema/order")
+            if not all(POSITIVE.fullmatch(x) for x in parts[1:5]):
+                fail("raw canonical identifiers")
+            if parts[1:5] != [pos, problem, depth, str(attempt)]:
+                fail("raw exact target/attempt order")
+            if not all(NATURAL.fullmatch(x) for x in parts[5:8]):
+                fail("raw bounded natural grammar")
+            if parts[8] not in {"completed", "interrupted"}:
+                fail("raw completion enum")
+            if parts[9] not in {"none", "proof"}:
+                fail("raw result enum")
+            attempts.append((pos, problem, str(attempt), *parts[5:8]))
+            cursor += 1
+        if cursor >= len(data):
+            fail("raw summary missing")
+        parts = data[cursor].split("|")
+        if parts != ["SUMMARY_BOUNDS", pos, problem, depth, str(count)]:
+            fail("raw summary must immediately follow attempts")
+        cursor += 1
+    if cursor >= len(data) or data[cursor] != "EOF|" + RAW_HEADER:
+        fail("exact raw EOF")
+    if cursor + 1 != len(data):
+        fail("raw record after EOF")
+    return attempts
+
+
+if len(sys.argv) != 3:
+    fail("usage: bounded-ledger raw-ledger")
+bounded = parse_bounded(sys.argv[1])
+raw = parse_raw(sys.argv[2])
+if bounded != raw:
+    fail("bounded/main-raw attempt/read/allocation mismatch")
+print("bounded-v2 exact order/EOF/schema/arithmetic/raw binding: PASS")

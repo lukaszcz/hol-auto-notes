@@ -1,0 +1,51 @@
+84565a8130d05d5d6eeb9882afe6f15bd1be7b3913f3a17116f6c61f4be848e4  src/auto/classical/clasetStep.sig
+0dfccfcffca2a1629a6dd18ebb527d3e628014aa4abd7171cfd8dd1f0b3f4130  src/auto/classical/clasetStep.sml
+0182636ca8c8b32f85a700d9f57743bb158e6254b03c287fa0f462dffb8ba8a5  src/auto/classical/selftest.sml
+289c2b91a2b120ea455ceb1409f03816d024b81e8faf086c21bd2798e8d69985  src/auto/blast/blastReconstruct.sig
+b251c948311b07301ada5f9eb0a43c32043dbc637d605e2d332fe93d1e54afb7  src/auto/blast/blastReconstruct.sml
+2f7ab117ece1fe94edaafd85bcd5c8674d4d26bfcd2372886e593c5a152922d5  src/auto/blast/selftest.sml
+fa1ff03e32c7c3a8f1ba966862ea24e7712ad62230560c332db6bff4f29ec825  .agent-files/PLAN_phase_1_2_green.md
+d249505840acd1464b7b2966d00a82453233c53375fe42e9ffb73067f17ec7d1  .agent-files/benchmarks/m2-claset-force/README.md
+74a1189f248fc7b50dbc583164840149618bd016ad7202028d3bf0b93292d066  .agent-files/benchmarks/m2-claset-force/attempts.tsv
+fdf6063f5adba86f2d0c2b132f7694a5c5a98b246d49384bf0bf9ce85ec9399b  .agent-files/benchmarks/m2-claset-force/blast-selftest.log
+e76c9c4c967a2b46b3c50693eb8ec375e54d51f7d58f6b723a6c99822f357dcc  .agent-files/benchmarks/m2-claset-force/classical-selftest.log
+# Contaminated diagnostic: authoritative ledger plus unknown 07:32 append.
+29e330a50df0548bc539565e611b7e32491f3ecab20effefb819133a400b345a  .agent-files/benchmarks/m2-claset-force/contaminated-appended-process-audit.txt
+0e029de5ee018a109fcb82eac15df255e349452b08e884adb3af899197c2963b  .agent-files/benchmarks/m2-claset-force/environment.txt
+10d113ed3e47f2487b67493988ec63be89fb80208ebd28519f33b4920c270da6  .agent-files/benchmarks/m2-claset-force/fixtures/bad-absent-context-counts.tsv
+6f70628e37ea22812427084d5d7e7eb6d654e9b818fa1004b2b0ea45783574ad  .agent-files/benchmarks/m2-claset-force/fixtures/bad-counter.tsv
+fc5208335356d661aaca3b77cc5bf2e45ad44e5151661347a1220088895306b0  .agent-files/benchmarks/m2-claset-force/fixtures/bad-entry-balance.tsv
+dd2175ccb64b9f737197355052a3fbe5997f3346bb41d70f52d66e68d6e9622f  .agent-files/benchmarks/m2-claset-force/fixtures/bad-global-poll.tsv
+f3f70d62936601e587334638b2567ff04588fba13d56d311d410488726ab1c05  .agent-files/benchmarks/m2-claset-force/fixtures/bad-header.tsv
+7378db1ed2912bff9054874cb35c06bc27d2b922b31822467c36f80f20729e1e  .agent-files/benchmarks/m2-claset-force/fixtures/bad-major-minor.tsv
+c12f929002cd8c235d2f2fd769584f78bdd52ba708746533db24e369cd438da1  .agent-files/benchmarks/m2-claset-force/fixtures/bad-marker-after-stdout.tsv
+a7dc0b515f43b2ee65d429e1bfaacec6f67a1dbae3f255f9b77388ace733fefb  .agent-files/benchmarks/m2-claset-force/fixtures/bad-noncanonical-attempt.tsv
+416075d9d4f0c494fbef3f5795c2b2835232ce0cd71bf62ecde7618436a2d634  .agent-files/benchmarks/m2-claset-force/fixtures/bad-noncanonical-run.tsv
+6f16179e8d63237d9bb6d5ba4502a9dacdaca0952576a35ba27dfff2f5c07406  .agent-files/benchmarks/m2-claset-force/fixtures/bad-noncanonical-status.tsv
+45cda326a78f3d88617ccd261a0d6688bf7ed2bbe85e218387412e319736e185  .agent-files/benchmarks/m2-claset-force/fixtures/bad-outer-current-count.tsv
+e9e013800ca22f4201267e0413be608dbd0ff705c6c837f12e6faea23f0273a1  .agent-files/benchmarks/m2-claset-force/fixtures/bad-partial-context.tsv
+e57c816a8f76e7e656402b128572b8fe1ec18087bc393da8a54274ffcf28cf6d  .agent-files/benchmarks/m2-claset-force/fixtures/bad-prefix.tsv
+274cfe0209cf7da74874204bd6c112396b3809123d3789005c81ff19b16e79e3  .agent-files/benchmarks/m2-claset-force/fixtures/bad-safe-duplicate.tsv
+6e69aaf4327ccaf9ac93c47bd8780b49bb9200a55e05d5bda150e9a57a614a66  .agent-files/benchmarks/m2-claset-force/fixtures/bad-status.tsv
+044831fb56c3d8d4199078ff5bae9bedbe1677c49c67aaeb52f8166031d4c4a1  .agent-files/benchmarks/m2-claset-force/fixtures/bad-stdout.tsv
+77c69ad228125f71d924d43624e92ff7acd749fd0edc1ae204d4ff1261766d86  .agent-files/benchmarks/m2-claset-force/fixtures/bad-stdout-before-attempt.tsv
+fa9c5fc14a8fdb80f80d32a03160920b3d62a96be3c9b578b255f3055eba28cd  .agent-files/benchmarks/m2-claset-force/fixtures/bad-stdout-before-result.tsv
+bb8164204cde70884fabacc2a283609a65f7b208122ac9054fa52a461b348099  .agent-files/benchmarks/m2-claset-force/fixtures/bad-stored-current-count.tsv
+140d72716b3c07d1db3277da7c3c9291d12e9fe40a9ddfd0d1ce4d3a3cfbd69a  .agent-files/benchmarks/m2-claset-force/fixtures/reordered-record.tsv
+8836372a814770897b69fc9ff422d4b4760e89d48053eeb12daa70a39bad9590  .agent-files/benchmarks/m2-claset-force/fixtures/unknown-phase.tsv
+e5439d9d33add4f83d53d51df4d088187fff477742c36f7ede72acbd6e44c191  .agent-files/benchmarks/m2-claset-force/generate-validator-fixture.awk
+9c6f2b44bf3fb4abfe6f743714c9e0bf3a0c273e49591befe465c998ce2746ea  .agent-files/benchmarks/m2-claset-force/integrity.log
+f04bf1a4a07ab9eac8d67fc3b08485681584cdb386c778abd1b260e78c38c094  .agent-files/benchmarks/m2-claset-force/m2clasetforce.sml
+# Later locked replication: explicitly non-authoritative.
+d8bdd0455e02ac097514fbd2bfc72a064018165f28e2ead431b9704d71b8e4e1  .agent-files/benchmarks/m2-claset-force/non-authoritative-replication-process-audit.txt
+4fed35db7847333d65a084630be572d8f57afcd26a4ca12ed5cb3cfe01a3a0ca  .agent-files/benchmarks/m2-claset-force/non-authoritative-replication-status.tsv
+# Authoritative first complete locked-run audit.
+e41ec9a0fde1fe8ff63f3d91461217e1af64329c43907649870a5c0cbe8adcc5  .agent-files/benchmarks/m2-claset-force/process-audit.txt
+d153667316d1896597bcc33e5158799175404d9ca4e3a67432980555cd3381b6  .agent-files/benchmarks/m2-claset-force/raw.tsv
+# Rejected-schema provenance copies of the same authoritative run.
+e41ec9a0fde1fe8ff63f3d91461217e1af64329c43907649870a5c0cbe8adcc5  .agent-files/benchmarks/m2-claset-force/rejected-schema-process-audit.txt
+d153667316d1896597bcc33e5158799175404d9ca4e3a67432980555cd3381b6  .agent-files/benchmarks/m2-claset-force/rejected-schema-raw.tsv
+5ccdd642894b9f92d22fd1c23251b638ce2c96fbb47495636caa12c8e46e7d23  .agent-files/benchmarks/m2-claset-force/run-claset-force.sh
+16888da129c8029faba6d69c506df4f905de3bb9f003ff67569fbed6b145b418  .agent-files/benchmarks/m2-claset-force/schedule.tsv
+a054522f09943a655493e6e9a1812e9c52f148d29c7340fc3dfa4b088718e7a7  .agent-files/benchmarks/m2-claset-force/test-validator.sh
+f210824a8a7d2cf8688877f722222f44fd57d4d99a4ebf114362ae31fb13da9d  .agent-files/benchmarks/m2-claset-force/verify-claset-force.awk

@@ -1,0 +1,90 @@
+Post-boundary-fix authoritative build: reconstructed operation descriptions
+
+The original shell history was not retained.  This document is therefore an
+evidence-backed reconstruction of operations and statuses, not a verbatim
+transcript, command list, or directly runnable procedure.  No line below is
+intended to be pasted into a shell.  The only supported runnable build/test
+procedure is reproduce-post-boundary-build.sh with a fresh output directory.
+
+The reconstruction is based on the retained build/selftest logs,
+source/object hashes, freshness record, and cleaned package state.  No
+timestamp beyond separately retained evidence is added.
+
+Starting-directory description
+
+- Repository root:
+  /home/lukasz/dev/HOL/worktrees/isabelle-tactics
+
+Harness-installation description
+
+- The three package sources m2clasetime.sml, workcalibration.sml, and
+  activecalibration.sml were copied into src/auto/blast and compared equal to
+  their retained package sources.
+- Aggregate supported status: 0.
+
+Temporary-rule description
+
+- The fragment retained in POST_BOUNDARY_FIX_HOLMAKE_RULES.txt was appended
+  to src/auto/blast/Holmakefile.
+- Supported status: 0.
+
+Classical-build description
+
+- Holmake was invoked in src/auto/classical for the selftest.exe target.
+- Complete output is retained in
+  post-boundary-fix-classical-build.log.
+- Supported status: 0.
+
+Initial-harness-build description
+
+- Holmake was invoked in src/auto/blast for the m2clasetime.exe,
+  workcalibration.exe, and activecalibration.exe targets.
+- Complete output is retained in
+  post-boundary-fix-blast-harness-build.log.
+- Supported status: 0.
+
+Forced-blast/harness-rebuild description
+
+- The blastReconstruct UI/UO, blast selftest UI/UO/executable, and the three
+  harness UI/UO/executables were removed before rebuilding.  The dependency
+  rules also caused the downstream tableauLib object to be rebuilt.
+- Holmake was invoked in src/auto/blast for the selftest.exe and all three
+  harness executable targets.
+- Complete output is retained in
+  post-boundary-fix-blast-harness-rebuild.log.
+- Supported status: 0.
+
+Level-2-selftest description
+
+- The classical selftest executable was run with HOLSELFTESTLEVEL=2; complete
+  output is retained in post-boundary-fix-classical-selftest.log.
+- The blast selftest executable was run with HOLSELFTESTLEVEL=2; complete
+  output is retained in post-boundary-fix-blast-selftest.log.
+- Both supported statuses: 0.
+
+Hash/freshness description
+
+- The retained capture covered the changed implementation sources and their
+  UI/UO, test sources/UO/executables, and all harness UO/executables.
+- Classical sources had integer mtime 1784545154 and their final artifacts
+  were later within that second.  Blast reconstruction/test/harness sources
+  had mtime 1784545189; reconstruction UI/UO had 1784545241 and final
+  test/harness artifacts had 1784545317.
+- Supported statuses: 0.
+
+Historical cleanup description
+
+- In the completed historical build, cleanup restored
+  src/auto/blast/Holmakefile and removed temporary harness sources, rules,
+  dependency files, UI/UO, locks, and executables.
+- Supported status: 0.  The retained package state contains no installed
+  harness or temporary rule.
+
+Reproduction-safety note
+
+- That historical in-place cleanup is not the current runnable architecture.
+  The runnable reproducer copies the whole source tree to a fresh outside-repo
+  output and changes only that isolated copy.  It captures every required
+  source/UI/UO/executable chain, including classicalLib and tableauLib, and
+  retains removal/build-start evidence.  This repairs reproduction coverage;
+  it does not invent historical command lines or hashes for the completed run.

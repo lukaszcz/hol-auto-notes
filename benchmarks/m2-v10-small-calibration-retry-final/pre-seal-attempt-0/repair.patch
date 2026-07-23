@@ -1,0 +1,5 @@
+--- pre-seal-attempt-0/full-bodies/Holmakefile
++++ Holmakefile
+@@
+-\tsed -i 's|  task7lcalibration$$|  $(CURDIR)/task7lcalibration|' $@
++\tsed -i 's|  task7lcalibration$$|  /home/lukasz/dev/HOL/worktrees/isabelle-tactics/.agent-files/benchmarks/m2-v10-small-calibration-retry-final/task7lcalibration|' $@

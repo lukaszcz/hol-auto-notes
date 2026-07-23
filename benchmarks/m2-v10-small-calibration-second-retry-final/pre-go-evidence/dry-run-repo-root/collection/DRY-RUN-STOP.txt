@@ -1,0 +1,6 @@
+scoped_seal=passed
+recursive_read_only=passed
+exact_pre_child_endpoint=passed
+collector_invoked=no
+supervisor_invoked=no
+child_invoked=no

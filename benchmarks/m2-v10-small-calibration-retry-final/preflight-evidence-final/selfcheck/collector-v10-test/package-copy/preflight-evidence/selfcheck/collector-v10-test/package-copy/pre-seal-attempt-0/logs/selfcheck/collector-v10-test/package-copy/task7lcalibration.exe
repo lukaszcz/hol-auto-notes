@@ -1,0 +1,4 @@
+#!/bin/sh
+set -e
+/home/lukasz/dev/HOL/worktrees/isabelle-tactics/bin/hol --gcthreads=1 run --holstate=/home/lukasz/dev/HOL/worktrees/isabelle-tactics/bin/hol.state0  /task7lcalibration
+exit 0

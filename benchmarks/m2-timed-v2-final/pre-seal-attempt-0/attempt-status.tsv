@@ -1,0 +1,3 @@
+label	category	started_utc	status	command
+prepare-attempt-0	pre-seal	2026-07-20T20:15:11Z	1	.agent-files/benchmarks/m2-timed-v2-final/prepare-and-freeze.sh
+environment-provenance-child	pre-seal	2026-07-20T20:22:05Z	unobserved	poly --version 2>&1 | sed -n '1p' (hung; child status not separately observed)

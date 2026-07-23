@@ -1,0 +1,14 @@
+HOLDIR = ../../..
+HOLHEAP = $(HOLDIR)/bin/hol.state0
+INCLUDES = $(HOLDIR)/src/auto/rules $(HOLDIR)/src/auto/classical \
+           $(HOLDIR)/src/auto/blast
+
+task7kcalibration.uo: \
+  $(HOLDIR)/src/auto/blast/blastTerm.uo \
+  $(HOLDIR)/src/auto/blast/blastRule.uo \
+  $(HOLDIR)/src/auto/blast/blastSearch.uo \
+  $(HOLDIR)/src/auto/blast/blastReconstruct.uo \
+  $(HOLDIR)/src/auto/blast/tableauLib.uo
+
+task7kcalibration.exe: task7kcalibration.uo
+	$(HOLMOSMLC) -o $@ $<

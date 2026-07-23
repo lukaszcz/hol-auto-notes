@@ -1,0 +1,16 @@
+--- /tmp/isabelle-tactics-task7f-20260720-root/task7m_v10_small_calibration_fresh/pre-seal-attempt-0/full-bodies/before/preflight.sh	2026-07-21 15:10:29.384965808 +0000
++++ /tmp/isabelle-tactics-task7f-20260720-root/task7m_v10_small_calibration_fresh/pre-seal-attempt-0/full-bodies/after/preflight.sh	2026-07-21 15:11:30.693420746 +0000
+@@ -26,11 +26,13 @@
+ run tracked-clean 'git diff --quiet' git -C "$root" diff --quiet
+ run task7k-review-closure \
+   'm2-v10-small-calibration-final-review/verify-closure.sh' \
++  sh \
+   "$root/.agent-files/benchmarks/m2-v10-small-calibration-final-review/verify-closure.sh" \
+   "$root/.agent-files/benchmarks/m2-v10-small-calibration-final-review" \
+   "$scratch/task7k-review"
+ run task7l-review-closure \
+   'm2-v10-small-calibration-retry-final-review/verify-closure.sh' \
++  sh \
+   "$root/.agent-files/benchmarks/m2-v10-small-calibration-retry-final-review/verify-closure.sh" \
+   "$root/.agent-files/benchmarks/m2-v10-small-calibration-retry-final-review" \
+   "$scratch/task7l-review"

@@ -1,0 +1,4 @@
+repetition	problem	depth	mode	outcome	elapsed	attempts	search_counters	reconstruction_signatures
+/home/lukasz/dev/HOL/worktrees/isabelle-tactics/.agent-files/benchmarks/m2-timed-v2/task7gcalibration.sml:57: error: Can't find a fixed record type. Found near #statistics
+/home/lukasz/dev/HOL/worktrees/isabelle-tactics/.agent-files/benchmarks/m2-timed-v2/task7gcalibration.sml:59: error: Can't find a fixed record type. Found near #completion
+/home/lukasz/dev/HOL/worktrees/isabelle-tactics/.agent-files/benchmarks/m2-timed-v2/task7gcalibration.sml:59: error: Can't find a fixed record type. Found near #result

@@ -1,0 +1,3 @@
+driver_status=1
+endpoint_status=0
+requested_signal_status=0

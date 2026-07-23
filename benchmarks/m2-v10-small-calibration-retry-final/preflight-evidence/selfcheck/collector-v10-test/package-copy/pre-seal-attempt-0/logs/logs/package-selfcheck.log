@@ -1,0 +1,3 @@
+supervise-v10: durable status publication failed: injected status_file_fsync failure
+supervise-v10: durable status publication failed: injected status_directory_fsync failure
+collect-v10: artifact_audit: OSError: injected fsync_file_artifact_output failure

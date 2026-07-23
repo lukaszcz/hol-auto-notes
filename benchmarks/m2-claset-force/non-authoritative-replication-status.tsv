@@ -1,0 +1,7 @@
+record	payload
+stdout	1|1|34|7|false|30|reconstruction_interrupted|30.007407|1|3846518|3835238|503|100|100
+status	34|0
+stdout	1|2|41|6|false|30|reconstruction_interrupted|30.002041|3|10778581|9979324|1576|245|645
+status	41|0
+stdout	1|3|45|11|false|30|reconstruction_interrupted|30.028189|1|3827325|3812018|739|237|237
+status	45|0

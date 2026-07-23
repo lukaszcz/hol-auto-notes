@@ -1,0 +1,150 @@
+heap returns values in ascending order ...                                   OK
+heap preserves entries with duplicate keys ...                               OK
+delete_all_min pops every entry with the minimal key ...                     OK
+empty heap operations fail ...                                               OK
+metavariable create bind and walk round-trip ...                             OK
+normalization follows bindings and contracts beta and eta ...                OK
+bind rejects occurs-check and allow-set violations ...                       OK
+stores are persistent ...                                                    OK
+stores reject forged and foreign metavariables ...                           OK
+ground is deterministic and grounds types before terms ...                   OK
+collapse substitutions instantiate kernel theorems ...                       OK
+unifier handles typed first-order cases and occurs checks ...                OK
+types-only unification is integrated and checks occurs ...                   OK
+pattern unification abstracts distinct eigenvariables ...                    OK
+pattern bindings enforce allow sets and distinct spines ...                  OK
+patterns handle explicit scope, multiple arguments and fallback ...          OK
+first-order approximation decomposes only equal arities ...                  OK
+unification compares modulo beta eta normalization ...                       OK
+match mode protects old term and type metavariables ...                      OK
+first-order results agree with FullUnify oracle ...                          OK
+unifier returns one reproducible deterministic solution ...                  OK
+engine intake preserves ordered assumptions ...                              OK
+new assumptions are consed at the front ...                                  OK
+premise children strip only the outer prefix ...                             OK
+elim alternatives delete one positional assumption from every child ...      OK
+node constructors register every declared parameter ...                      OK
+engine size counts atoms and abstractions after substitution ...             OK
+node equality and ordering use canonical alpha rendering ...                 OK
+unrender records eigenvariables introduced by a tactic ...                   OK
+metavariable-free nodes render and lift tactic children ...                  OK
+safe-step cascade reaches each ordered slot with valid evidence ...          OK
+assumption closing uses shared beta-eta equality ...                         OK
+clarify bimatch2 accepts one closing child and rejects branching ...         OK
+match mode skips unfixed safe-rule premise variables ...                     OK
+safe wrappers surround the complete cascade ...                              OK
+safe eq-mp slot closes a matching contradiction ...                          OK
+rule premise stripping keeps explicit negation opaque ...                    OK
+elim lookup dedups tags but keeps positional alternatives ...                OK
+rule validations normalize local theorem hypotheses ...                      OK
+GEN step records its eigenvariable and valid evidence ...                    OK
+SAFE_TAC saturates implication and conjunction in premise order ...          <<HOL warning: clasetRules.extend_decl: Ignoring duplicate safe introduction rule>>
+OK
+CLARIFY_TAC leaves a genuinely branching conjunction intact ...              <<HOL warning: clasetRules.extend_decl: Ignoring duplicate safe introduction rule>>
+OK
+public step tactics perform one valid step ...                               OK
+safe and clarify tactics fail exactly when nothing changes ...               OK
+an unmarked extra theorem is unsafe, not a SAFE_TAC rule ...                 OK
+per-invocation claset changes never leak ...                                 OK
+safe cascade slot 1 closes by assumption with exact residue ...              OK
+safe cascade slot 2 performs modus ponens before later slots ...             OK
+safe cascade slot 3 applies a safe zero-premise rule ...                     OK
+DISCH occupies the built-in position before hyp substitution ...             OK
+GEN occupies the built-in position before hyp substitution ...               OK
+safe cascade slot 4 saturates hypothesis substitution ...                    OK
+safe cascade slot 5 applies a positive-premise safe rule ...                 OK
+CLARIFY accepts weight 1 and asserts its exact residue ...                   OK
+CLARIFY rejects rules of weight 3 ...                                        OK
+CLARIFY bimatch2 closes the left branch exactly ...                          OK
+CLARIFY bimatch2 closes the right branch exactly ...                         OK
+CLARIFY bimatch2 accepts a matching-contradiction branch ...                 OK
+CLARIFY leaves an unclosable conjunction conclusion untouched ...            <<HOL warning: clasetRules.extend_decl: Ignoring duplicate safe introduction rule>>
+OK
+seed SAFE_TAC splits conjunctions with exact residues ...                    OK
+seed SAFE_TAC eliminates a conjunctive assumption exactly ...                OK
+seed SAFE_TAC handles universal introduction and implication ...             OK
+seed SAFE_TAC applies safe disjunction introduction exactly ...              OK
+seed SAFE_TAC never applies unsafe universal elimination ...                 OK
+seed SAFE_TAC never instantiates EXISTS_INTRO_THM ...                        OK
+D27 exposes raw no-change behavior through TRY ...                           OK
+classical marker vocabulary is consumed and generic tags pass ...            OK
+generic Excl passes through without deleting a seed rule ...                 OK
+Del is consumed and removes a seed rule for one invocation ...               OK
+safe wrappers compose newest innermost with ORELSE commitment ...            OK
+hyp-subst saturates a chain in one safe step ...                             OK
+hyp-subst refuses both orientations of an occurs-check cycle ...             OK
+hyp-subst deletes reflexive equalities ...                                   OK
+hyp-subst keeps HOL4 positive and negative bool-atom extras ...              OK
+unify rule application leaves and records a witness metavariable ...         OK
+inst0 assumption unifies the goal with an assumption ...                     OK
+inst0 APPEND keeps assumption then contradiction alternatives ...            OK
+slow_step APPEND keeps unsafe alternatives after inst_step ...               OK
+metavariable hyp-subst eliminates only the rigid variable side ...           OK
+step saturates every safe goal before its selected unsafe rung ...           OK
+depth_step selects duplicate versus consuming unsafe rules ...               OK
+measured exact rules preserve intro and elim sequence order ...              OK
+measured exact-rule cutoff reports the precise deep boundary ...             OK
+measured exact-rule callbacks preserve exception identity ...                OK
+measured exact-rule observations and outputs are deterministic ...           OK
+match-mode derivation grounds and replays without search ...                 OK
+unify-mode witness is grounded before zero-search replay ...                 OK
+grounded scripts and substitutions are deterministic ...                     OK
+assumption replay recovers only through its recorded action ...              OK
+move-assumption-to-back validates and round-trips ...                        OK
+corrupt replay is a catchable outcome ...                                    OK
+metavariable wrapper round-trips and replays its validation ...              OK
+wrapper cannot introduce a marked free it did not receive ...                OK
+unrender rejects an unreceived marked type variable ...                      OK
+DEPTH_FIRST is lazy, depth-first, and suppresses duplicate solutions ...     OK
+BEST_FIRST orders by size and eagerly drains child sequences ...             OK
+BEST_FIRST delete_all_min expands an equal node only once ...                OK
+ASTAR uses size plus five times level and LIFO equal costs ...               OK
+ASTAR suppresses the first equal-cost duplicate ...                          OK
+DEEPEN restarts and commits to its first successful bound ...                OK
+BEST_FIRST node counter stops a runaway frontier cleanly ...                 OK
+swapped implication and universal builtins are valid safe steps ...          OK
+FAST_TAC Pelletier 1 ...                                                     OK
+FAST_TAC Pelletier 2 ...                                                     OK
+FAST_TAC Pelletier 3 ...                                                     OK
+FAST_TAC Pelletier 4 ...                                                     OK
+FAST_TAC Pelletier 5 ...                                                     OK
+FAST_TAC Pelletier 6 ...                                                     OK
+FAST_TAC Pelletier 7 ...                                                     OK
+FAST_TAC Pelletier 8 ...                                                     OK
+FAST_TAC Pelletier 9 ...                                                     OK
+FAST_TAC Pelletier 10 ...                                                    OK
+FAST_TAC Pelletier 11 ...                                                    OK
+FAST_TAC Pelletier 12 ...                                                    OK
+FAST_TAC Pelletier 13 ...                                                    OK
+FAST_TAC Pelletier 14 ...                                                    OK
+FAST_TAC Pelletier 15 ...                                                    OK
+FAST_TAC Pelletier 16 ...                                                    OK
+FAST_TAC Pelletier 17 ...                                                    OK
+FAST_TAC Pelletier 24 ...                                                    OK
+FAST_TAC Pelletier 26 ...                                                    OK
+FAST_TAC Pelletier 28 ...                                                    OK
+FAST_TAC Pelletier solved-goal count ...                                     OK
+D25 prunes alternatives whose bindings cannot reach a sibling ...            OK
+D25 retains alternatives that bind a sibling metavariable ...                OK
+D25 does not mistake a solved later sibling for the active goal ...          OK
+classical trace levels report summaries and full candidates ...              OK
+FAST_TAC instantiates a witness and replays the solution ...                 OK
+single engine step drivers replay their resulting nodes ...                  OK
+DEEPEN supports a raised programmatic start beyond four ...                  OK
+DEEPEN saturates safe siblings before bounded search ...                     OK
+all solve-completely drivers fail cleanly on a non-theorem ...               OK
+frontier drivers replay Tactical.VALID-checked solutions ...                 OK
+all drivers reject capture by a later eigenvariable ...                      OK
+all drivers reject the dual quantifier interchange ...                       OK
+all drivers reject capture from a sibling-local parameter ...                OK
+every complete driver success passes Tactical.VALID replay ...               OK
+grounded driver theorems are deterministic across identical runs ...         OK
+D24 metavariable wrapper round-trips through a complete driver ...           OK
+SLOW backtracks past the instantiation rung that commits FAST ...            OK
+BEST driver expands the smaller child before an earlier large one ...        OK
+DEEPEN accounting leaves safe steps and inst0 free ...                       OK
+DEEPEN charges exactly one for an unsafe witness step ...                    OK
+DEEPEN charges exactly one for a duplicating elimination ...                 OK
+D25 negative case retains shared alternatives in the driver ...              OK
+blast hyp-subst skips unsuitable equations and stably reorders ...           OK
+blast hyp-subst does not beta-normalize equality orientation ...             OK

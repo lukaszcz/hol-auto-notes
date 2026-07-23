@@ -1,0 +1,23 @@
+path	sha256	size	mtime_ns	frozen_copy
+PREDECLARATION.md	985ba406bf0e0856060fc5e68d28ba44b191a00d7c8085d5b8f2cca02ccd983f	4201	2026-07-20 19:16:21.722374788 +0000	frozen-inputs/PREDECLARATION.md
+PRE_FREEZE_REPAIR.md	9d638893324b1ec1c6aa170561c10e3da26a8be6150fafbc26b87c9fb1278963	1129	2026-07-20 19:28:55.491812068 +0000	frozen-inputs/PRE_FREEZE_REPAIR.md
+Holmakefile	3a28a3a6c8f7a5e3399ab9f8ff4cffb7b14e173d9fd3444e78e1290150dbad46	630	2026-07-20 19:12:09.091252138 +0000	frozen-inputs/Holmakefile
+task7gmeasurement.sml	6379a1c69b9e2bb87576e2dd9a9580c0a3881cd77ad0fc39d8f1a42440beeec8	12000	2026-07-20 19:12:09.092320202 +0000	frozen-inputs/task7gmeasurement.sml
+task7gcalibration.sml	9c2584a7878782a07911a26abefdb409fb3cd689911da5d3ec097f40eeeb9220	4425	2026-07-20 19:12:09.093366781 +0000	frozen-inputs/task7gcalibration.sml
+task7gactive.sml	a8b195fc710e4b1eb7702fc7abc04241e0887b12283c482415eb565f8b66e90b	2422	2026-07-20 19:12:09.094393614 +0000	frozen-inputs/task7gactive.sml
+schedule.tsv	f5b1cdc6231bfb55de30aab4c988bc176e2e0c0a86301fc7195859a850f22030	119	2026-07-20 19:12:09.095394015 +0000	frozen-inputs/schedule.tsv
+calibration-schedule.tsv	9e416fe5841b149c3086411b3419a5d287bda9bf818aed1cb47ce72b283682d1	219	2026-07-20 19:12:09.096373828 +0000	frozen-inputs/calibration-schedule.tsv
+active-calibration-schedule.tsv	81295e1c09a0c8fd5a046bea248cb2b1535ab1d37676b3daba33b8592f499f53	280	2026-07-20 19:12:09.097319072 +0000	frozen-inputs/active-calibration-schedule.tsv
+prepare-and-freeze.sh	1f240fa8cbb6ab4b88d38c63a4877a9f0c600bdf6fcad912b6920d0872ce4810	4110	2026-07-20 19:28:55.422813767 +0000	frozen-inputs/prepare-and-freeze.sh
+collect-locked.sh	d599e839f45ed71e1f9093c66822d5bb2a1f6f9df45db9216bf98e4b9980b31f	7289	2026-07-20 19:20:38.403056109 +0000	frozen-inputs/collect-locked.sh
+run-target.sh	263e41467fc450263d9d090ac3ab6473d48f2c539f3e94306bbcd3aea516cfae	363	2026-07-20 19:19:04.345371644 +0000	frozen-inputs/run-target.sh
+artifact-manifest.sh	2983d3c6b6a10b7e579f68b95124dfe0f13157eff6a38447d74125ea2b8bd065	2113	2026-07-20 19:28:55.352815491 +0000	frozen-inputs/artifact-manifest.sh
+validate-calibration.awk	090d549ec3358852cc81038feae3adf95c918612821fa5e28e08142820c528df	4664	2026-07-20 19:17:03.140354733 +0000	frozen-inputs/validate-calibration.awk
+verify-target.awk	9d501a563c99ba609a6f55147566f5ba25953e7f3d3b9cbff020d37673fd87d7	9418	2026-07-20 19:14:14.917498203 +0000	frozen-inputs/verify-target.awk
+generate-synthetic.awk	57a9e95bf2a90fd1d09dd6869d5557ef5a02bb7fb060ef9a287029355dc8c975	3053	2026-07-20 19:15:15.584003982 +0000	frozen-inputs/generate-synthetic.awk
+mutate-fixture.awk	cfce5f47b9cf70633a686fb7eda8510de17bb3cf9ad1fe39f19eb63dac9aa241	2155	2026-07-20 19:17:36.427534959 +0000	frozen-inputs/mutate-fixture.awk
+test-validators.sh	0e847f85f38aef678a72adc6c3794297bb4f6743c2777632bd3b2eb0b52f252c	4484	2026-07-20 19:16:21.656376414 +0000	frozen-inputs/test-validators.sh
+summarize-calibration.awk	3d52eb9b6465cfe1cb78e78cda04a0846d8fb2859d20bbe3fa47c5bb21d758a6	1028	2026-07-20 19:12:09.098266059 +0000	frozen-inputs/summarize-calibration.awk
+summarize-target.awk	987bc1fd86f95305d32854753500a7bbc09436abf49f2fa024f6deed2bf1167d	1973	2026-07-20 19:12:09.099150819 +0000	frozen-inputs/summarize-target.awk
+verify-summaries.sh	28c5c4afc0863f8a1ae2d240b2ee09202d8bf0c9347eb81eca7125908b9ba54c	663	2026-07-20 19:16:21.588378088 +0000	frozen-inputs/verify-summaries.sh
+selfcheck.sh	61457049688221331e2adbe79e2b2e3cd6907f8462ef519fa32b030e61cd75a2	2110	2026-07-20 19:20:38.474054360 +0000	frozen-inputs/selfcheck.sh

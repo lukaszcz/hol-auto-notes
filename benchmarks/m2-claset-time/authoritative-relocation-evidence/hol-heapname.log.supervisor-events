@@ -1,0 +1,4 @@
+supervisor_start pid=2430606 cwd=/var/tmp/final-authoritative-relocation-ptrace/worktree/.
+command_group_start leader=2430611 pgid=2430611
+command_group_gone pgid=2430611 result=PASS
+command_exit raw_status=0 normalized_status=0

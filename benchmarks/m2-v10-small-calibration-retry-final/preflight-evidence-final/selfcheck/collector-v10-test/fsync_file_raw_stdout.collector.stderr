@@ -1,0 +1,1 @@
+collect-v10: raw_durable_publication: OSError: injected fsync_file_raw_stdout failure

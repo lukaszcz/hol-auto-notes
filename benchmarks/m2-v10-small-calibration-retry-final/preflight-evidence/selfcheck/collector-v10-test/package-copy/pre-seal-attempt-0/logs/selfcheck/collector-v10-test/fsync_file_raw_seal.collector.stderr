@@ -1,0 +1,1 @@
+collect-v10: raw_seal: OSError: injected fsync_file_raw_seal failure

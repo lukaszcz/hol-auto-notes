@@ -1,0 +1,7 @@
+terminal_output=^C
+outer_status=1
+seal_plan=absent
+inputs_sha256=absent
+input_manifest=absent
+artifact_manifest=absent
+timing_rows=absent

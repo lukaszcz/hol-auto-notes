@@ -1,0 +1,10 @@
+head	244b01d7189ac803df48e246a483c33b553e3daa
+index_clean	0
+tracked_worktree_clean	0
+agent_files_tracked_count	0
+ignore_rule	.gitignore:147:.agent-files	.agent-files
+final_process_audit	matches=none 
+live_package_build_artifacts	0
+source_build_artifacts	0
+cache_residue_count	0
+frozen_harness_note	retained exact precollection evidence under frozen-inputs

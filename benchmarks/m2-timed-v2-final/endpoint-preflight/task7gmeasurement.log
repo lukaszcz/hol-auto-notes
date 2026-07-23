@@ -1,0 +1,6 @@
+name=task7gmeasurement
+pattern=[t]ask7gmeasurement
+wrapper_pid=501
+child_pid=502
+501 /tmp/isabelle-tactics-task7f-20260720-root/task7g-measure-final-fix/endpoint-preflight/wrapper-task7gmeasurement 30
+502 /tmp/isabelle-tactics-task7f-20260720-root/task7g-measure-final-fix/endpoint-preflight/bin/hol --gcthreads=1 task7gmeasurement 30

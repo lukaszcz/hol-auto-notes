@@ -1,0 +1,18 @@
++ set -eu
++ scratch=/tmp/isabelle-tactics-task7f-20260720-root/task7h-measure/endpoint-debug
++ mkdir -p /tmp/isabelle-tactics-task7f-20260720-root/task7h-measure/endpoint-debug
++ check_pattern task7hcalibration '[t]ask7gcalibration'
++ name=task7hcalibration
++ pattern='[t]ask7gcalibration'
++ wrapper=/tmp/isabelle-tactics-task7f-20260720-root/task7h-measure/endpoint-debug/wrapper-task7hcalibration
++ child=/tmp/isabelle-tactics-task7f-20260720-root/task7h-measure/endpoint-debug/child-task7hcalibration
++ ln -sf /bin/sleep /tmp/isabelle-tactics-task7f-20260720-root/task7h-measure/endpoint-debug/wrapper-task7hcalibration
++ ln -sf /bin/sleep /tmp/isabelle-tactics-task7f-20260720-root/task7h-measure/endpoint-debug/child-task7hcalibration
++ wrapper_pid=45
++ /tmp/isabelle-tactics-task7f-20260720-root/task7h-measure/endpoint-debug/wrapper-task7hcalibration 30
++ child_pid=46
++ trap 'kill "$wrapper_pid" "$child_pid" 2>/dev/null || true; wait "$wrapper_pid" "$child_pid" 2>/dev/null || true' RETURN
++ sleep 0.1
++ bash -c 'exec -a "$1/bin/hol --gcthreads=1 task7hcalibration" /bin/sleep 30' bash /tmp/isabelle-tactics-task7f-20260720-root/task7h-measure/endpoint-debug
+++ pgrep -af '[t]ask7gcalibration'
++ matches=

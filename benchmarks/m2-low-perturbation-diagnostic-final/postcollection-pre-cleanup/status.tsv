@@ -1,0 +1,12 @@
+label	status	command
+scoped-seal	0	verify-go-seal final postcollection
+recursive-read-only	0	audit-read-only final postcollection
+exact-endpoint	0	endpoint-audit exact final postcollection
+closed-validator	0	validate results with collection/reference
+raw-seal	0	sha256sum -c raw.tsv.sha256
+driver-machine-status	0	driver status/endpoint exact zeros
+child-driver-statuses	0	ten ordered zero driver statuses
+no-stop-ledger	0	STOPPED.tsv absent
+head	0	git rev-parse HEAD
+index-clean	0	git diff --cached --quiet
+tracked-clean	0	git diff --quiet

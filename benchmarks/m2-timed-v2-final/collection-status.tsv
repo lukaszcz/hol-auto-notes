@@ -1,0 +1,45 @@
+label	category	started_utc	status	command
+input-verification	identity	2026-07-20T20:37:01Z	0	sha256sum -c INPUTS.sha256 (live inputs and frozen full bodies)
+representative-pre-artifacts	identity	2026-07-20T20:37:01Z	0	artifact-manifest.sh representative-pre-artifacts.tsv; cmp ARTIFACTS-FROZEN.tsv
+representative-pre-processes	process-audit	2026-07-20T20:37:03Z	0	pgrep -af '[t]ask7gcalibration'
+representative-1	representative-process	2026-07-20T20:37:03Z	0	cd /home/lukasz/dev/HOL/worktrees/isabelle-tactics/.agent-files/benchmarks/m2-timed-v2-final && env T7G_REPETITION=1 T7G_PROBLEM=38 T7G_DEPTH=4 T7G_MODE=v1 ./task7gcalibration.exe
+representative-2	representative-process	2026-07-20T20:37:12Z	0	cd /home/lukasz/dev/HOL/worktrees/isabelle-tactics/.agent-files/benchmarks/m2-timed-v2-final && env T7G_REPETITION=1 T7G_PROBLEM=38 T7G_DEPTH=4 T7G_MODE=v2 ./task7gcalibration.exe
+representative-3	representative-process	2026-07-20T20:37:21Z	0	cd /home/lukasz/dev/HOL/worktrees/isabelle-tactics/.agent-files/benchmarks/m2-timed-v2-final && env T7G_REPETITION=1 T7G_PROBLEM=43 T7G_DEPTH=5 T7G_MODE=v1 ./task7gcalibration.exe
+representative-4	representative-process	2026-07-20T20:37:41Z	0	cd /home/lukasz/dev/HOL/worktrees/isabelle-tactics/.agent-files/benchmarks/m2-timed-v2-final && env T7G_REPETITION=1 T7G_PROBLEM=43 T7G_DEPTH=5 T7G_MODE=v2 ./task7gcalibration.exe
+representative-5	representative-process	2026-07-20T20:38:00Z	0	cd /home/lukasz/dev/HOL/worktrees/isabelle-tactics/.agent-files/benchmarks/m2-timed-v2-final && env T7G_REPETITION=2 T7G_PROBLEM=43 T7G_DEPTH=5 T7G_MODE=v2 ./task7gcalibration.exe
+representative-6	representative-process	2026-07-20T20:38:20Z	0	cd /home/lukasz/dev/HOL/worktrees/isabelle-tactics/.agent-files/benchmarks/m2-timed-v2-final && env T7G_REPETITION=2 T7G_PROBLEM=43 T7G_DEPTH=5 T7G_MODE=v1 ./task7gcalibration.exe
+representative-7	representative-process	2026-07-20T20:38:40Z	0	cd /home/lukasz/dev/HOL/worktrees/isabelle-tactics/.agent-files/benchmarks/m2-timed-v2-final && env T7G_REPETITION=2 T7G_PROBLEM=38 T7G_DEPTH=4 T7G_MODE=v2 ./task7gcalibration.exe
+representative-8	representative-process	2026-07-20T20:38:49Z	0	cd /home/lukasz/dev/HOL/worktrees/isabelle-tactics/.agent-files/benchmarks/m2-timed-v2-final && env T7G_REPETITION=2 T7G_PROBLEM=38 T7G_DEPTH=4 T7G_MODE=v1 ./task7gcalibration.exe
+representative-9	representative-process	2026-07-20T20:38:57Z	0	cd /home/lukasz/dev/HOL/worktrees/isabelle-tactics/.agent-files/benchmarks/m2-timed-v2-final && env T7G_REPETITION=3 T7G_PROBLEM=38 T7G_DEPTH=4 T7G_MODE=v1 ./task7gcalibration.exe
+representative-10	representative-process	2026-07-20T20:39:06Z	0	cd /home/lukasz/dev/HOL/worktrees/isabelle-tactics/.agent-files/benchmarks/m2-timed-v2-final && env T7G_REPETITION=3 T7G_PROBLEM=38 T7G_DEPTH=4 T7G_MODE=v2 ./task7gcalibration.exe
+representative-11	representative-process	2026-07-20T20:39:15Z	0	cd /home/lukasz/dev/HOL/worktrees/isabelle-tactics/.agent-files/benchmarks/m2-timed-v2-final && env T7G_REPETITION=3 T7G_PROBLEM=43 T7G_DEPTH=5 T7G_MODE=v1 ./task7gcalibration.exe
+representative-12	representative-process	2026-07-20T20:39:35Z	0	cd /home/lukasz/dev/HOL/worktrees/isabelle-tactics/.agent-files/benchmarks/m2-timed-v2-final && env T7G_REPETITION=3 T7G_PROBLEM=43 T7G_DEPTH=5 T7G_MODE=v2 ./task7gcalibration.exe
+representative-post-artifacts	identity	2026-07-20T20:39:55Z	0	artifact-manifest.sh representative-post-artifacts.tsv; cmp ARTIFACTS-FROZEN.tsv
+representative-post-processes	process-audit	2026-07-20T20:39:56Z	0	pgrep -af '[t]ask7gcalibration'
+active-pre-artifacts	identity	2026-07-20T20:39:56Z	0	artifact-manifest.sh active-pre-artifacts.tsv; cmp ARTIFACTS-FROZEN.tsv
+active-pre-processes	process-audit	2026-07-20T20:39:58Z	0	pgrep -af '[t]ask7gactive'
+active-1	active-process	2026-07-20T20:39:58Z	0	cd /home/lukasz/dev/HOL/worktrees/isabelle-tactics/.agent-files/benchmarks/m2-timed-v2-final && env T7G_REPETITION=1 T7G_BATCH=1000 T7G_MODE=v1 ./task7gactive.exe
+active-2	active-process	2026-07-20T20:40:05Z	0	cd /home/lukasz/dev/HOL/worktrees/isabelle-tactics/.agent-files/benchmarks/m2-timed-v2-final && env T7G_REPETITION=1 T7G_BATCH=1000 T7G_MODE=v2 ./task7gactive.exe
+active-3	active-process	2026-07-20T20:40:12Z	0	cd /home/lukasz/dev/HOL/worktrees/isabelle-tactics/.agent-files/benchmarks/m2-timed-v2-final && env T7G_REPETITION=2 T7G_BATCH=1000 T7G_MODE=v2 ./task7gactive.exe
+active-4	active-process	2026-07-20T20:40:19Z	0	cd /home/lukasz/dev/HOL/worktrees/isabelle-tactics/.agent-files/benchmarks/m2-timed-v2-final && env T7G_REPETITION=2 T7G_BATCH=1000 T7G_MODE=v1 ./task7gactive.exe
+active-5	active-process	2026-07-20T20:40:27Z	0	cd /home/lukasz/dev/HOL/worktrees/isabelle-tactics/.agent-files/benchmarks/m2-timed-v2-final && env T7G_REPETITION=3 T7G_BATCH=1000 T7G_MODE=v1 ./task7gactive.exe
+active-6	active-process	2026-07-20T20:40:34Z	0	cd /home/lukasz/dev/HOL/worktrees/isabelle-tactics/.agent-files/benchmarks/m2-timed-v2-final && env T7G_REPETITION=3 T7G_BATCH=1000 T7G_MODE=v2 ./task7gactive.exe
+active-7	active-process	2026-07-20T20:40:41Z	0	cd /home/lukasz/dev/HOL/worktrees/isabelle-tactics/.agent-files/benchmarks/m2-timed-v2-final && env T7G_REPETITION=4 T7G_BATCH=1000 T7G_MODE=v2 ./task7gactive.exe
+active-8	active-process	2026-07-20T20:40:49Z	0	cd /home/lukasz/dev/HOL/worktrees/isabelle-tactics/.agent-files/benchmarks/m2-timed-v2-final && env T7G_REPETITION=4 T7G_BATCH=1000 T7G_MODE=v1 ./task7gactive.exe
+active-9	active-process	2026-07-20T20:40:56Z	0	cd /home/lukasz/dev/HOL/worktrees/isabelle-tactics/.agent-files/benchmarks/m2-timed-v2-final && env T7G_REPETITION=5 T7G_BATCH=1000 T7G_MODE=v1 ./task7gactive.exe
+active-10	active-process	2026-07-20T20:41:03Z	0	cd /home/lukasz/dev/HOL/worktrees/isabelle-tactics/.agent-files/benchmarks/m2-timed-v2-final && env T7G_REPETITION=5 T7G_BATCH=1000 T7G_MODE=v2 ./task7gactive.exe
+active-post-artifacts	identity	2026-07-20T20:41:10Z	0	artifact-manifest.sh active-post-artifacts.tsv; cmp ARTIFACTS-FROZEN.tsv
+active-post-processes	process-audit	2026-07-20T20:41:12Z	0	pgrep -af '[t]ask7gactive'
+calibration-validator	validator	2026-07-20T20:41:12Z	0	validate-calibration.awk calibration-raw active-calibration-raw frozen schedules
+target-pre-artifacts	identity	2026-07-20T20:41:12Z	0	artifact-manifest.sh target-pre-artifacts.tsv; cmp ARTIFACTS-FROZEN.tsv
+target-pre-processes	process-audit	2026-07-20T20:41:13Z	0	pgrep -af '[t]ask7gmeasurement'
+target-1-process	target-process	2026-07-20T20:41:13Z	0	run-target.sh T7G_POSITION=1 T7G_PROBLEM=34 T7G_DEPTH=7 T7G_BUDGET_SECONDS=30 ./task7gmeasurement.exe
+target-1-watchdog	target-watchdog	2026-07-20T20:41:13Z	0	timeout 60s run-target.sh 1 34 7 30
+target-2-process	target-process	2026-07-20T20:41:51Z	0	run-target.sh T7G_POSITION=2 T7G_PROBLEM=41 T7G_DEPTH=6 T7G_BUDGET_SECONDS=30 ./task7gmeasurement.exe
+target-2-watchdog	target-watchdog	2026-07-20T20:41:51Z	0	timeout 60s run-target.sh 2 41 6 30
+target-3-process	target-process	2026-07-20T20:42:28Z	0	run-target.sh T7G_POSITION=3 T7G_PROBLEM=45 T7G_DEPTH=11 T7G_BUDGET_SECONDS=30 ./task7gmeasurement.exe
+target-3-watchdog	target-watchdog	2026-07-20T20:42:28Z	0	timeout 60s run-target.sh 3 45 11 30
+target-post-artifacts	identity	2026-07-20T20:43:05Z	0	artifact-manifest.sh target-post-artifacts.tsv; cmp ARTIFACTS-FROZEN.tsv
+target-post-processes	process-audit	2026-07-20T20:43:07Z	0	pgrep -af '[t]ask7gmeasurement'
+target-validator	validator	2026-07-20T20:43:07Z	0	verify-target.awk raw.tsv
+summary-validator	validator	2026-07-20T20:43:07Z	0	verify-summaries.sh fresh raw and summaries

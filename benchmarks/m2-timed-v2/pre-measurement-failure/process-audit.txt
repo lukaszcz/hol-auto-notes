@@ -1,0 +1,5 @@
+lock=/tmp/isabelle-tactics-task7f-20260720-root/task7g-measure/schedule.lock
+acquired=2026-07-20T18:18:25Z
+owner_pid=3
+endpoint_command=pgrep -af '[t]ask7gmeasurement'
+pre_matches=none

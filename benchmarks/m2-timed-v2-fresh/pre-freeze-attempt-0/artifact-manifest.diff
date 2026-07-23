@@ -1,0 +1,25 @@
+--- .agent-files/benchmarks/m2-timed-v2-fresh/pre-freeze-attempt-0/frozen-inputs/artifact-manifest.sh	2026-07-20 19:27:50.345588184 +0000
++++ .agent-files/benchmarks/m2-timed-v2-fresh/artifact-manifest.sh	2026-07-20 19:28:55.352815491 +0000
+@@ -6,16 +6,16 @@
+ paths="
+ src/auto/classical/clasetUnify.sig
+ src/auto/classical/clasetUnify.sml
+-src/auto/classical/clasetUnify.ui
+-src/auto/classical/clasetUnify.uo
++src/auto/classical/.hol/objs/clasetUnify.ui
++src/auto/classical/.hol/objs/clasetUnify.uo
+ src/auto/classical/clasetStep.sig
+ src/auto/classical/clasetStep.sml
+-src/auto/classical/clasetStep.ui
+-src/auto/classical/clasetStep.uo
++src/auto/classical/.hol/objs/clasetStep.ui
++src/auto/classical/.hol/objs/clasetStep.uo
+ src/auto/blast/blastReconstruct.sig
+ src/auto/blast/blastReconstruct.sml
+-src/auto/blast/blastReconstruct.ui
+-src/auto/blast/blastReconstruct.uo
++src/auto/blast/.hol/objs/blastReconstruct.ui
++src/auto/blast/.hol/objs/blastReconstruct.uo
+ .agent-files/benchmarks/m2-timed-v2-fresh/task7gcalibration.sml
+ .agent-files/benchmarks/m2-timed-v2-fresh/.hol/objs/task7gcalibration.ui
+ .agent-files/benchmarks/m2-timed-v2-fresh/.hol/objs/task7gcalibration.uo

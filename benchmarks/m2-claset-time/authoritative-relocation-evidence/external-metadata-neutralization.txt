@@ -1,0 +1,6 @@
+metadata path=.codex action=remove symlink_count=1
+removed_link path=.codex/skills/hol4 target=/home/lukasz/alan/skills/hol4
+metadata path=.pi action=remove symlink_count=1
+removed_link path=.pi/skills/hol4 target=/home/lukasz/alan/skills/hol4
+metadata path=.claude action=remove symlink_count=1
+removed_link path=.claude/skills/hol4 target=/home/lukasz/alan/skills/hol4

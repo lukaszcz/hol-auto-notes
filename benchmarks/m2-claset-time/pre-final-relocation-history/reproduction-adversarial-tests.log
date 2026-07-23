@@ -1,0 +1,9 @@
+Historical fix8c synthetic suite (non-authoritative)
+====================================================
+
+Archived from the former package-root summary.  It reported 15 passing cases
+at `/tmp/task7f-final-synthetic-suite-3`, but HUP/INT/TERM and repeated TERM
+were sent directly to the Python supervisor rather than to the full outer
+reproducer's published shell PID.  It therefore cannot establish current
+outer signal forwarding or conventional outer exit statuses.
+

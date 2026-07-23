@@ -1,0 +1,13 @@
+--- frozen-inputs/supervise.py
++++ proposed-next-diagnostic/supervise.py
+@@
+-    gone = group_gone(pgid)
++    # The leader can reap after TERM while another group member is still
++    # exiting. Grace and escalation must govern the group, not only leader.
++    deadline = time.monotonic() + args.grace
++    while not group_gone(pgid) and time.monotonic() < deadline:
++        time.sleep(0.01)
++    if not group_gone(pgid):
++        os.killpg(pgid, signal.SIGKILL)
++        kill_sent = True
++    gone = group_gone(pgid)

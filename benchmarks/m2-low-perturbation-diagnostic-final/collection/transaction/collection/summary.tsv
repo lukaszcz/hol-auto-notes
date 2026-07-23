@@ -1,0 +1,9 @@
+mode	median_external	minimum_external	maximum_external
+Z	0.511189289	0.509745717	0.511828761
+N	6.090917808	6.082526315	6.103101928
+metric	value
+net_N_minus_Z	5.579728519
+task7m_D_minus_C	5.300872114
+net_over_task7m	1.052606
+consistency_band	[0.80,1.20]
+classification	consistent

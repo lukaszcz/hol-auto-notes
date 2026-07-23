@@ -1,0 +1,7 @@
+label	category	started_utc	status	command
+post-root-index-clean	identity	2026-07-20T20:46:56Z	0	git diff --cached --quiet
+post-source-worktree-clean	identity	2026-07-20T20:46:56Z	0	git diff --quiet -- src/auto
+post-agent-index-clean	identity	2026-07-20T20:46:56Z	0	git -C .agent-files diff --cached --quiet
+prechecksum-readonly-selfcheck	validator	2026-07-20T20:46:56Z	0	selfcheck.sh mandated/prechecksum-selfcheck; internal package before/after manifests identical
+historical-banner-hashes	identity	2026-07-20T20:46:56Z	0	sha256sum every path in HISTORICAL_BANNER_HASHES.tsv
+plan-derived-from-final-raw	bookkeeping	2026-07-20T20:46:56Z	0	PLAN_phase_1_2_green.md updated from final calibration-summary.tsv and target-summary.tsv only

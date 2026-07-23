@@ -1,0 +1,6 @@
+name=task7gcalibration
+pattern=[t]ask7gcalibration
+wrapper_pid=470
+child_pid=471
+470 /tmp/isabelle-tactics-task7f-20260720-root/task7g-measure-final-fix/endpoint-preflight/wrapper-task7gcalibration 30
+471 /tmp/isabelle-tactics-task7f-20260720-root/task7g-measure-final-fix/endpoint-preflight/bin/hol --gcthreads=1 task7gcalibration 30

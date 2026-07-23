@@ -1,0 +1,10 @@
+supervisor_started
+supervisor_wait_complete
+finalizer_enter
+raw_durable_publication
+raw_seal
+artifact_audit
+process_audit
+terminal_status_boundary
+final_status_publication
+final_status

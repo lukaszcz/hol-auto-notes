@@ -1,0 +1,6 @@
+revision=244b01d7189ac803df48e246a483c33b553e3daa
+commit=244b01d7189ac803df48e246a483c33b553e3daa 1784611156 Łukasz Czajka <lukaszcz@mimuw.edu.pl>
+scratch=/tmp/isabelle-tactics-task7f-20260720-root/task7j_v4_measure_fresh
+clock=Time.now
+process_option=--gcthreads=1
+heap=bin/hol.state0

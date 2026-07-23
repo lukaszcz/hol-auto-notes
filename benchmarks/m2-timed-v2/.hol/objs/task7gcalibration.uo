@@ -1,0 +1,13 @@
+$(HOLDIR)/.agent-files/benchmarks/m2-timed-v2/task7gcalibration
+$(HOLDIR)/sigobj/HolKernel
+$(HOLDIR)/sigobj/Overlay
+$(HOLDIR)/sigobj/Parse
+$(HOLDIR)/sigobj/boolSyntax
+$(HOLDIR)/src/auto/blast/blastReconstruct
+$(HOLDIR)/src/auto/blast/blastRule
+$(HOLDIR)/src/auto/blast/blastSearch
+$(HOLDIR)/src/auto/blast/blastTerm
+$(HOLDIR)/src/auto/blast/tableauLib
+$(HOLDIR)/src/auto/rules/clasetLib
+$(HOLDIR)/src/auto/rules/clasetSeedTheory
+$(HOLDIR)/.agent-files/benchmarks/m2-timed-v2/task7gcalibration.sml

@@ -1,0 +1,192 @@
+reserved and real constant heads cannot collide ...                          [32m[1mOK[0m
+occurs check rejects direct and indirect cycles ...                          [32m[1mOK[0m
+occurs check rejects dangling de Bruijn variables ...                        [32m[1mOK[0m
+Skolem dependencies enforce the eigenvariable condition ...                  [32m[1mOK[0m
+unification decomposes abstractions, applications and type args ...          [32m[1mOK[0m
+failed unification rolls all branch assignments back ...                     [32m[1mOK[0m
+clearTo restores exactly the requested trail suffix ...                      [32m[1mOK[0m
+measured clearTo checkpoints every normal rollback item ...                  [32m[1mOK[0m
+interrupted measured clearTo finishes emergency rollback ...                 [32m[1mOK[0m
+norm chases assignments and beta-normalizes applications ...                 [32m[1mOK[0m
+norm prunes assigned Skolem dependency references ...                        [32m[1mOK[0m
+wkNorm performs head beta and eta contraction ...                            [32m[1mOK[0m
+de Bruijn substitution shifts arguments without capture ...                  [32m[1mOK[0m
+rule-local variables are assigned off-trail in preference ...                [32m[1mOK[0m
+failed unification restores only trailed branch variables ...                [32m[1mOK[0m
+goal translation has faithful per-constant type arguments ...                [32m[1mOK[0m
+goal translation separates typed names and reuses exact metadata ...         [32m[1mOK[0m
+rule translation shares repeated types and typed term variables ...          [32m[1mOK[0m
+bound lookup preserves alpha-equivalence and de Bruijn scope ...             [32m[1mOK[0m
+separate translations allocate fresh names but reuse local names ...         [32m[1mOK[0m
+rule type variables are shared mutable typargs ...                           [32m[1mOK[0m
+goal intake uses conclusion then assumptions in head-first order ...         [32m[1mOK[0m
+intro conversion goldens cover conjunction disjunction and exists ...        [32m[1mOK[0m
+elim conversion goldens cover conjunction disjunction exists and iff ...     [32m[1mOK[0m
+goal-directed implication and universal pseudo-rules have exact shapes ...   [32m[1mOK[0m
+weak elimination warning is verbatim and the rule is skipped ...             [32m[1mOK[0m
+too-flexible assertions never query elimination nets ...                     [32m[1mOK[0m
+weight-zero stored rules precede goal-directed pseudo-rules ...              [32m[1mOK[0m
+cached rule templates survive destructive unification ...                    [32m[1mOK[0m
+cached rules freshen locals but preserve branch dependencies ...             [32m[1mOK[0m
+separate rule caches neither reuse conversions nor templates ...             [32m[1mOK[0m
+each search run starts cold and then reuses its rule cache ...               [32m[1mOK[0m
+successful hyp-subst has exact inference statistics ...                      [32m[1mOK[0m
+admitted pseudo-safe rule has exact inference statistics ...                 [32m[1mOK[0m
+safe fanout counts one inference and one extra branch ...                    [32m[1mOK[0m
+safe nonclosing bound rejection is not counted ...                           [32m[1mOK[0m
+depth-0 unsafe nonclosing rule rejection is not counted ...                  [32m[1mOK[0m
+closing safe rule may exceed the configured resource bound ...               [32m[1mOK[0m
+initial cooperative stop prevents goal and term search work ...              [32m[1mOK[0m
+goal and term measured entry points have equivalent completion ...           [32m[1mOK[0m
+cooperative interruption is distinct from completed exhaustion ...           [32m[1mOK[0m
+cooperative stop exceptions preserve their exact constructors ...            [32m[1mOK[0m
+statistics-only search does no measured phase monitoring ...                 [32m[1mOK[0m
+ordinary Stats and measured searches are observationally equivalent ...      [32m[1mOK[0m
+deterministic generated queries preserve measured candidate order ...        [32m[1mOK[0m
+measured rule conversion and cache hits preserve ordinary outputs ...        [32m[1mOK[0m
+rule alpha comparison preserves sharing, types and dependencies ...          [32m[1mOK[0m
+conversion/query equivalence matrix covers all rule families ...             [32m[1mOK[0m
+completed measured searches have exact phase counters ...                    [32m[1mOK[0m
+rule attempt counters start after the preparation checkpoint ...             [32m[1mOK[0m
+bounded inner interruption returns a coherent partial snapshot ...           [32m[1mOK[0m
+interrupted measured unification rolls back branch assignments ...           [32m[1mOK[0m
+goal interruption abandons a large engine-owned trail exactly ...            [32m[1mOK[0m
+debug goal interruption retains a coherent owned-state trace ...             [32m[1mOK[0m
+goal continuation exceptions restore reachable owned assignments ...         [32m[1mOK[0m
+goal stop exceptions at live owned state restore and rethrow ...             [32m[1mOK[0m
+inner stop-predicate exceptions preserve identity ...                        [32m[1mOK[0m
+continuation exceptions restore caller-owned assignments ...                 [32m[1mOK[0m
+PROOF_FAILED event interruption keeps a coherent snapshot ...                [32m[1mOK[0m
+successful backtracking search has exact complete instrumentation ...        [32m[1mOK[0m
+duplicating elim replay uses REV_DUP_ELIM_RULE only ...                      [32m[1mOK[0m
+initial blast formulae all receive the duplication flag ...                  [32m[1mOK[0m
+blast search closes propositional golden tautologies ...                     [32m[1mOK[0m
+search records the complete six-step vocabulary ...                          [32m[1mOK[0m
+unsafe depth and the deepening cap have exact accounting ...                 [32m[1mOK[0m
+gamma retention is requeued at the back of its level ...                     [32m[1mOK[0m
+gamma requeue lets the next deferred formula run first ...                   [32m[1mOK[0m
+recursive premises share a level and nonrecursive ones do not ...            [32m[1mOK[0m
+prune fires without a next-branch clash and stops on a clash ...             [32m[1mOK[0m
+mayUndo and kill-all obey the crafted branch boundary ...                    [32m[1mOK[0m
+mayUndo retries an unsafe alternative after PROOF_FAILED ...                 [32m[1mOK[0m
+a sole pure gamma inference is not retried after PROOF_FAILED ...            [32m[1mOK[0m
+PROOF_FAILED re-enters the final literal choice point ...                    [32m[1mOK[0m
+reconstruction goldens cover T2 and T3 under Tactical.VALID ...              [32m[1mOK[0m
+measured reconstruction reports exact completed close counters ...           [32m[1mOK[0m
+measured close-contradiction has exact kernel-valid parity ...               [32m[1mOK[0m
+measured reconstruction interruption returns its exact boundary ...          [32m[1mOK[0m
+measured reconstruction does not swallow stop HOL_ERR values ...             [32m[1mOK[0m
+blast generation avoids hidden historical parameters ...                     [32m[1mOK[0m
+stored and pseudo safe rules reconstruct with prefix stripping ...           [32m[1mOK[0m
+measured stored replay exposes transition entry to observers ...             [32m[1mOK[0m
+detailed stored replay has exact completed parity and counters ...           [32m[1mOK[0m
+timed detailed replay accounts failed alternatives exactly ...               [32m[1mOK[0m
+timed detailed Enter and Exit stops preserve exact protocol ...              [32m[1mOK[0m
+timed-v2 reconstruction is exclusive bounded and API-equivalent ...          [32m[1mOK[0m
+timed-v2 interruption and callback exceptions retain boundaries ...          [32m[1mOK[0m
+timed-v3 Completed NONE pull and callback errors are exact ...               [32m[1mOK[0m
+timed-v3 Alternative Enter and Exit stops classify exactly ...               [32m[1mOK[0m
+timed-v3 transition failures retain replay policy and later success ...      [32m[1mOK[0m
+timed-v3 many sequences never scan statistics while pulling ...              [32m[1mOK[0m
+bounded-v4 many sequences allocate and scan no retained trace ...            [32m[1mOK[0m
+timed-v2 failed finish restores its exact outer owner stack ...              [32m[1mOK[0m
+timed-v2 nested alternative backtracking has exact owners ...                [32m[1mOK[0m
+timed-v3 Alternative pulls have exact exclusive distribution ...             [32m[1mOK[0m
+bounded-v4 matches timed-v3 categories, pulls and result ...                 [32m[1mOK[0m
+timed-v2 kernel failure backtracks with exact restored owners ...            [32m[1mOK[0m
+timed-v3 caught continuation failure retains pull ownership ...              [32m[1mOK[0m
+timed-v3 interrupted pull has one exact terminal outcome ...                 [32m[1mOK[0m
+bounded-v4 backtracking and interruption preserve v3 semantics ...           [32m[1mOK[0m
+bounded-v4 callback and Interrupt exceptions retain identity ...             [32m[1mOK[0m
+timed-v2 real replay failure then success restores owners ...                [32m[1mOK[0m
+timed detailed NONE and clock exceptions preserve identity ...               [32m[1mOK[0m
+timed detailed terminal clock precedes report aggregation ...                [32m[1mOK[0m
+timed stored clock observer and stop exceptions preserve identity ...        [32m[1mOK[0m
+detailed stored replay interrupts at an exact classical boundary ...         [32m[1mOK[0m
+detailed stored observers cross reconstruction catch-all unchanged ...       [32m[1mOK[0m
+detailed stored replay observations repeat deterministically ...             [32m[1mOK[0m
+deep measured reconstruction stop exceptions propagate unchanged ...         [32m[1mOK[0m
+deep observer exceptions preserve HOL_ERR custom and Interrupt identity ...  [32m[1mOK[0m
+T5 and T6 reconstruct a witness fixed by a later T2 close ...                [32m[1mOK[0m
+gamma duplication moves the repeated major behind old assumptions ...        [32m[1mOK[0m
+blast hyp-subst reorders affected assumptions before replay ...              [32m[1mOK[0m
+hyp-subst affectedness preserves beta-redex branch order ...                 [32m[1mOK[0m
+real reconstruction failure backtracks to a valid tableau rule ...           [32m[1mOK[0m
+a tableau with only an unreconstructible rule fails cleanly ...              [32m[1mOK[0m
+public BLAST tactics solve golden goals under Tactical.VALID ...             [32m[1mOK[0m
+public blast tactics read configuration when they run ...                    [32m[1mOK[0m
+public deepening explores bounds lazily ...                                  [32m[1mOK[0m
+plain extra lemmas are unsafe intros and markers are processed ...           [32m[1mOK[0m
+tryIt records full search and skips reconstruction ...                       [32m[1mOK[0m
+blast trace levels report reconstruction failure stats and states ...        [32m[1mOK[0m
+fixed-depth trace separates final and cumulative counters ...                [32m[1mOK[0m
+iterative trace labels final depth and cumulative aggregation ...            [32m[1mOK[0m
+public blast calls do not leak claset theory or depth state ...              [32m[1mOK[0m
+BLAST_TAC Pelletier 1 ...                                                    [32m[1mOK[0m
+BLAST_TAC Pelletier 2 ...                                                    [32m[1mOK[0m
+BLAST_TAC Pelletier 3 ...                                                    [32m[1mOK[0m
+BLAST_TAC Pelletier 4 ...                                                    [32m[1mOK[0m
+BLAST_TAC Pelletier 5 ...                                                    [32m[1mOK[0m
+BLAST_TAC Pelletier 6 ...                                                    [32m[1mOK[0m
+BLAST_TAC Pelletier 7 ...                                                    [32m[1mOK[0m
+BLAST_TAC Pelletier 8 ...                                                    [32m[1mOK[0m
+BLAST_TAC Pelletier 9 ...                                                    [32m[1mOK[0m
+BLAST_TAC Pelletier 10 ...                                                   [32m[1mOK[0m
+BLAST_TAC Pelletier 11 ...                                                   [32m[1mOK[0m
+BLAST_TAC Pelletier 12 ...                                                   [32m[1mOK[0m
+BLAST_TAC Pelletier 13 ...                                                   [32m[1mOK[0m
+BLAST_TAC Pelletier 14 ...                                                   [32m[1mOK[0m
+BLAST_TAC Pelletier 15 ...                                                   [32m[1mOK[0m
+BLAST_TAC Pelletier 16 ...                                                   [32m[1mOK[0m
+BLAST_TAC Pelletier 17 ...                                                   [32m[1mOK[0m
+BLAST_TAC Pelletier 18 ...                                                   [32m[1mOK[0m
+BLAST_TAC Pelletier 19 ...                                                   [32m[1mOK[0m
+BLAST_TAC Pelletier 20 ...                                                   [32m[1mOK[0m
+BLAST_TAC Pelletier 21 ...                                                   [32m[1mOK[0m
+BLAST_TAC Pelletier 22 ...                                                   [32m[1mOK[0m
+BLAST_TAC Pelletier 23 ...                                                   [32m[1mOK[0m
+BLAST_TAC Pelletier 24 ...                                                   [32m[1mOK[0m
+BLAST_TAC Pelletier 25 ...                                                   [32m[1mOK[0m
+BLAST_TAC Pelletier 26 ...                                                   [32m[1mOK[0m
+BLAST_TAC Pelletier 27 ...                                                   [32m[1mOK[0m
+BLAST_TAC Pelletier 28 ...                                                   [32m[1mOK[0m
+BLAST_TAC Pelletier 29 ...                                                   [32m[1mOK[0m
+BLAST_TAC Pelletier 30 ...                                                   [32m[1mOK[0m
+BLAST_TAC Pelletier 31 ...                                                   [32m[1mOK[0m
+BLAST_TAC Pelletier 32 ...                                                   [32m[1mOK[0m
+BLAST_TAC Pelletier 33 ...                                                   [32m[1mOK[0m
+BLAST_TAC Pelletier 34 (expected failure) ...                                [32m[1mOK[0m
+BLAST_TAC Pelletier 35 ...                                                   [32m[1mOK[0m
+BLAST_TAC Pelletier 36 ...                                                   [32m[1mOK[0m
+BLAST_TAC Pelletier 37 ...                                                   [32m[1mOK[0m
+BLAST_TAC Pelletier 38 (expected failure) ...                                [32m[1mOK[0m
+BLAST_TAC Pelletier 39 ...                                                   [32m[1mOK[0m
+BLAST_TAC Pelletier 40 ...                                                   [32m[1mOK[0m
+BLAST_TAC Pelletier 41 (expected failure) ...                                [32m[1mOK[0m
+BLAST_TAC Pelletier 42 (expected failure) ...                                [32m[1mOK[0m
+BLAST_TAC Pelletier 43 (expected failure) ...                                [32m[1mOK[0m
+BLAST_TAC Pelletier 44 ...                                                   [32m[1mOK[0m
+BLAST_TAC Pelletier 45 (expected failure) ...                                [32m[1mOK[0m
+BLAST_TAC Pelletier 46 ...                                                   [32m[1mOK[0m
+BLAST_TAC Pelletier 52 ...                                                   [32m[1mOK[0m
+BLAST_TAC Pelletier 62 ...                                                   [32m[1mOK[0m
+BLAST_TAC Pelletier solved-goal count ...                                    [32m[1mOK[0m
+BLAST_DEPTH_TAC Pelletier 24 at 4 ...                                        [32m[1mOK[0m
+BLAST_DEPTH_TAC Pelletier 26 at 3 ...                                        [32m[1mOK[0m
+BLAST_DEPTH_TAC Pelletier 28 at 3 ...                                        [32m[1mOK[0m
+BLAST_DEPTH_TAC Pelletier 34 at 7 (expected failure) ...                     [32m[1mOK[0m
+BLAST_DEPTH_TAC Pelletier 38 at 4 (expected failure) ...                     [32m[1mOK[0m
+BLAST_DEPTH_TAC Pelletier 43 at 5 (expected failure) ...                     [32m[1mOK[0m
+BLAST_DEPTH_TAC Pelletier 46 at 7 ...                                        [32m[1mOK[0m
+BLAST_DEPTH_TAC Pelletier 52 at 7 ...                                        [32m[1mOK[0m
+BLAST_DEPTH_TAC Pelletier 62 at 1 ...                                        [32m[1mOK[0m
+Table-1 published-depth solved-goal count ...                                [32m[1mOK[0m
+Table-1 depth accounting rejects shallower bounds ...                        [32m[1mOK[0m
+BLAST_DEPTH_TAC Union-image ...                                              [32m[1mOK[0m
+BLAST_DEPTH_TAC Inter-image ...                                              [32m[1mOK[0m
+BLAST_DEPTH_TAC Singleton I ...                                              [32m[1mOK[0m
+BLAST_DEPTH_TAC Singleton II ...                                             [32m[1mOK[0m
+Table-1 set-problem solved-goal count ...                                    [32m[1mOK[0m
+BLAST_DEPTH_TAC Halting II (expected failure) ...                            [32m[1mOK[0m
+higher-order unification requirement fails cleanly ...                       [32m[1mOK[0m
+weak [elim] marker warns and is skipped without aborting ...                 [32m[1mOK[0m

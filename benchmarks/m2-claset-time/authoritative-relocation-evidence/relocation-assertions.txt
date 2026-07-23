@@ -1,0 +1,23 @@
+strace_file_access original_root_accesses=0 result=PASS
+exact_line=[startup] HOLDIR = /var/tmp/final-authoritative-relocation-ptrace/worktree result=PASS
+exact_line=/var/tmp/final-authoritative-relocation-ptrace/worktree/bin/hol.state result=PASS
+startup_original_root result=ABSENT
+resolved_path role=sigobj path=/var/tmp/final-authoritative-relocation-ptrace/worktree/sigobj result=PASS
+resolved_path role=tools path=/var/tmp/final-authoritative-relocation-ptrace/worktree/tools result=PASS
+resolved_path role=state0 path=/var/tmp/final-authoritative-relocation-ptrace/worktree/bin/hol.state0 result=PASS
+resolved_path role=default-state path=/var/tmp/final-authoritative-relocation-ptrace/worktree/bin/hol.state result=PASS
+resolved_path role=generated-target path=/var/tmp/final-authoritative-relocation-ptrace/worktree/.task7f-relocation-diagnostic/relocation-target result=PASS
+real_target_created path=/var/tmp/final-authoritative-relocation-ptrace/worktree/.task7f-relocation-diagnostic/relocation-target no_preexecs=yes result=PASS
+ancestor_metadata audit=holmake-ancestor-audit.txt result=PASS
+embedded_original_root path=tools/Holmake/Systeml.sml result=ABSENT
+embedded_original_root path=bin/Holmake result=ABSENT
+embedded_original_root path=bin/hol result=ABSENT
+embedded_original_root path=tools/editor-modes/emacs/hol-mode.el result=ABSENT
+embedded_original_root path=tools/editor-modes/vim/hol-config.sml result=ABSENT
+embedded_original_root path=tools/editor-modes/vim/filetype.vim result=ABSENT
+sigobj_links audit=relocation-sigobj-links.txt result=PASS
+used_path=bin/hol resolved=/var/tmp/final-authoritative-relocation-ptrace/worktree/bin/hol result=PASS
+used_path=bin/Holmake resolved=/var/tmp/final-authoritative-relocation-ptrace/worktree/bin/Holmake result=PASS
+used_path=bin/hol.state resolved=/var/tmp/final-authoritative-relocation-ptrace/worktree/bin/hol.state result=PASS
+used_path=bin/hol.state0 resolved=/var/tmp/final-authoritative-relocation-ptrace/worktree/bin/hol.state0 result=PASS
+used_path=tools/Holmake/Systeml.sml resolved=/var/tmp/final-authoritative-relocation-ptrace/worktree/tools/Holmake/Systeml.sml result=PASS

@@ -1,0 +1,1 @@
+collect-v10: supervisor_schema: Invalid: namespace_init_ready.pid_namespace_inode must be strict JSON integer

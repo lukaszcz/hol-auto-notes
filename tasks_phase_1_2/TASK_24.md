@@ -16,16 +16,59 @@ Any work done in this task must be a step toward these goals, but the
 ultimate plan goals are **not** the acceptance criteria for this task —
 only the criteria listed below are.
 
-## Status: REOPENED 2026-07-19
+## Status: COMPLETED/RECLOSED 2026-07-23 at `f4fc8be66`
 
-This task was previously marked complete on figures produced by goal
-recognition, not proof search: `tableauLib.blast_preprocess` /
-`halting_preprocess` closed several corpus goals by rewriting them to
-`T` from seed theorems holding their statements, or by `ACCEPT_TAC` on
-an `aconv` match.  Both are removed.  Acceptance now additionally
-requires: no tactic, preprocessor, rewrite set or seed theory names a
-benchmark problem or its statement; unreached goals are asserted
-expected failures citing `PLAN_phase_1_2_green.md`.
+All groups are present and passing.  Public proof search passes all nine
+published Table-1 depths with `table1_expected_failures = []`.  The four
+set problems pass at depths 3/3/4/4, and the robustness cases remain green.
+At level 2 the depth-7 public Halting II attempt succeeds within the
+unchanged 120-second budget and is asserted kernel-valid.  It is no longer
+an expected failure.
+
+Reviewed commit
+`f4fc8be6674ea37043a76f51ab7d8aa2f7f5ceb1` fixes persistent
+metavariable expansion and exact replay generally.  It contains no
+recognition or fallback shortcut.  The accepted committed-state package is:
+
+```text
+/tmp/isabelle-tactics-task7f-20260720-root/
+task34c_hardened_final_gates_fresh/attempt-04/evidence-package/
+```
+
+Its 47-entry package manifest digest is
+`805cb6086f5fb65e0869dfd73722c9296cb0ec467fc150e8c410fe9d4e7e9c52`.
+Its frozen plan and post-run identities bind exact commit
+`f4fc8be6674ea37043a76f51ab7d8aa2f7f5ceb1`.
+
+Fresh configure, exact `upto-auto`, direct Blast levels 1 and 2, and
+h4pedant pass, followed by the committed-state full gate.  Both Blast levels
+record exactly 9/9 unique Table 1 and 4/4 unique set successes.  Level 2
+records exactly one kernel-valid Halting II `OK`; level 1 does not run it.
+Acceptance criteria 1 through 4 are met without an owner exception, so
+TASK_24 is completed/reclosed.
+
+The exact integrated disclosure is one expected
+`suspFastTheory ... F-CHEAT`, zero `CHEATED` and zero `Saved CHEAT`.
+The separate full-build classification is recorded in `PLAN.md` §11.
+Candidate 05 remains historical pre-commit functional evidence only.
+
+On 2026-07-23 the owner also decided to close M2 once the complete suite and
+Halting II pass because `perf_event_paranoid` cannot be lowered.  Those
+conditions now pass.  The unavailable kernel profiler remains an
+environmental disclosure, not a TASK_24 or M2 blocker.
+
+### Reopening history
+
+This task was reopened on 2026-07-19 because earlier figures were produced
+by goal recognition, not proof search: `tableauLib.blast_preprocess` /
+`halting_preprocess` rewrote corpus goals to `T` from seed theorems holding
+their statements, or used `ACCEPT_TAC` after an `aconv` match.  Both were
+removed.  The honest post-removal baseline was Table 1 at 6/9, sets at 4/4,
+and Halting II unsolved; the later `7ea3b07fa` state reached 8/9 while
+Halting II remained an asserted expected timeout.  At `5bc674569`, Table 1
+reached 9/9 but Halting still failed, so the task remained reopened.
+The `f4fc8be66` Halting success now satisfies the unchanged acceptance
+criterion and supersedes those statuses, not the incident history.
 
 ## Objective
 

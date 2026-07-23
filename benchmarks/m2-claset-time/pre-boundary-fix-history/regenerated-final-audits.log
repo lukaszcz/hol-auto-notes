@@ -1,0 +1,18 @@
+regenerated-final audit
+2026-07-20T10:39:52Z
+shell syntax
+validators
+calibrations exactly match schedules, pairs, work, and results
+all positives accepted; 12 adversarial cases rejected
+diff check
+h4pedant
+residue
+Holmakefile diffs
+staged
+status
+ M src/auto/blast/blastReconstruct.sig
+ M src/auto/blast/blastReconstruct.sml
+ M src/auto/blast/selftest.sml
+ M src/auto/classical/clasetStep.sig
+ M src/auto/classical/clasetStep.sml
+ M src/auto/classical/selftest.sml

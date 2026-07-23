@@ -1,0 +1,13 @@
+label	category	started_utc	status	command
+root-index-clean	identity	2026-07-21T02:49:43Z	0	git diff --cached --quiet
+source-worktree-clean	identity	2026-07-21T02:49:43Z	0	git diff --quiet -- src/auto
+agent-index-clean	identity	2026-07-21T02:49:43Z	0	git -C .agent-files diff --cached --quiet
+classical-clean	build	2026-07-21T02:49:43Z	0	bin/Holmake -C src/auto/classical clean
+classical-build	build	2026-07-21T02:49:43Z	0	bin/Holmake -C src/auto/classical (full default build after clean)
+classical-selftest	selftest	2026-07-21T02:49:44Z	0	cd src/auto/classical && HOLSELFTESTLEVEL=2 ./selftest.exe
+blast-clean	build	2026-07-21T02:50:31Z	0	bin/Holmake -C src/auto/blast clean
+blast-build	build	2026-07-21T02:50:31Z	0	bin/Holmake -C src/auto/blast (full default build after clean)
+blast-selftest	selftest	2026-07-21T02:50:31Z	0	cd src/auto/blast && HOLSELFTESTLEVEL=2 ./selftest.exe
+harness-clean	build	2026-07-21T02:56:37Z	0	bin/Holmake -C .agent-files/benchmarks/m2-timed-v3-final clean
+harness-build	build	2026-07-21T02:56:37Z	0	bin/Holmake -C .agent-files/benchmarks/m2-timed-v3-final task7hmeasurement.exe task7hcalibration.exe task7hactive.exe
+endpoint-synthetic	process-audit	2026-07-21T02:56:37Z	1	endpoint-preflight.sh scratch/endpoint-preflight

@@ -1,0 +1,7 @@
+HOLDIR = ../../..
+HOLHEAP = $(HOLDIR)/bin/hol.state0
+
+task7nclock.exe: task7nclock.uo
+	$(HOLMOSMLC) -o $@ $<
+	sed -i 's|  task7nclock$$|  /home/lukasz/dev/HOL/worktrees/isabelle-tactics/.agent-files/benchmarks/m2-low-perturbation-diagnostic-final/task7nclock|' $@
+

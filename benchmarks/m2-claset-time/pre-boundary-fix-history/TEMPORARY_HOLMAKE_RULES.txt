@@ -1,0 +1,47 @@
+Historical/non-authoritative pre-boundary build record.  These exact rules and
+commands are retained for history and are not the current build provenance.
+
+Temporary append to `src/auto/blast/Holmakefile`:
+
+    m2clasetime.uo workcalibration.uo activecalibration.uo: \
+      blastTerm.uo blastRule.uo blastSearch.uo blastReconstruct.uo \
+      tableauLib.uo
+
+    m2clasetime.exe: m2clasetime.uo blastTerm.uo blastRule.uo \
+      blastSearch.uo blastReconstruct.uo tableauLib.uo
+            $(HOLMOSMLC) -o $@ $<
+
+    workcalibration.exe: workcalibration.uo blastTerm.uo blastRule.uo \
+      blastSearch.uo blastReconstruct.uo tableauLib.uo
+            $(HOLMOSMLC) -o $@ $<
+
+    activecalibration.exe: activecalibration.uo blastTerm.uo blastRule.uo \
+      blastSearch.uo blastReconstruct.uo tableauLib.uo
+            $(HOLMOSMLC) -o $@ $<
+
+The leading whitespace before each `$(HOLMOSMLC)` above denotes one literal
+TAB in the actual temporary Holmakefile.  Exact directly runnable commands,
+from repository root:
+
+    cd src/auto/blast
+    Holmake m2clasetime.exe workcalibration.exe activecalibration.exe \
+      > ../../..//.agent-files/benchmarks/m2-claset-time/repaired-final-build.log 2>&1
+    cd ../../..
+
+The doubled slash is harmless but retained literally because it is the exact
+command used.  Harness sources were copied byte-for-byte from the retained
+package before this build.  The temporary sources, rules, objects,
+dependency files and executables are removed after all runs.
+
+After the relocated-object freshness review, the affected UI/UO and harness
+artifacts were explicitly removed and the following directly runnable builds
+were used from their stated directories (the retained logs record status 0):
+
+    cd src/auto/classical
+    Holmake selftest.exe \
+      > ../../..//.agent-files/benchmarks/m2-claset-time/repaired-final-classical-build.log 2>&1
+    cd ../blast
+    Holmake selftest.exe m2clasetime.exe workcalibration.exe \
+      activecalibration.exe \
+      > ../../..//.agent-files/benchmarks/m2-claset-time/repaired-final-rebuild.log 2>&1
+    cd ../../..

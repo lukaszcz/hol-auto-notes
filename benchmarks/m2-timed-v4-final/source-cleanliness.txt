@@ -1,0 +1,8 @@
+captured_utc=2026-07-21T05:45:34Z
+head=244b01d7189ac803df48e246a483c33b553e3daa
+tracked_worktree=clean
+index=clean
+tracked_agent_files=none
+.gitignore:147:.agent-files	.agent-files/benchmarks/m2-timed-v4-final
+root_status_begin
+root_status_end

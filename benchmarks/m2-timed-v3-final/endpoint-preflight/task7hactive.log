@@ -1,0 +1,6 @@
+name=task7hactive
+pattern=[t]ask7hactive
+wrapper_pid=486
+child_pid=487
+486 /tmp/isabelle-tactics-task7f-20260720-root/task7h-measure/endpoint-preflight/wrapper-task7hactive 30
+487 /tmp/isabelle-tactics-task7f-20260720-root/task7h-measure/endpoint-preflight/bin/hol --gcthreads=1 task7hactive 30

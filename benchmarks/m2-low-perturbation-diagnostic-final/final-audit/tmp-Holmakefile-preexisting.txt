@@ -1,0 +1,8 @@
+  File: /tmp/Holmakefile
+  Size: 816       	Blocks: 8          IO Block: 4096   regular file
+Device: 259,1	Inode: 4480314     Links: 1
+Access: (0664/-rw-rw-r--)  Uid: (65534/  nobody)   Gid: (65534/ nogroup)
+Access: 2026-07-20 16:54:19.717523134 +0000
+Modify: 2026-07-16 08:45:17.943436412 +0000
+Change: 2026-07-16 08:45:17.943436412 +0000
+ Birth: 2026-05-02 14:28:28.959378337 +0000

@@ -1,0 +1,17 @@
+label	status	command
+head	0	git rev-parse HEAD
+index-clean	0	git diff --cached --quiet
+tracked-clean	0	git diff --quiet
+whitespace	0	git diff --check
+source-manifest-before	0	tracked src/auto sha256 manifest
+task7k-review-closure	0	Task7k external verify-closure.sh
+task7l-review-closure	0	Task7l external verify-closure.sh
+task7m-review-closure	0	Task7m external verify-closure.sh
+shell-syntax	0	sh -n package shell programs
+harness-clean	0	bin/Holmake -C package clean
+harness-build	0	bin/Holmake -C package task7nclock.exe
+package-selfcheck	0	selfcheck.sh
+source-manifest-after	0	tracked src/auto sha256 manifest
+source-manifest-parity	0	cmp source manifests
+final-index-clean	0	git diff --cached --quiet
+final-tracked-clean	0	git diff --quiet

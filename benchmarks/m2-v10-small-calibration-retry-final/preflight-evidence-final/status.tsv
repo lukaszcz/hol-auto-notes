@@ -1,0 +1,15 @@
+label	status	command
+head	0	git rev-parse HEAD
+index-clean	0	git diff --cached --quiet
+tracked-clean	0	git diff --quiet
+classical-clean	0	bin/Holmake -C src/auto/classical clean
+classical-build	0	bin/Holmake -C src/auto/classical
+classical-selftest	0	cd src/auto/classical; HOLSELFTESTLEVEL=2 ./selftest.exe
+blast-clean	0	bin/Holmake -C src/auto/blast clean
+blast-build	0	bin/Holmake -C src/auto/blast
+blast-selftest	0	cd src/auto/blast; HOLSELFTESTLEVEL=2 ./selftest.exe
+harness-clean	0	bin/Holmake -C package clean
+harness-build	0	bin/Holmake -C package task7lcalibration.exe
+package-selfcheck	0	selfcheck.sh
+final-index-clean	0	git diff --cached --quiet
+final-tracked-clean	0	git diff --quiet

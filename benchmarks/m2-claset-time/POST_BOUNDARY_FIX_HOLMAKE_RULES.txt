@@ -1,0 +1,21 @@
+# Exact temporary fragment appended only to the isolated copy's
+# src/auto/blast/Holmakefile by reproduce-post-boundary-build.sh.  It is
+# evidence/rule input, not a command transcript or standalone procedure.  The
+# explicit tableauLib prerequisite preserves the reconstruction/harness chain.
+# Recipe indentation below is one literal TAB.
+
+m2clasetime.uo workcalibration.uo activecalibration.uo: \
+  blastTerm.uo blastRule.uo blastSearch.uo blastReconstruct.uo \
+  tableauLib.uo
+
+m2clasetime.exe: m2clasetime.uo blastTerm.uo blastRule.uo \
+  blastSearch.uo blastReconstruct.uo tableauLib.uo
+	$(HOLMOSMLC) -o $@ $<
+
+workcalibration.exe: workcalibration.uo blastTerm.uo blastRule.uo \
+  blastSearch.uo blastReconstruct.uo tableauLib.uo
+	$(HOLMOSMLC) -o $@ $<
+
+activecalibration.exe: activecalibration.uo blastTerm.uo blastRule.uo \
+  blastSearch.uo blastReconstruct.uo tableauLib.uo
+	$(HOLMOSMLC) -o $@ $<

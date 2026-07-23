@@ -1,0 +1,10 @@
+label	status	path_or_command
+executable	0	task7nclock.exe
+ui	0	.hol/objs/task7nclock.ui
+uo	0	.hol/objs/task7nclock.uo
+executable_lock	0	.hol/locks/task7nclock.exe.lock
+uo_lock	0	.hol/locks/task7nclock.uo.lock
+make_dependency	0	.hol/make-deps/task7nclock.sml.d
+log	0	.hol/logs/task7nclock.exe
+top_hol	0	.hol
+exact_argv_endpoint	127	endpoint-audit.py

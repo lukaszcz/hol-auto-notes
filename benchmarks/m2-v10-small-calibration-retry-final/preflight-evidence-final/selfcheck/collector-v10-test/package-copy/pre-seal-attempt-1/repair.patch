@@ -1,0 +1,9 @@
+--- pre-seal-attempt-1/full-bodies/audit-runtime.py
++++ audit-runtime.py
+@@
+ import shutil
+ import sys
+ 
++sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent /
++                       "future-protocol"))
+ sys.dont_write_bytecode = True

@@ -1,0 +1,5 @@
+label	category	started_utc	status	command
+post-root-index-clean	identity	2026-07-20T19:45:39Z	0	git diff --cached --quiet
+post-source-worktree-clean	identity	2026-07-20T19:45:39Z	0	git diff --quiet -- src/auto/classical src/auto/blast
+post-agent-index-clean	identity	2026-07-20T19:45:39Z	0	git -C .agent-files diff --cached --quiet
+preseal-selfcheck	validator	2026-07-20T19:45:39Z	0	selfcheck.sh (inputs, artifacts, calibration, target, summaries, 32 adversaries, statuses, endpoints, source/index)

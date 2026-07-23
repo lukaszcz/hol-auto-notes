@@ -1,0 +1,8 @@
+./PACKAGE-INVENTORY.tsv: OK
+./REVIEWED-PACKAGES.tsv: OK
+./REVIEW_RESOLUTION.md: OK
+./SEALED-PACKAGE-MANIFEST-AFTER.tsv: OK
+./SEALED-PACKAGE-MANIFEST-BEFORE.tsv: OK
+./inventory.py: OK
+./verify-closure.sh: OK
+external Task7l review package closure: PASS

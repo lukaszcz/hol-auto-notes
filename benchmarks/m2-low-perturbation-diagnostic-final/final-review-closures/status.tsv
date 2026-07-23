@@ -1,0 +1,4 @@
+label	status	command
+task7k	0	/home/lukasz/dev/HOL/worktrees/isabelle-tactics/.agent-files/benchmarks/m2-v10-small-calibration-final-review/verify-closure.sh
+task7l	0	/home/lukasz/dev/HOL/worktrees/isabelle-tactics/.agent-files/benchmarks/m2-v10-small-calibration-retry-final-review/verify-closure.sh
+task7m	0	/home/lukasz/dev/HOL/worktrees/isabelle-tactics/.agent-files/benchmarks/m2-v10-small-calibration-second-retry-final-review/verify-closure.sh

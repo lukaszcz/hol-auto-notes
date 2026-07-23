@@ -1,0 +1,11 @@
+2026-07-21T16:46:18Z
+Linux ip-172-31-20-100 6.17.0-1012-aws #12~24.04.1-Ubuntu SMP Mon Apr  6 17:38:24 UTC 2026 aarch64 aarch64 aarch64 GNU/Linux
+python3=/usr/bin/python3
+Python 3.12.3
+poly=/usr/local/bin/poly
+Poly/ML 5.9.2 Release
+perf=/usr/bin/perf
+perf version 6.17.13
+perf_event_paranoid=4
+git=/usr/bin/git
+git version 2.43.0

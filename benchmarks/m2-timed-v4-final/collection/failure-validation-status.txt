@@ -1,0 +1,2 @@
+partial_calibration_validator_status=1
+supervision_validator_status=1

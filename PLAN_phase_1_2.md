@@ -1,3 +1,7 @@
+<!--
+  Keep this H1 verbatim for external anchor compatibility; it is the single
+  intentional >79-column exception in this document.
+-->
 # Phases 1–2 implementation plan — classical step tactics, search drivers, BLAST (`src/auto/classical/`, `src/auto/blast/`)
 
 Date: 2026-07-16.  Refines `PLAN.md` §6.1–6.3.  Branch `isabelle-tactics`.
@@ -6,8 +10,9 @@ All Isabelle citations resolve against `.agent-files/sources/` (commit
 `f7e02b7e1f31`; the Phase 1–2 round added `src/Pure/{search,tactical,
 tactic,thm,drule,logic,term,goal,unify,pattern,library}.ML`,
 `General/alist.ML`, `Isar/object_logic.ML` at the same pinned commit —
-see `sources/README.md`).  HOL4 citations resolve against this worktree
-(HEAD `7dfd21f4f`).  The line-level analysis behind every claim lives in
+see `sources/README.md`).  HOL4 citations were authored against the
+plan-authoring baseline `7dfd21f4f`, not the current HEAD.  The line-level
+analysis behind every claim lives in
 three research reports written for this phase (under
 `.agent-files/research/`, treated as verified, with one recorded
 erratum on term sizes in `phase12-hol4-substrate.md` §7.1):
@@ -40,15 +45,73 @@ owner decisions of §0).
 Asked and decided one-by-one, extending the §2 record of `PLAN.md`
 (recorded there by T-book, §9):
 
-| # | Decision |
-|---|---|
-| D21 | **Engine state representation and unifier**: the shared search engine (Phases 2 and 4; blast keeps its private untyped prototerm language per D3) uses typed metavariables represented as marked fresh free variables occurring as *leaves* (no Isabelle-style lifting), each carrying an explicit **allow-set** of eigenvariables it may mention (checked at bind time, plus occurs check); a **persistent** substitution store behind an abstract API (so the representation stays swappable); and a unifier = typed first-order core (modeled on `src/1/FullUnify`) **plus** the higher-order *pattern* case (`?m x1…xk ≟ t`, `xi` distinct eigenvariables ⇒ `?m := λx̄.t`) **plus** Lean-style first-order-approximation and η heuristics, single-solution and deterministic.  Matching mode = the same algorithm rejecting bindings of pre-existing metavariables.  Rationale: option-1 cost profile (no spines, no pervasive β-normalization — cheaper than Isabelle's own lifting) with Lean/Aesop-level capability; Lean's Aesop itself has no full HOU (CPP'23 §3.1.1), and nothing in this space runs enumerative HOU in-search.  The unifier is the hardest single component; it is concentrated, golden-testable, and can never cause unsoundness (kernel replay checks everything). |
-| D22 | **One step cascade**: the classical step layer (safe/clarify/inst/unsafe/dup steps) is implemented **once**, over the engine's goal shape, with a mode flag (match vs unify) and per-step validation emission.  Phase-1 `SAFE_TAC`/`CLARIFY_TAC` are the cascade's metavariable-free instantiation: on such nodes every step carries its kernel validation directly, so the exported tactics are genuine `ntactic`s per D13 with no deferred replay, and wrappers apply as `ntactic` wrappers. |
-| D23 | **Blast replay architecture**: `BLAST_TAC`'s recorded script replays left-to-right on the shared engine's states (initialized from the real goal): steps genuinely resolve and instantiate typed metavariables (Isabelle's division of labor — search finds the shape, replay re-finds first-order unifiers, cheap per Paulson §8.2); grounding happens once at the end via the engine's kernel replay.  PROOF-FAILED-backtrack into the tableau is preserved.  No untyped→typed back-translation, no Skolem↔variable registry.  BLAST thereby depends on the engine (both are Phase 2; scheduling coupling only). |
-| D24 | **Engine wrappers, day one**: engine nodes are materializable as HOL4 goals with metavariables rendered as reserved rigid free variables; claset safe/unsafe wrappers are honored at exactly Isabelle's application points (uwrappers around the inst+unsafe rung — but *not* around `depth_tac`'s `inst0` closers, matching upstream `classical.ML:718`; swrappers inside every safe step); a wrapper's `(goals, validation)` result is lifted back (re-abstracting the rendered metavariables) and the validation recorded — wrapper steps replay for free.  Rigid semantics documented: a wrapper can never instantiate engine metavariables (Isabelle's rewriter-level guarantee; Isabelle's *solver-level* instantiation is a recorded Phase-3 option, `phase12-classical-search-port.md` §4.3). |
-| D25 | **Dynamic pruning** (supersedes the static `safe_depth_tac` DETERM-polarity question, where upstream Isabelle has carried an inverted branch since 2009 — see `phase12-classical-search-port.md` §8): the engine implements the real invariant — *when a subgoal's complete solve instantiated no metavariable visible in the remaining goals, discard its alternatives* — i.e. blast's `prune`/`clashVar` rule (`blast.ML:841–865`) applied to the classical drivers.  This subsumes the corrected 2005 semantics (HOL4 entry goals are metavariable-free, so the outer solve is deterministic by the invariant) and prunes losslessly deep inside metavariable-laden states.  No compatibility flags. |
-| D26 | **Full driver surface**: export `FAST_TAC`, `SLOW_TAC`, `BEST_TAC`, `SLOW_BEST_TAC`, `FIRST_BEST_TAC`, `ASTAR_TAC`, `SLOW_ASTAR_TAC`, `DEEPEN_TAC`, plus the step tactics `SAFE_STEP_TAC`, `CLARIFY_STEP_TAC`, `STEP_TAC`, `SLOW_STEP_TAC`, `INST_STEP_TAC`.  All are thin instantiations of the one engine; all names collision-checked free (2026-07-16, whole-tree grep). |
-| D27 | **Failure semantics**: `SAFE_TAC` and `CLARIFY_TAC` fail exactly when they change nothing (`CHANGED_PROP` semantics — what Isabelle users actually experience of the `safe`/`clarify` *methods*, `classical.ML:834,843–844`).  The raw never-fail behavior is reachable as `TRY SAFE_TAC`. |
+- **D21 — Engine state representation and unifier:** the shared search
+  engine (Phases 2 and 4; blast keeps its private untyped prototerm language
+  per D3) uses typed metavariables represented as marked fresh free variables
+  occurring as *leaves* (no Isabelle-style lifting), each carrying an
+  explicit **allow-set** of eigenvariables it may mention (checked at bind
+  time, plus occurs check); a **persistent** substitution store behind an
+  abstract API (so the representation stays swappable); and a unifier =
+  typed first-order core (modeled on `src/1/FullUnify`) **plus** the
+  higher-order *pattern* case (`?m x1…xk ≟ t`, `xi` distinct eigenvariables
+  ⇒ `?m := λx̄.t`) **plus** Lean-style first-order-approximation and η
+  heuristics, single-solution and deterministic.  Matching mode = the same
+  algorithm rejecting bindings of pre-existing metavariables.  Rationale:
+  option-1 cost profile (no spines, no pervasive β-normalization — cheaper
+  than Isabelle's own lifting) with Lean/Aesop-level capability; Lean's Aesop
+  itself has no full HOU (CPP'23 §3.1.1), and nothing in this space runs
+  enumerative HOU in-search.  The unifier is the hardest single component;
+  it is concentrated, golden-testable, and can never cause unsoundness
+  (kernel replay checks everything).
+- **D22 — One step cascade:** the classical step layer
+  (safe/clarify/inst/unsafe/dup steps) is implemented **once**, over the
+  engine's goal shape, with a mode flag (match vs unify) and per-step
+  validation emission.  Phase-1 `SAFE_TAC`/`CLARIFY_TAC` are the cascade's
+  metavariable-free instantiation: on such nodes every step carries its
+  kernel validation directly, so the exported tactics are genuine
+  `ntactic`s per D13 with no deferred replay, and wrappers apply as
+  `ntactic` wrappers.
+- **D23 — Blast replay architecture:** `BLAST_TAC`'s recorded script replays
+  left-to-right on the shared engine's states (initialized from the real
+  goal): steps genuinely resolve and instantiate typed metavariables
+  (Isabelle's division of labor — search finds the shape, replay re-finds
+  first-order unifiers, cheap per Paulson §8.2); grounding happens once at
+  the end via the engine's kernel replay.  PROOF-FAILED-backtrack into the
+  tableau is preserved.  No untyped→typed back-translation, no
+  Skolem↔variable registry.  BLAST thereby depends on the engine (both are
+  Phase 2; scheduling coupling only).
+- **D24 — Engine wrappers, day one:** engine nodes are materializable as HOL4
+  goals with metavariables rendered as reserved rigid free variables; claset
+  safe/unsafe wrappers are honored at exactly Isabelle's application points
+  (uwrappers around the inst+unsafe rung — but *not* around `depth_tac`'s
+  `inst0` closers, matching upstream `classical.ML:718`; swrappers inside
+  every safe step); a wrapper's `(goals, validation)` result is lifted back
+  (re-abstracting the rendered metavariables) and the validation recorded —
+  wrapper steps replay for free.  Rigid semantics documented: a wrapper can
+  never instantiate engine metavariables (Isabelle's rewriter-level
+  guarantee; Isabelle's *solver-level* instantiation is a recorded Phase-3
+  option, `phase12-classical-search-port.md` §4.3).
+- **D25 — Dynamic pruning** (supersedes the static `safe_depth_tac`
+  DETERM-polarity question, where upstream Isabelle has carried an inverted
+  branch since 2009 — see `phase12-classical-search-port.md` §8): the engine
+  implements the real invariant — *when a subgoal's complete solve
+  instantiated no metavariable visible in the remaining goals, discard its
+  alternatives* — i.e. blast's `prune`/`clashVar` rule
+  (`blast.ML:841–865`) applied to the classical drivers.  This subsumes the
+  corrected 2005 semantics (HOL4 entry goals are metavariable-free, so the
+  outer solve is deterministic by the invariant) and prunes losslessly deep
+  inside metavariable-laden states.  No compatibility flags.
+- **D26 — Full driver surface:** export `FAST_TAC`, `SLOW_TAC`, `BEST_TAC`,
+  `SLOW_BEST_TAC`, `FIRST_BEST_TAC`, `ASTAR_TAC`, `SLOW_ASTAR_TAC`,
+  `DEEPEN_TAC`, plus the step tactics `SAFE_STEP_TAC`, `CLARIFY_STEP_TAC`,
+  `STEP_TAC`, `SLOW_STEP_TAC`, `INST_STEP_TAC`.  All are thin instantiations
+  of the one engine; all names collision-checked free (2026-07-16,
+  whole-tree grep).
+- **D27 — Failure semantics:** `SAFE_TAC` and `CLARIFY_TAC` fail exactly when
+  they change nothing (`CHANGED_PROP` semantics — what Isabelle users
+  actually experience of the `safe`/`clarify` *methods*,
+  `classical.ML:834,843–844`).  The raw never-fail behavior is reachable as
+  `TRY SAFE_TAC`.
 
 ## 1. Scope
 
@@ -639,36 +702,73 @@ residue of Isabelle has no HOL4 counterpart.
 
 Within the owner decisions above; each entry cites its evidence.
 
-| # | Resolution |
-|---|---|
-| M-c1 | Rule-application matching/unification = the D21 unifier in match mode (subsumes the old "which matcher" question; pattern case gives `ho_match_term`-class capability uniformly). |
-| M-c2 | All closing/equality tests = `aconv` modulo βη normalization (Isabelle `aeconv`, `thm.ML:2256–2283`); one shared primitive. |
-| M-c3 | Safe rules with premise-occurring unfixed variables: skipped in match mode with a trace notice; applied (creating metavariables) in unify mode; premise-absent leftovers grounded with `ARB`; Phase-8 seeding-audit checklist item.  No Phase-0 declaration-path changes. |
-| M-c4 | Child-goal shape: eager strip of the premise's outer `!`/`==>` prefix (Isabelle lifting semantics); nested structure stays; fresh eigenvariable names by `variant` of the rule's bound names; new assumptions consed at the front. |
-| M-c5 | Elim consumption: assumptions tried in list order as alternatives; consumed position deleted from every child (one copy). |
-| M-c6 | Phase-1 hyp-subst slot = saturating `VAR_EQ_TAC` (its `t = t` and bool-atom extras kept — strength-first, deviations documented); engine-internal hyp-subst for metavariable nodes per `hypsubst.ML:83–104` transposed. |
-| M-c7 | `SAFE_TAC` loop = leftmost-position saturation with rescan; `CLARIFY_TAC` per-goal `REPEAT_DETERM`; children in place, premise order. |
-| M-c9 | Adjacent-equal-tag candidate dedup at the consumer (`untag_list` semantics); Phase-0 lookup contract untouched. |
-| M-c10 | `eq_mp` step keys on `~`/`==>` assumption shapes only (parity; iff via seeded `IFF_CELIM_THM`). |
-| M-e4 | Node equality/dedup: α-comparison of substituted goal lists + size prefilter; heap tiebreak (size, canonical term order). |
-| M-e5 | Leftover grounding: type metavariables ↦ `bool`, then term metavariables ↦ `ARB`; deterministic. |
-| M-e6 | Replay failure: hard diagnostic error for classical drivers; catchable outcome consumed by blast's backtrack loop. |
-| M-e7 | Engine intake: `(asl, w)` as-is, `params = []`; atomize is a no-op; goal frees globally permitted in instantiations. |
-| M-e8 | `step`'s asymmetry (safe = whole node, unsafe = selected goal) lives in the expansion function. |
-| M-e9 | `size_of` = atoms + abstractions (Isabelle `size_of_term`, `term.ML:467–473`); Phase-0 default corrected (§11). |
-| M-a | Blast typargs: per-constant, `Type.type_vars`-order of the generic type, `fromType`-encoded. |
-| M-c | Blast replay assumption addressing: positional, on the engine's ordered `asl`; the invariant is maintained by the front-cons convention + the two explicit reorders (duplicate-to-back, affected-to-front). |
-| M-d | Front of `asl` = branch head; initial branch `mkGoal w :: asl` in list order. |
-| M-e | Blast goal frees ↦ argument-less Skolems; goal tyvars ↦ rigid Frees. |
-| M-f | Hyp-subst affectedness = `aconv`-after-substitution (`equalSubst`'s test), not hypsubst's finer test. |
-| M-g | Goal-directed `==>`/`!` in blast: internal pseudo-rules replayed by the engine built-ins; not claset-visible. |
-| M-h | Dead `dup_intr` arm dropped (comment cites `blast.ML:537–539`); `rot` plumbing collapsed into the ordering convention; `tryIt`/trace surface ported. |
-| M-i | `REV_DUP_ELIM_RULE` lives in `clasetRules` (additive; §11). |
-| M-k | Reserved heads = starred pseudo-names, collision-impossible against `"thy$name"` encoding; no ancestry check. |
-| M-l | Blast config: `depth_limit` ref (20), `BLAST_DEPTH_TAC n`, no timeout; trace/stats flags. |
-| M-m | markerLib material in goals: carried opaquely (inert literals); documented. |
-| M-heap | `searchHeap` local to `src/auto/classical` (leftist, `mlibHeap`-modeled); `src/metis` is outside the stratification band, `portableML` promotion deferred to Phase 9 if wanted. |
-| M-sig | Public tactics take `thm list` (marker vocabulary; unconsumed theorems ⇒ unsafe intros); global claset implicit (`srw_ss` precedent, D4); claset-explicit programmatic layer in lowercase (SML-internal convention, not an Isabelle alias layer — D9 untouched). |
+- **M-c1:** Rule-application matching/unification = the D21 unifier in match
+  mode (subsumes the old "which matcher" question; pattern case gives
+  `ho_match_term`-class capability uniformly).
+- **M-c2:** All closing/equality tests = `aconv` modulo βη normalization
+  (Isabelle `aeconv`, `thm.ML:2256–2283`); one shared primitive.
+- **M-c3:** Safe rules with premise-occurring unfixed variables: skipped in
+  match mode with a trace notice; applied (creating metavariables) in unify
+  mode; premise-absent leftovers grounded with `ARB`; Phase-8 seeding-audit
+  checklist item.  No Phase-0 declaration-path changes.
+- **M-c4:** Child-goal shape: eager strip of the premise's outer `!`/`==>`
+  prefix (Isabelle lifting semantics); nested structure stays; fresh
+  eigenvariable names by `variant` of the rule's bound names; new assumptions
+  consed at the front.
+- **M-c5:** Elim consumption: assumptions tried in list order as alternatives;
+  consumed position deleted from every child (one copy).
+- **M-c6:** Phase-1 hyp-subst slot = saturating `VAR_EQ_TAC` (its `t = t` and
+  bool-atom extras kept — strength-first, deviations documented);
+  engine-internal hyp-subst for metavariable nodes per
+  `hypsubst.ML:83–104` transposed.
+- **M-c7:** `SAFE_TAC` loop = leftmost-position saturation with rescan;
+  `CLARIFY_TAC` per-goal `REPEAT_DETERM`; children in place, premise order.
+- **M-c9:** Adjacent-equal-tag candidate dedup at the consumer (`untag_list`
+  semantics); Phase-0 lookup contract untouched.
+- **M-c10:** `eq_mp` step keys on `~`/`==>` assumption shapes only (parity;
+  iff via seeded `IFF_CELIM_THM`).
+- **M-e4:** Node equality/dedup: α-comparison of substituted goal lists +
+  size prefilter; heap tiebreak (size, canonical term order).
+- **M-e5:** Leftover grounding: type metavariables ↦ `bool`, then term
+  metavariables ↦ `ARB`; deterministic.
+- **M-e6:** Replay failure: hard diagnostic error for classical drivers;
+  catchable outcome consumed by blast's backtrack loop.
+- **M-e7:** Engine intake: `(asl, w)` as-is, `params = []`; atomize is a
+  no-op; goal frees globally permitted in instantiations.
+- **M-e8:** `step`'s asymmetry (safe = whole node, unsafe = selected goal)
+  lives in the expansion function.
+- **M-e9:** `size_of` = atoms + abstractions (Isabelle `size_of_term`,
+  `term.ML:467–473`); Phase-0 default corrected (§11).
+- **M-a:** Blast typargs: per-constant, `Type.type_vars`-order of the generic
+  type, `fromType`-encoded.
+- **M-c:** Blast replay assumption addressing: positional, on the engine's
+  ordered `asl`; the invariant is maintained by the front-cons convention +
+  the two explicit reorders (duplicate-to-back, affected-to-front).
+- **M-d:** Front of `asl` = branch head; initial branch `mkGoal w :: asl` in
+  list order.
+- **M-e:** Blast goal frees ↦ argument-less Skolems; goal tyvars ↦ rigid
+  Frees.
+- **M-f:** Hyp-subst affectedness = `aconv`-after-substitution
+  (`equalSubst`'s test), not hypsubst's finer test.
+- **M-g:** Goal-directed `==>`/`!` in blast: internal pseudo-rules replayed by
+  the engine built-ins; not claset-visible.
+- **M-h:** Dead `dup_intr` arm dropped (comment cites `blast.ML:537–539`);
+  `rot` plumbing collapsed into the ordering convention; `tryIt`/trace
+  surface ported.
+- **M-i:** `REV_DUP_ELIM_RULE` lives in `clasetRules` (additive; §11).
+- **M-k:** Reserved heads = starred pseudo-names, collision-impossible
+  against `"thy$name"` encoding; no ancestry check.
+- **M-l:** Blast config: `depth_limit` ref (20), `BLAST_DEPTH_TAC n`, no
+  timeout; trace/stats flags.
+- **M-m:** markerLib material in goals: carried opaquely (inert literals);
+  documented.
+- **M-heap:** `searchHeap` local to `src/auto/classical` (leftist,
+  `mlibHeap`-modeled); `src/metis` is outside the stratification band,
+  `portableML` promotion deferred to Phase 9 if wanted.
+- **M-sig:** Public tactics take `thm list` (marker vocabulary; unconsumed
+  theorems ⇒ unsafe intros); global claset implicit (`srw_ss` precedent,
+  D4); claset-explicit programmatic layer in lowercase (SML-internal
+  convention, not an Isabelle alias layer — D9 untouched).
 
 ## 8. Selftests and benchmarks
 
@@ -775,19 +875,225 @@ overstated the prover, and the gate could not detect a search
 regression on the hardest problems.  This contradicted TASK_23 §3 and
 TASK_24 §5.
 
-Removed: both preprocessors and the ten instance theorems.  Honest
-baseline recorded below; the route back to a genuine green is
-`PLAN_phase_1_2_green.md`.
+Removed: both preprocessors and the ten instance theorems.  The honest
+baseline and subsequent progress are recorded below; remaining completion
+work was governed by `PLAN_phase_1_2_green.md`, whose final audit is now
+complete.
 
-| Suite | Was claimed | Actually achieved |
-|---|---|---|
-| Pelletier (`BLAST_TAC`, 30 s) | 48/48 | **42/48**; open: 34, 38, 41, 42, 43, 45 |
-| Table-1 published depths | 9/9 | **6/9**; open: 34@7, 38@4, 43@5 |
-| Set problems | 4/4 | **4/4** (unaffected) |
-| Halting II (level 2) | solved | **not solved** at depth 7 |
+- **Pelletier (`BLAST_TAC`, 30 s)**
+  - Was claimed: 48/48.
+  - Honest post-removal baseline: **42/48**; open: 34, 38, 41, 42, 43,
+    45.
+  - Honest result at `7ea3b07fa`: **46/48**; open: 34, 45.
+- **Table-1 published depths**
+  - Was claimed: 9/9.
+  - Honest post-removal baseline: **6/9**; open: 34@7, 38@4, 43@5.
+  - Honest result at `7ea3b07fa`: **8/9**; open: 34@7.
+- **Set problems**
+  - Was claimed: 4/4.
+  - Honest post-removal baseline: **4/4** (unaffected).
+  - Honest result at `7ea3b07fa`: **4/4**.
+- **Halting II (level 2)**
+  - Was claimed: solved.
+  - Honest post-removal baseline: **not solved** at depth 7.
+  - Honest result at `7ea3b07fa`: **not solved** at depth 7 within 120 s.
+
+The final column is the historical result at `7ea3b07fa`: honest
+expected-failure accounting, not an all-pass claim.  At that revision P38,
+P41, P42 and P43 had become kernel-replay-valid after the general
+rule-instance replay repair; P34 and P45 remained asserted expected
+failures, and Halting II remained an asserted expected timeout.  P34 is an
+Isabelle Table-1 problem, and no report citation established P45 as out of
+scope for Isabelle's blast.  TASK_23 and TASK_24 were therefore still
+reopened, and M1 still lacked measured improvement for P38, P41 and P45.
+The current result is recorded separately below; this paragraph preserves
+the earlier state rather than rewriting it.
 
 P46 and P52 were seeded but the search solves them unaided; the seeds
 were masking less than they appeared to.
+
+Historical gate record (2026-07-22): the original M5 per-directory gates at
+`7ea3b07fa` passed with 77 `OK` results in rules, 168 in classical and 193
+in blast, and the source-recognition audit was clean.  The first clean
+integrated attempt at that revision passed
+`bin/build -t --seq=tools/sequences/upto-auto`, but the following explicit
+`bin/build -F -t` failed reproducibly in
+`src/probability/real_borelTheory` at theorem
+`in_borel_measurable_inv`.
+
+The root cause was a general simplifier semantic defect introduced earlier:
+supplied global rewrites were installed both statically and per traversal.  A
+dynamic-only candidate avoided duplication within one traversal but refreshed
+`Once` between assumption and conclusion traversals.  Commit
+`65250f8c38f59a46f4350cc33e837b3de2508bf3` (`Preserve global bounded
+rewrite lifetimes`) instead decodes supplied bounded rewrites once into
+invocation-shared controls, compiles them through marker-adjusted local
+simpsets, separates reducer and solver contexts, and preserves marker
+semantics and the underlying solver/dproc theorem context.  It includes
+failing-first regressions; no probability proof was edited.  It adds no
+recognition mechanism and changes no benchmark count or budget.
+
+In a fresh detached worktree at exact `65250f8c3`, fresh configuration passed
+with status 0 in 18.17 seconds.  The `upto-auto` gate then passed with status
+0 in 9m41.26s and terminal `Hol built successfully.`; explicit
+`bin/build -F -t` passed with status 0 in 15m53.50s and the same terminal
+message.  The full build reported `real_borelTheory` `OK` in 14 seconds, and
+the direct log/signature record saving and exporting
+`in_borel_measurable_inv`.
+
+The audited evidence package is
+`/tmp/isabelle-tactics-task7f-20260720-root/task16_clean_full_gates_fresh/`.
+It retains the original logs and direct probability artifacts; its final
+clean rereview manifest, `metadata/evidence-checksums.txt`, has 45 entries,
+verifies successfully, and has hash
+`a6dde0623911ee486494b341ba9845c928f8fd1787c230b57134c95ae62e916b`.
+The integrated `upto-auto` disclosure records expected
+`suspFastTheory ... F-CHEAT` and zero `CHEATED` results.  The full-build
+disclosure records the intentional pre-existing upstream
+`src/num/theories/cv_compute/automation ... CHEATED` result (three
+`Saved CHEAT` entries from unchanged source) and zero `F-CHEAT` results.
+Both gates passed terminally.  The historical build transcripts did not
+independently capture `TMPDIR`, so the empty task `TMPDIR` postflight is
+corroboration only.
+
+The main tracked tree and index were clean at `65250f8c3`, and `.agent-files`
+remained ignored and untracked.  At that revision M5's gates were complete,
+but Phases 1/2 remained incomplete under M1 and the unchanged
+TASK_23/TASK_24 criteria.  Those successful gates waived none of those
+criteria.  M2's conditional and environment-limited conclusions remain
+unchanged; no evidence-selected optimization is claimed retroactively.
+
+#### 8.3.8 Historical final remeasurement at `5bc674569`
+
+The preceding baseline, `7ea3b07fa` result and `65250f8c3` gate record are
+historical.  At commit
+`5bc6745695a3ac2f48b90c09ecfb2d6f4d785307`, public production
+`Tactical.VALID (BLAST_TAC [])` retains the default maximum depth 20 and
+30-second `Timeout.apply`.  Baseline `be308c56d` is right-censored at
+`>=30s` for every P34/P38/P41/P42/P43/P45 run.  Three exact current
+kernel-valid samples are respectively:
+
+- P34: `1.329700`, `1.320911`, `1.316835` seconds;
+- P38: `.099931`, `.100237`, `.100036` seconds;
+- P41: `.009163`, `.009141`, `.009075` seconds;
+- P42: `.010805`, `.010697`, `.010773` seconds;
+- P43: `.033935`, `.033627`, `.033786` seconds;
+- P45: `3.543755`, `3.530560`, `3.470660` seconds.
+
+Strict interval separation meets M1's measured-improvement criterion on all
+six workloads.  No ratio is computed from the censored baseline.  The
+reviewed M1 package is in this directory:
+
+```text
+/tmp/isabelle-tactics-task7f-20260720-root/task22_m1_final_measurement_fresh/
+```
+
+Its final 1,818-entry manifest has
+digest
+`fa9bc5a1a98be7d09522f1c8d8c2100d18a73e4078987a5314a062784a161571`.
+At that revision, the honest suites were 48/48 Pelletier with expected
+list `[]`, 9/9 Table 1 with expected list `[]`, and 4/4 sets.
+
+The authoritative wholly fresh v2 gate package is
+`/tmp/isabelle-tactics-task7f-20260720-root/task23_final_clean_gates_fresh/`.
+Its elapsed seconds are configure 17.79,
+prerequisite setup 206.35, rules `Holmake`/selftest 15.54/12.08, classical
+`.19`/16.21, blast `.20`/20.69, level-2 blast 141.20, `upto-auto` 244.10,
+and explicit full build 989.25.  Both integrated builds have terminal
+success.  The final reviewed live seal is 395 entries with digest
+`2d66cab8b9db6c8a5e2c345a89c0ca2755b4a4d35cebc45cab9dedb2d507d3bc`;
+the inventory is 394 entries with digest
+`786c8d9c2f763ee342eaaee8c5f79659be0433013cc00d4f43ccc4445b8b3812`.
+
+Production recognition/shortcut audits, the seed guard and h4pedant are
+green, with intentional CHEAT classifications still disclosed.  Evidence
+limits are unchanged: no top-level v2 driver was retained, so whole-schedule
+enforcement is not independently proven; named wrapper intervals do not
+overlap, but unrecorded activity in gaps is not excluded.  Process snapshots
+are scoped; copied probability/CHEAT direct artifacts are post-run
+corroboration; the full log itself proves `real_borelTheory` `OK`.  The old
+first attempt is rejected for `0.497043743` seconds of setup overlap.  No
+`/tmp/Holmakefile` nonmutation claim is made.
+
+At that revision TASK_23's unchanged criteria were met, so it was
+completed/reclosed.  Halting II remained an asserted expected failure, not
+skipped, at depth 7/120 seconds.  TASK_24 therefore remained reopened.
+M2 also remained open and environment-limited at that point.  The current
+status is recorded separately below.
+
+#### 8.3.9 Final reviewed state at `f4fc8be66`
+
+Reviewed tracked source commit
+`f4fc8be6674ea37043a76f51ab7d8aa2f7f5ceb1` centralizes capture-safe
+transitive expansion of persistent metavariable bindings.  Whole-term
+substitution prevents binder capture, and the final store now feeds
+normalization, collapse, goal normalization, blast hypothesis substitution
+and exact stored-rule replay.  The change is general: it includes no
+problem recognition, answer rewrite or fallback shortcut.
+
+The regressions cover capture, indirect/shared/typed dependencies,
+persistent binding semantics, exact intro and elim replay, and all 16
+public stored-rule entry points: ordinary, measured, timed v1 through v4,
+sink/summary forms, and the selected-major variants.
+
+Candidate 05 is retained solely as historical pre-commit functional
+evidence:
+
+```text
+/tmp/isabelle-tactics-task7f-20260720-root/
+task32n_fcheat_disclosed_evidence_fresh/accepted-attempt-05/
+```
+
+Its historical manifest SHA-256 is
+`95be727c037229af3514a85d2e2f11ea56b76cdf19b84c1aa5e5372c58322d07`.
+The package froze the patch against parent
+`d90554b5fd14f72527535d1b0085fe6d746ab0a5`; the reviewed commit contains
+exactly that patch.
+
+The accepted current committed-state package is attempt-04:
+
+```text
+/tmp/isabelle-tactics-task7f-20260720-root/
+task34c_hardened_final_gates_fresh/attempt-04/evidence-package/
+```
+
+Its frozen 18-command plan has SHA-256
+`941435ac994a5dd43534b852c4f9508dce7161c2a0ecc96589fca3a92c403a00`.
+All commands exited 0 and the aggregate elapsed time is 1799.992895 s.
+Fresh configure, exact `upto-auto`, `upto-parallel`, direct
+Rules/Classical, Blast levels 1 and 2, h4pedant, diff/hygiene checks and
+the last explicit full build pass.  Both Blast levels record exactly
+48/48 unique Pelletier, 9/9 unique Table 1 and 4/4 unique set successes.
+Level 2 records exactly one kernel-valid Halting II `OK`.  The Pelletier
+and Table-1 expected-failure lists are empty.
+
+The exact `upto-auto` disclosure is one expected, pre-existing
+`suspFastTheory ... F-CHEAT`, zero `CHEATED` and zero `Saved CHEAT`.  It
+must not be merged with the full-build disclosure: zero `F-CHEAT`, one
+intentional pre-existing upstream `cv_compute/automation ... CHEATED`, and
+exactly three separately hash-bound `Saved CHEAT` theorem names.  The full
+build ended `Hol built successfully.` after 1132.087214 s.
+
+TASK_23 remains completed.  TASK_24 is completed/reclosed because all its
+groups now pass.  On 2026-07-23 the owner decided that M2 closes once the
+complete benchmark suite and Halting II pass because
+`perf_event_paranoid` cannot be lowered.  Those conditions now pass, so M2
+is closed.  The unavailable profiler is an environmental disclosure, not a
+blocker; no samples or lowered setting are claimed.
+
+M1 is closed under its original explicit acceptance criterion, which
+required behaviour preservation and measured improvement on these six
+workloads, not a rerun after every later patch.  The verified `5bc674569`
+package has a 1,818-entry manifest, six `>=30s` censored baselines, and all
+18 exact kernel-valid public-production runs below `3.544s`.  Attempt-04
+contains no current-revision performance measurement, so performance at
+`f4fc8be66` is not claimed.  That transparent limitation is a non-blocking
+follow-up, not a plan blocker.
+
+The semantic audit, exact 32,933-entry tested-tree inventory, exact
+47-entry package manifest, post-run identities and independent adversarial
+review pass.  `PLAN_phase_1_2_green.md` §6 maps every acceptance criterion
+to its evidence.  TASK_27 and the Phases 1/2 Green plan are complete.
 
 ### 8.4 Gates
 
@@ -796,42 +1102,59 @@ were masking less than they appeared to.
   every task completion; full `bin/build -F -t` at the Phase-1
   boundary (T9) and the Phase-2 boundary (T-fin), recorded in
   PLAN.md §11's gate record.
+- Final phase gate: accepted attempt-04 proves the direct suites,
+  `upto-auto`, `upto-parallel`, h4pedant, hygiene and the committed-state
+  `bin/build -F -t` at exact `f4fc8be66`.  The final audit is
+  `PLAN_phase_1_2_green.md` §6.
 
 ## 9. Task breakdown (dependency order)
 
 Phase 1:
 
-| # | task | notes |
-|---|---|---|
-| T1 | `src/auto/classical/` skeleton: Holmakefile, sequence + `SRCRELNAMES` entries; `searchHeap` | builds empty; heap is dependency-free |
-| T2 | `clasetMeta` + tests | §3.1; store API frozen at review |
-| T3 | `clasetUnify` + golden battery | §3.2; the riskiest single module — tests first (§8.2.1) |
-| T4 | `clasetGoal`: goals/nodes, intake, child-shape, render/unrender stub | §3.3 (materialization completed in T11) |
-| T5 | `clasetStep`, match mode: safe/clarify cascade, built-ins, hyp-subst slot, wrappers | §3.4; per-step validations (D22) |
-| T6 | `classicalLib` slice 1: `SAFE_TAC`/`CLARIFY_TAC`/step tactics, markers, D27 | §4 |
-| T7 | Phase-1 selftests | §8.1 |
-| T8 | Docfiles (Phase-1 tactics + deferred Phase-0 attribute/marker entries) | §4 |
-| T9 | **Phase-1 gate**: `bin/build -F -t`; PLAN.md gate record | boundary |
+- **T1:** `src/auto/classical/` skeleton: Holmakefile, sequence +
+  `SRCRELNAMES` entries; `searchHeap`.  Builds empty; heap is
+  dependency-free.
+- **T2:** `clasetMeta` + tests.  §3.1; store API frozen at review.
+- **T3:** `clasetUnify` + golden battery.  §3.2; the riskiest single
+  module — tests first (§8.2.1).
+- **T4:** `clasetGoal`: goals/nodes, intake, child-shape, render/unrender
+  stub.  §3.3 (materialization completed in T11).
+- **T5:** `clasetStep`, match mode: safe/clarify cascade, built-ins,
+  hyp-subst slot, wrappers.  §3.4; per-step validations (D22).
+- **T6:** `classicalLib` slice 1:
+  `SAFE_TAC`/`CLARIFY_TAC`/step tactics, markers, D27.  §4.
+- **T7:** Phase-1 selftests.  §8.1.
+- **T8:** Docfiles (Phase-1 tactics + deferred Phase-0 attribute/marker
+  entries).  §4.
+- **T9:** **Phase-1 gate**: `bin/build -F -t`; PLAN.md gate record.
+  Boundary.
 
 Phase 2:
 
-| # | task | notes |
-|---|---|---|
-| T10 | `clasetStep` unify mode: inst0/instp/unsafe/dup steps, M-c3 metavariable path | §3.4 |
-| T11 | `clasetReplay`: records, grounding, replay vocabulary; D24 render/lift-back completed | §3.5 |
-| T12 | `clasetSearch`: DEPTH/BEST/ASTAR/DEEPEN + D25 pruning + bounding/trace | §3.6 |
-| T13 | `classicalLib` slice 2: the D26 surface | §5 |
-| T14 | Engine/driver selftests | §8.2 |
-| T15 | `REV_DUP_ELIM_RULE` in `clasetRules` + golden tests | §6.3, §11; additive |
-| T16 | `blastTerm` + unification tests | §6.1 |
-| T17 | Translation + typargs + `blastRule` (incl. pseudo-rules, weak-elim warnings) | §6.2–6.3 |
-| T18 | `blastSearch` (cascade, penalties, prune, mayUndo, DEEPEN) | §6.4 |
-| T19 | Reconstruction on the engine + engine hyp-subst blast contract | §6.5 |
-| T20 | `tableauLib` surface + config + `tryIt` | §6.6 |
-| T21 | Pelletier corpus + BLAST selftests | §8.3 |
-| T22 | Docfiles (drivers + BLAST, incl. BBLAST_TAC cross-reference and limitations) | §5–6 |
-| T-book | PLAN.md updates: §2 record D21–D27, §6 status, §11 gate record | bookkeeping |
-| T-fin | **Phase-2 gate**: `bin/build -F -t` | boundary |
+- **T10:** `clasetStep` unify mode: inst0/instp/unsafe/dup steps, M-c3
+  metavariable path.  §3.4.
+- **T11:** `clasetReplay`: records, grounding, replay vocabulary; D24
+  render/lift-back completed.  §3.5.
+- **T12:** `clasetSearch`: DEPTH/BEST/ASTAR/DEEPEN + D25 pruning +
+  bounding/trace.  §3.6.
+- **T13:** `classicalLib` slice 2: the D26 surface.  §5.
+- **T14:** Engine/driver selftests.  §8.2.
+- **T15:** `REV_DUP_ELIM_RULE` in `clasetRules` + golden tests.  §6.3,
+  §11; additive.
+- **T16:** `blastTerm` + unification tests.  §6.1.
+- **T17:** Translation + typargs + `blastRule` (incl. pseudo-rules,
+  weak-elim warnings).  §6.2–6.3.
+- **T18:** `blastSearch` (cascade, penalties, prune, mayUndo, DEEPEN).
+  §6.4.
+- **T19:** Reconstruction on the engine + engine hyp-subst blast contract.
+  §6.5.
+- **T20:** `tableauLib` surface + config + `tryIt`.  §6.6.
+- **T21:** Pelletier corpus + BLAST selftests.  §8.3.
+- **T22:** Docfiles (drivers + BLAST, incl. BBLAST_TAC cross-reference and
+  limitations).  §5–6.
+- **T-book:** PLAN.md updates: §2 record D21–D27, §6 status, §11 gate
+  record.  Bookkeeping.
+- **T-fin:** **Phase-2 gate**: `bin/build -F -t`.  Boundary.
 
 Estimated new code: classical ≈ 4.5–5.5 kLoC SML + ≈ 1.5 kLoC tests;
 blast ≈ 2.5–3 kLoC + ≈ 1 kLoC tests/corpus.

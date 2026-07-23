@@ -1,0 +1,3 @@
+error in quse /home/lukasz/dev/HOL/worktrees/isabelle-tactics/.agent-files/benchmarks/m2-timed-v2/task7gmeasurement.sml : Fail "missing T7G_POSITION"
+error in load task7gmeasurement : Fail "missing T7G_POSITION"
+Uncaught exception at /home/lukasz/dev/HOL/worktrees/isabelle-tactics/.agent-files/benchmarks/m2-timed-v2/task7gmeasurement.sml:21: Fail "missing T7G_POSITION"

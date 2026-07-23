@@ -1,0 +1,3 @@
+error in quse /home/lukasz/dev/HOL/worktrees/isabelle-tactics/.agent-files/benchmarks/m2-timed-v2/task7gmeasurement.sml : Fail "Static Errors"
+error in load task7gmeasurement : Fail "Static Errors"
+Uncaught exception at ./basis/FinalPolyML.sml:492: Fail "Static Errors"

@@ -1,0 +1,2 @@
+collect-v10: collector_setup: OSError: injected persistent fsync failure
+collect-v10: final_status: OSError: injected persistent fsync failure

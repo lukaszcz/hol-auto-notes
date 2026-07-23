@@ -1,0 +1,8 @@
+field	value
+command	bin/build -t --seq=tools/sequences/upto-auto
+started_utc	2026-07-21T06:18:06Z
+head_before	244b01d7189ac803df48e246a483c33b553e3daa
+ended_utc	2026-07-21T06:23:09Z
+status	0
+head_after	244b01d7189ac803df48e246a483c33b553e3daa
+log_sha256	6d35db18a453140f5438951f1d6f41ccf4bb800386e040fd51d838e59793a430

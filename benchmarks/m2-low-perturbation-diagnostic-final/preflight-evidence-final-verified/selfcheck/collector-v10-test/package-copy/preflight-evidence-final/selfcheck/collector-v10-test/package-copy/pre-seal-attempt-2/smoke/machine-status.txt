@@ -1,0 +1,2 @@
+collector_status=125
+endpoint_status=0

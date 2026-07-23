@@ -1,0 +1,1 @@
+collect-v10: supervisor_schema: Invalid: requested signal status must be strict JSON integer

@@ -1,0 +1,1 @@
+collect-v10: supervisor_schema: Invalid: wrapper_identity.pid must be strict JSON integer

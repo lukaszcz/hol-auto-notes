@@ -1,0 +1,3 @@
+error in quse /home/lukasz/dev/HOL/worktrees/isabelle-tactics/.agent-files/benchmarks/m2-v10-small-calibration-retry-final/task7lcalibration.sml : Fail "Static Errors"
+error in load /home/lukasz/dev/HOL/worktrees/isabelle-tactics/.agent-files/benchmarks/m2-v10-small-calibration-retry-final/task7lcalibration : Fail "Static Errors"
+Uncaught exception at ./basis/FinalPolyML.sml:492: Fail "Static Errors"

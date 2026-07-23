@@ -1,0 +1,25 @@
+Task 7f reproduction restore self-check (obsolete history)
+==========================================================
+
+Command description for the retired in-place reproducer:
+reproduce-post-boundary-build.sh --self-check
+
+No HOL build, selftest, or timing process was run.  The script created an
+isolated temporary fixture and removed it after the checks.
+
+regular_file_restore=PASS
+directory_restore=PASS
+nested_symlink_restore=PASS
+top_level_symlink_restore=PASS
+absent_path_restore=PASS
+backup_verification_failure_detected=PASS
+unverified_backup_not_registered=PASS
+original_survived_backup_failure=PASS
+restore_failure_detected=PASS
+verified_backup_retained=PASS
+displaced_data_retained=PASS
+failure_lock_retained=PASS
+synthetic_restore_self_check=PASS
+
+dash_syntax=PASS
+sh_syntax=PASS

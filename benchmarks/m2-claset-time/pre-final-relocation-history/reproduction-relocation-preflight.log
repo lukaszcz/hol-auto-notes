@@ -1,0 +1,9 @@
+Historical fix8c relocation preflight (non-authoritative)
+=========================================================
+
+Archived from the former package-root summary.  It reported status 0 at
+`/tmp/task7f-real-relocation-fix8c-3`, but only canonicalized a nonexistent
+generated-target path and preserved external metadata skill links.  It did
+not invoke copied Holmake on an explicit harmless target and cannot support
+the current relocation claim.
+

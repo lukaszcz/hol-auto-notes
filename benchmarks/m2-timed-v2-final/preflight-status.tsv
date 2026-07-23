@@ -1,0 +1,17 @@
+label	category	started_utc	status	command
+root-index-clean	identity	2026-07-20T20:29:05Z	0	git diff --cached --quiet
+source-worktree-clean	identity	2026-07-20T20:29:05Z	0	git diff --quiet -- src/auto
+agent-index-clean	identity	2026-07-20T20:29:05Z	0	git -C .agent-files diff --cached --quiet
+classical-clean	build	2026-07-20T20:29:05Z	0	bin/Holmake -C src/auto/classical clean
+classical-build	build	2026-07-20T20:29:05Z	0	bin/Holmake -C src/auto/classical (full default build after clean)
+classical-selftest	selftest	2026-07-20T20:29:05Z	0	cd src/auto/classical && HOLSELFTESTLEVEL=2 ./selftest.exe
+blast-clean	build	2026-07-20T20:29:53Z	0	bin/Holmake -C src/auto/blast clean
+blast-build	build	2026-07-20T20:29:53Z	0	bin/Holmake -C src/auto/blast (full default build after clean)
+blast-selftest	selftest	2026-07-20T20:29:53Z	0	cd src/auto/blast && HOLSELFTESTLEVEL=2 ./selftest.exe
+harness-clean	build	2026-07-20T20:35:58Z	0	bin/Holmake -C .agent-files/benchmarks/m2-timed-v2-final clean
+harness-build	build	2026-07-20T20:35:58Z	0	bin/Holmake -C .agent-files/benchmarks/m2-timed-v2-final task7gmeasurement.exe task7gcalibration.exe task7gactive.exe
+endpoint-synthetic	process-audit	2026-07-20T20:35:58Z	0	endpoint-preflight.sh scratch/endpoint-preflight
+validator-synthetic	validator	2026-07-20T20:35:59Z	0	test-validators.sh caller-scratch caller-logs caller-status
+environment-provenance	identity	2026-07-20T20:35:59Z	0	capture environment; poly --version </dev/null 2>&1 | sed -n 1p
+artifact-freeze	identity	2026-07-20T20:35:59Z	0	ROOT=$root artifact-manifest.sh ARTIFACTS-FROZEN.tsv
+closure-required	identity	2026-07-20T20:36:00Z	0	require blastSearch/blastRule/blastTerm/tableauLib/clasetLib/clasetSeedTheory in complete closure

@@ -1,0 +1,5 @@
+ROOT=/home/lukasz/dev/HOL/worktrees/isabelle-tactics
+PACKAGE_DIR=/home/lukasz/dev/HOL/worktrees/isabelle-tactics/.agent-files/benchmarks/m2-low-perturbation-diagnostic-final
+SCRATCH_ROOT=/tmp/isabelle-tactics-task7f-20260720-root/task7n_low_perturbation_diagnostic_fresh/dry-run-root
+ARTIFACT_REFERENCE=/home/lukasz/dev/HOL/worktrees/isabelle-tactics/.agent-files/benchmarks/m2-low-perturbation-diagnostic-final/ARTIFACT-REFERENCE.tsv
+DRY_RUN=1

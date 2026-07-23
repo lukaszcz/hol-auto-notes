@@ -1,0 +1,10 @@
+label	status	command
+head	0	git rev-parse HEAD
+index-clean	0	git diff --cached --quiet
+tracked-clean	0	git diff --quiet
+outer-ignore	0	git check-ignore package
+no-outer-agent-tracking	0	git ls-files .agent-files is empty
+v10-vendor	0	verify v10 vendor/delta
+exact-endpoint	0	exact final endpoint
+live-executable-absent	0	live executable absent
+live-hol-absent	0	live .hol absent

@@ -1,0 +1,10 @@
+validate-supervisor-v10: PASS
+validate-supervisor-v10: PASS
+validate-supervisor-v10: PASS
+validate-supervisor-v10: PASS
+validate-supervisor-v10: PASS
+validate-supervisor-v10: PASS
+validate-supervisor-v10: PASS
+validate-supervisor-v10: PASS
+validate-supervisor-v10: PASS
+supervise-v10 readiness/vector/terminal/signals/fsync: PASS

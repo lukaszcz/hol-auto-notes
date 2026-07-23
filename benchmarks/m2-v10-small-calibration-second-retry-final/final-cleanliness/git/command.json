@@ -1,0 +1,1 @@
+["sh", "-c", "test \"$(git rev-parse HEAD)\" = 244b01d7189ac803df48e246a483c33b553e3daa; git diff --quiet; git diff --cached --quiet; git status --short --branch; git -C .agent-files status --short --branch"]

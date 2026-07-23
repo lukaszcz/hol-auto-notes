@@ -1,0 +1,41 @@
+Fix9 first relocation attempt (failed, pre-final, non-authoritative)
+==================================================================
+
+Command output: `/tmp/task7f-fix9-current-relocation-final`
+Status: 1
+
+Smart-configuration, copied-tool startup diagnostics and the real harmless
+target all completed with status 0.  External metadata removal reported three
+removed skill links.  The absolute-link audit reported 1,636 total remaining
+absolute links, all 1,636 required links contained below the copy and zero
+external-other links.  Every supervisor retained group-gone PASS, and the
+complete original before/at-exit manifests matched.
+
+The run then correctly rejected `holmake-real-target.log`: before honoring
+`--no_preexecs`, Holmake's discovery pass followed inherited default
+`INCLUDES`/`PRE_INCLUDES` from its base environment and visited original-root
+directories.  No preexec command ran, but the visit was ambient original-root
+contamination and invalidates this attempt.  The final script therefore
+creates a diagnostic Holmakefile that explicitly clears both variables before
+the target rule, in addition to the command-line discovery-disabling options.
+This failed attempt is not relocation evidence and is not selected.
+
+A second pre-final attempt added explicit empty include variables.  Strace
+then proved the apparent baked-state theory wrong: the external ancestor
+`/tmp/Holmakefile` was opened and its `INCLUDES` led to 19 original-root file
+syscalls, including three successful read-only opens and no writes.  That
+attempt at
+`/tmp/task7f-fix9-authoritative-relocation` also returned 1 and is not
+selected.  A copied state0 rebuilt from existing copied objects produced the
+same accesses, confirming ambient ancestor metadata as the cause.  The final
+diagnostic rejects external ancestor Holmake metadata before invocation and
+retains a full file-syscall trace requiring zero original-root accesses.  It
+uses `builddepgraph`, the relevant real-target/recipe debug category, while
+retaining all execution-disabling controls and explicit empty variables.
+
+A later clean-parent `/var/tmp` experiment removed the hostile ancestor and
+reduced the original-root trace from 19 syscalls to three `newfstatat` calls.
+All three came from spawned `/bin/sh` processes validating a stale inherited
+`PWD`; there were no original-root opens or writes.  The final command
+environment sets `PWD` to the diagnostic directory and removes `OLDPWD`
+before strace.  This experiment also remains non-authoritative.

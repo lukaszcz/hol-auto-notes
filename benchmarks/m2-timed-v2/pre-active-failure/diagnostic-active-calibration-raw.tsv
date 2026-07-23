@@ -1,0 +1,4 @@
+repetition	mode	batch	elapsed	counter_signature
+/home/lukasz/dev/HOL/worktrees/isabelle-tactics/.agent-files/benchmarks/m2-timed-v2/task7gactive.sml:46:5-14: parse error: expected identifier
+/home/lukasz/dev/HOL/worktrees/isabelle-tactics/.agent-files/benchmarks/m2-timed-v2/task7gactive.sml:46: error: = expected but ; was found
+/home/lukasz/dev/HOL/worktrees/isabelle-tactics/.agent-files/benchmarks/m2-timed-v2/task7gactive.sml:46: error: Expression expected but ; was found

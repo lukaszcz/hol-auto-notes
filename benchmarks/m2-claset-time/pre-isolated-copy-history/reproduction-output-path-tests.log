@@ -1,0 +1,23 @@
+Task 7f canonical output-path refusal checks (obsolete history)
+===============================================================
+
+All tests invoked the retired in-place reproducer before build/mutation.
+No HOL build, selftest, or timing process was run.
+
+terminal_dot=PASS_REJECTED
+package_child=PASS_REJECTED
+dot_slash_classical_child=PASS_REJECTED
+dotdot_blast_child=PASS_REJECTED
+bin_child=PASS_REJECTED
+symlinked_parent_resolving_to_blast=PASS_REJECTED
+preexisting_output=PASS_REJECTED
+
+The corresponding refusal reasons were, respectively: terminal `.`/`..` is
+invalid; canonical containment in the package, classical, blast, or bin tree;
+and output already exists.  The temporary symlinked parent resolved to
+src/auto/blast and was removed after the test.
+
+print_mode=PASS_NON_MUTATING
+print_mode_reported_whole_hol_snapshots=PASS
+print_mode_reported_staged_verified_restore=PASS
+print_mode_reported_retained_failure_recovery=PASS

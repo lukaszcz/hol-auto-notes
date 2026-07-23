@@ -1,0 +1,4 @@
+captured_utc=2026-07-20T20:22:05Z
+revision=b1c8700d2125cc2662bcb9ee348fe54143f3bee4
+host=Linux ip-172-31-20-100 6.17.0-1012-aws #12~24.04.1-Ubuntu SMP Mon Apr  6 17:38:24 UTC 2026 aarch64 aarch64 aarch64 GNU/Linux
+poly=

@@ -1,0 +1,15 @@
+--- frozen-inputs/supervise.py
++++ future-protocol/supervise-v2.py
+@@
+-"""Run one child in a fresh process group and retain observed termination."""
++"""Future protocol: supervise one Linux process group to a terminal state."""
+@@
+-            returncode = child.wait(timeout=args.timeout)
++            # Version 2 is a Linux subreaper. It polls the entire group on a
++            # monotonic TERM grace, escalates on remaining membership, polls
++            # again under a separate bounded post-KILL interval, handles
++            # ESRCH races, records every waitpid reap, and emits an explicit
++            # completed/timeout/failure terminal classification.
+
+The executable full replacement is `supervise-v2.py`. This compact mapping is
+not asserted to be an apply-ready complete diff.

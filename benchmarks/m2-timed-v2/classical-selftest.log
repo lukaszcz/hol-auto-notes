@@ -1,0 +1,158 @@
+heap returns values in ascending order ...                                   [32m[1mOK[0m
+heap preserves entries with duplicate keys ...                               [32m[1mOK[0m
+delete_all_min pops every entry with the minimal key ...                     [32m[1mOK[0m
+empty heap operations fail ...                                               [32m[1mOK[0m
+metavariable create bind and walk round-trip ...                             [32m[1mOK[0m
+normalization follows bindings and contracts beta and eta ...                [32m[1mOK[0m
+bind rejects occurs-check and allow-set violations ...                       [32m[1mOK[0m
+stores are persistent ...                                                    [32m[1mOK[0m
+stores reject forged and foreign metavariables ...                           [32m[1mOK[0m
+ground is deterministic and grounds types before terms ...                   [32m[1mOK[0m
+collapse substitutions instantiate kernel theorems ...                       [32m[1mOK[0m
+unifier handles typed first-order cases and occurs checks ...                [32m[1mOK[0m
+types-only unification is integrated and checks occurs ...                   [32m[1mOK[0m
+pattern unification abstracts distinct eigenvariables ...                    [32m[1mOK[0m
+pattern bindings enforce allow sets and distinct spines ...                  [32m[1mOK[0m
+patterns handle explicit scope, multiple arguments and fallback ...          [32m[1mOK[0m
+first-order approximation decomposes only equal arities ...                  [32m[1mOK[0m
+unification compares modulo beta eta normalization ...                       [32m[1mOK[0m
+match mode protects old term and type metavariables ...                      [32m[1mOK[0m
+ordinary and timed unifiers have table-driven branch parity ...              [32m[1mOK[0m
+timed unifier control and clock exceptions preserve identity ...             [32m[1mOK[0m
+first-order results agree with FullUnify oracle ...                          [32m[1mOK[0m
+unifier returns one reproducible deterministic solution ...                  [32m[1mOK[0m
+engine intake preserves ordered assumptions ...                              [32m[1mOK[0m
+new assumptions are consed at the front ...                                  [32m[1mOK[0m
+premise children strip only the outer prefix ...                             [32m[1mOK[0m
+elim alternatives delete one positional assumption from every child ...      [32m[1mOK[0m
+node constructors register every declared parameter ...                      [32m[1mOK[0m
+engine size counts atoms and abstractions after substitution ...             [32m[1mOK[0m
+node equality and ordering use canonical alpha rendering ...                 [32m[1mOK[0m
+unrender records eigenvariables introduced by a tactic ...                   [32m[1mOK[0m
+metavariable-free nodes render and lift tactic children ...                  [32m[1mOK[0m
+safe-step cascade reaches each ordered slot with valid evidence ...          [32m[1mOK[0m
+assumption closing uses shared beta-eta equality ...                         [32m[1mOK[0m
+clarify bimatch2 accepts one closing child and rejects branching ...         [32m[1mOK[0m
+match mode skips unfixed safe-rule premise variables ...                     [32m[1mOK[0m
+safe wrappers surround the complete cascade ...                              [32m[1mOK[0m
+safe eq-mp slot closes a matching contradiction ...                          [32m[1mOK[0m
+rule premise stripping keeps explicit negation opaque ...                    [32m[1mOK[0m
+elim lookup dedups tags but keeps positional alternatives ...                [32m[1mOK[0m
+rule validations normalize local theorem hypotheses ...                      [32m[1mOK[0m
+GEN step records its eigenvariable and valid evidence ...                    [32m[1mOK[0m
+SAFE_TAC saturates implication and conjunction in premise order ...          <<HOL warning: clasetRules.extend_decl: Ignoring duplicate safe introduction rule>>
+[32m[1mOK[0m
+CLARIFY_TAC leaves a genuinely branching conjunction intact ...              <<HOL warning: clasetRules.extend_decl: Ignoring duplicate safe introduction rule>>
+[32m[1mOK[0m
+public step tactics perform one valid step ...                               [32m[1mOK[0m
+safe and clarify tactics fail exactly when nothing changes ...               [32m[1mOK[0m
+an unmarked extra theorem is unsafe, not a SAFE_TAC rule ...                 [32m[1mOK[0m
+per-invocation claset changes never leak ...                                 [32m[1mOK[0m
+safe cascade slot 1 closes by assumption with exact residue ...              [32m[1mOK[0m
+safe cascade slot 2 performs modus ponens before later slots ...             [32m[1mOK[0m
+safe cascade slot 3 applies a safe zero-premise rule ...                     [32m[1mOK[0m
+DISCH occupies the built-in position before hyp substitution ...             [32m[1mOK[0m
+GEN occupies the built-in position before hyp substitution ...               [32m[1mOK[0m
+safe cascade slot 4 saturates hypothesis substitution ...                    [32m[1mOK[0m
+safe cascade slot 5 applies a positive-premise safe rule ...                 [32m[1mOK[0m
+CLARIFY accepts weight 1 and asserts its exact residue ...                   [32m[1mOK[0m
+CLARIFY rejects rules of weight 3 ...                                        [32m[1mOK[0m
+CLARIFY bimatch2 closes the left branch exactly ...                          [32m[1mOK[0m
+CLARIFY bimatch2 closes the right branch exactly ...                         [32m[1mOK[0m
+CLARIFY bimatch2 accepts a matching-contradiction branch ...                 [32m[1mOK[0m
+CLARIFY leaves an unclosable conjunction conclusion untouched ...            <<HOL warning: clasetRules.extend_decl: Ignoring duplicate safe introduction rule>>
+[32m[1mOK[0m
+seed SAFE_TAC splits conjunctions with exact residues ...                    [32m[1mOK[0m
+seed SAFE_TAC eliminates a conjunctive assumption exactly ...                [32m[1mOK[0m
+seed SAFE_TAC handles universal introduction and implication ...             [32m[1mOK[0m
+seed SAFE_TAC applies safe disjunction introduction exactly ...              [32m[1mOK[0m
+seed SAFE_TAC never applies unsafe universal elimination ...                 [32m[1mOK[0m
+seed SAFE_TAC never instantiates EXISTS_INTRO_THM ...                        [32m[1mOK[0m
+D27 exposes raw no-change behavior through TRY ...                           [32m[1mOK[0m
+classical marker vocabulary is consumed and generic tags pass ...            [32m[1mOK[0m
+generic Excl passes through without deleting a seed rule ...                 [32m[1mOK[0m
+Del is consumed and removes a seed rule for one invocation ...               [32m[1mOK[0m
+safe wrappers compose newest innermost with ORELSE commitment ...            [32m[1mOK[0m
+hyp-subst saturates a chain in one safe step ...                             [32m[1mOK[0m
+hyp-subst refuses both orientations of an occurs-check cycle ...             [32m[1mOK[0m
+hyp-subst deletes reflexive equalities ...                                   [32m[1mOK[0m
+hyp-subst keeps HOL4 positive and negative bool-atom extras ...              [32m[1mOK[0m
+unify rule application leaves and records a witness metavariable ...         [32m[1mOK[0m
+inst0 assumption unifies the goal with an assumption ...                     [32m[1mOK[0m
+inst0 APPEND keeps assumption then contradiction alternatives ...            [32m[1mOK[0m
+slow_step APPEND keeps unsafe alternatives after inst_step ...               [32m[1mOK[0m
+metavariable hyp-subst eliminates only the rigid variable side ...           [32m[1mOK[0m
+step saturates every safe goal before its selected unsafe rung ...           [32m[1mOK[0m
+depth_step selects duplicate versus consuming unsafe rules ...               [32m[1mOK[0m
+measured exact rules preserve intro and elim sequence order ...              [32m[1mOK[0m
+timed exact rules account successful and failed attempts exactly ...         [32m[1mOK[0m
+timed fake-clock observations results and totals repeat exactly ...          [32m[1mOK[0m
+timed exact-rule Enter and Exit cutoffs have exact accounting ...            [32m[1mOK[0m
+timed exact-rule clock failures propagate without fabricated Exit ...        [32m[1mOK[0m
+timed-v2 minor split is exact bounded and replay-equivalent ...              [32m[1mOK[0m
+timed-v2 failure interruption and clock errors tunnel exactly ...            [32m[1mOK[0m
+measured exact-rule cutoff reports the precise deep boundary ...             [32m[1mOK[0m
+measured exact-rule callbacks preserve exception identity ...                [32m[1mOK[0m
+measured exact-rule observations and outputs are deterministic ...           [32m[1mOK[0m
+match-mode derivation grounds and replays without search ...                 [32m[1mOK[0m
+unify-mode witness is grounded before zero-search replay ...                 [32m[1mOK[0m
+grounded scripts and substitutions are deterministic ...                     [32m[1mOK[0m
+assumption replay recovers only through its recorded action ...              [32m[1mOK[0m
+move-assumption-to-back validates and round-trips ...                        [32m[1mOK[0m
+corrupt replay is a catchable outcome ...                                    [32m[1mOK[0m
+metavariable wrapper round-trips and replays its validation ...              [32m[1mOK[0m
+wrapper cannot introduce a marked free it did not receive ...                [32m[1mOK[0m
+unrender rejects an unreceived marked type variable ...                      [32m[1mOK[0m
+DEPTH_FIRST is lazy, depth-first, and suppresses duplicate solutions ...     [32m[1mOK[0m
+BEST_FIRST orders by size and eagerly drains child sequences ...             [32m[1mOK[0m
+BEST_FIRST delete_all_min expands an equal node only once ...                [32m[1mOK[0m
+ASTAR uses size plus five times level and LIFO equal costs ...               [32m[1mOK[0m
+ASTAR suppresses the first equal-cost duplicate ...                          [32m[1mOK[0m
+DEEPEN restarts and commits to its first successful bound ...                [32m[1mOK[0m
+BEST_FIRST node counter stops a runaway frontier cleanly ...                 [32m[1mOK[0m
+swapped implication and universal builtins are valid safe steps ...          [32m[1mOK[0m
+FAST_TAC Pelletier 1 ...                                                     [32m[1mOK[0m
+FAST_TAC Pelletier 2 ...                                                     [32m[1mOK[0m
+FAST_TAC Pelletier 3 ...                                                     [32m[1mOK[0m
+FAST_TAC Pelletier 4 ...                                                     [32m[1mOK[0m
+FAST_TAC Pelletier 5 ...                                                     [32m[1mOK[0m
+FAST_TAC Pelletier 6 ...                                                     [32m[1mOK[0m
+FAST_TAC Pelletier 7 ...                                                     [32m[1mOK[0m
+FAST_TAC Pelletier 8 ...                                                     [32m[1mOK[0m
+FAST_TAC Pelletier 9 ...                                                     [32m[1mOK[0m
+FAST_TAC Pelletier 10 ...                                                    [32m[1mOK[0m
+FAST_TAC Pelletier 11 ...                                                    [32m[1mOK[0m
+FAST_TAC Pelletier 12 ...                                                    [32m[1mOK[0m
+FAST_TAC Pelletier 13 ...                                                    [32m[1mOK[0m
+FAST_TAC Pelletier 14 ...                                                    [32m[1mOK[0m
+FAST_TAC Pelletier 15 ...                                                    [32m[1mOK[0m
+FAST_TAC Pelletier 16 ...                                                    [32m[1mOK[0m
+FAST_TAC Pelletier 17 ...                                                    [32m[1mOK[0m
+FAST_TAC Pelletier 24 ...                                                    [32m[1mOK[0m
+FAST_TAC Pelletier 26 ...                                                    [32m[1mOK[0m
+FAST_TAC Pelletier 28 ...                                                    [32m[1mOK[0m
+FAST_TAC Pelletier solved-goal count ...                                     [32m[1mOK[0m
+D25 prunes alternatives whose bindings cannot reach a sibling ...            [32m[1mOK[0m
+D25 retains alternatives that bind a sibling metavariable ...                [32m[1mOK[0m
+D25 does not mistake a solved later sibling for the active goal ...          [32m[1mOK[0m
+classical trace levels report summaries and full candidates ...              [32m[1mOK[0m
+FAST_TAC instantiates a witness and replays the solution ...                 [32m[1mOK[0m
+single engine step drivers replay their resulting nodes ...                  [32m[1mOK[0m
+DEEPEN supports a raised programmatic start beyond four ...                  [32m[1mOK[0m
+DEEPEN saturates safe siblings before bounded search ...                     [32m[1mOK[0m
+all solve-completely drivers fail cleanly on a non-theorem ...               [32m[1mOK[0m
+frontier drivers replay Tactical.VALID-checked solutions ...                 [32m[1mOK[0m
+all drivers reject capture by a later eigenvariable ...                      [32m[1mOK[0m
+all drivers reject the dual quantifier interchange ...                       [32m[1mOK[0m
+all drivers reject capture from a sibling-local parameter ...                [32m[1mOK[0m
+every complete driver success passes Tactical.VALID replay ...               [32m[1mOK[0m
+grounded driver theorems are deterministic across identical runs ...         [32m[1mOK[0m
+D24 metavariable wrapper round-trips through a complete driver ...           [32m[1mOK[0m
+SLOW backtracks past the instantiation rung that commits FAST ...            [32m[1mOK[0m
+BEST driver expands the smaller child before an earlier large one ...        [32m[1mOK[0m
+DEEPEN accounting leaves safe steps and inst0 free ...                       [32m[1mOK[0m
+DEEPEN charges exactly one for an unsafe witness step ...                    [32m[1mOK[0m
+DEEPEN charges exactly one for a duplicating elimination ...                 [32m[1mOK[0m
+D25 negative case retains shared alternatives in the driver ...              [32m[1mOK[0m
+blast hyp-subst skips unsuitable equations and stably reorders ...           [32m[1mOK[0m
+blast hyp-subst does not beta-normalize equality orientation ...             [32m[1mOK[0m

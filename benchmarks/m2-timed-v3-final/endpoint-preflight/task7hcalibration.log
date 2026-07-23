@@ -1,0 +1,6 @@
+name=task7hcalibration
+pattern=[t]ask7hcalibration
+wrapper_pid=471
+child_pid=472
+471 /tmp/isabelle-tactics-task7f-20260720-root/task7h-measure/endpoint-preflight/wrapper-task7hcalibration 30
+472 /tmp/isabelle-tactics-task7f-20260720-root/task7h-measure/endpoint-preflight/bin/hol --gcthreads=1 task7hcalibration 30

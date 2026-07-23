@@ -1,0 +1,241 @@
+2430687 execve("/var/tmp/final-authoritative-relocation-ptrace/worktree/bin/Holmake", ["/var/tmp/final-authoritative-rel"..., "--dbg=builddepgraph", "--verbose", "--no_preexecs", "--no-project", "--no_overlay", "--no_prereqs", "--holmakefile=/var/tmp/final-aut"..., "--directory=/var/tmp/final-autho"..., "--holstate=/var/tmp/final-author"..., "relocation-target"], 0xfffffc37f8c8 /* 66 vars */) = 0
+2430687 faccessat(AT_FDCWD, "/etc/ld.so.preload", R_OK) = -1 ENOENT (No such file or directory)
+2430687 openat(AT_FDCWD, "/usr/local/lib/libpolyml.so.16", O_RDONLY|O_CLOEXEC) = 3
+2430687 openat(AT_FDCWD, "/usr/local/lib/libc.so.6", O_RDONLY|O_CLOEXEC) = -1 ENOENT (No such file or directory)
+2430687 openat(AT_FDCWD, "/home/lukasz/lib/libc.so.6", O_RDONLY|O_CLOEXEC) = -1 ENOENT (No such file or directory)
+2430687 newfstatat(AT_FDCWD, "/home/lukasz/lib/", 0xffffe3291690, 0) = -1 ENOENT (No such file or directory)
+2430687 openat(AT_FDCWD, "/usr/local/lib/libc.so.6", O_RDONLY|O_CLOEXEC) = -1 ENOENT (No such file or directory)
+2430687 openat(AT_FDCWD, "/etc/ld.so.cache", O_RDONLY|O_CLOEXEC) = 3
+2430687 openat(AT_FDCWD, "/lib/aarch64-linux-gnu/libc.so.6", O_RDONLY|O_CLOEXEC) = 3
+2430687 openat(AT_FDCWD, "/usr/local/lib/libstdc++.so.6", O_RDONLY|O_CLOEXEC) = -1 ENOENT (No such file or directory)
+2430687 openat(AT_FDCWD, "/lib/aarch64-linux-gnu/libstdc++.so.6", O_RDONLY|O_CLOEXEC) = 3
+2430687 openat(AT_FDCWD, "/usr/local/lib/libm.so.6", O_RDONLY|O_CLOEXEC) = -1 ENOENT (No such file or directory)
+2430687 openat(AT_FDCWD, "/lib/aarch64-linux-gnu/libm.so.6", O_RDONLY|O_CLOEXEC) = 3
+2430687 openat(AT_FDCWD, "/usr/local/lib/libgcc_s.so.1", O_RDONLY|O_CLOEXEC) = -1 ENOENT (No such file or directory)
+2430687 openat(AT_FDCWD, "/lib/aarch64-linux-gnu/libgcc_s.so.1", O_RDONLY|O_CLOEXEC) = 3
+2430687 openat(AT_FDCWD, "/sys/devices/system/cpu/online", O_RDONLY|O_CLOEXEC) = 3
+2430687 openat(AT_FDCWD, "/proc/cpuinfo", O_RDONLY) = 3
+2430687 openat(AT_FDCWD, "/sys/devices/system/cpu/online", O_RDONLY|O_CLOEXEC) = 3
+2430721 getcwd("/var/tmp/final-authoritative-relocation-ptrace/worktree", 4096) = 56
+2430721 getcwd("/var/tmp/final-authoritative-relocation-ptrace/worktree", 4096) = 56
+2430721 chdir("/var/tmp/final-authoritative-relocation-ptrace/worktree/.task7f-relocation-diagnostic") = 0
+2430721 getcwd("/var/tmp/final-authoritative-relocation-ptrace/worktree/.task7f-relocation-diagnostic", 4096) = 86
+2430721 faccessat(AT_FDCWD, "sigobj", R_OK|X_OK) = -1 ENOENT (No such file or directory)
+2430721 chdir("..")                     = 0
+2430721 getcwd("/var/tmp/final-authoritative-relocation-ptrace/worktree", 4096) = 56
+2430721 faccessat(AT_FDCWD, "sigobj", R_OK|X_OK) = 0
+2430721 newfstatat(AT_FDCWD, "sigobj", {st_mode=S_IFDIR|0775, st_size=61440, ...}, 0) = 0
+2430721 faccessat(AT_FDCWD, "bin/Holmake", R_OK|X_OK) = 0
+2430721 chdir("/var/tmp/final-authoritative-relocation-ptrace/worktree/.task7f-relocation-diagnostic") = 0
+2430721 chdir("/var/tmp/final-authoritative-relocation-ptrace/worktree") = 0
+2430721 chdir("/var/tmp/final-authoritative-relocation-ptrace/worktree/.task7f-relocation-diagnostic") = 0
+2430721 getcwd("/var/tmp/final-authoritative-relocation-ptrace/worktree/.task7f-relocation-diagnostic", 4096) = 86
+2430721 getcwd("/var/tmp/final-authoritative-relocation-ptrace/worktree/.task7f-relocation-diagnostic", 4096) = 86
+2430721 faccessat(AT_FDCWD, "/var/tmp/final-authoritative-relocation-ptrace/worktree/.task7f-relocation-diagnostic/.hol_preexec", R_OK) = -1 ENOENT (No such file or directory)
+2430721 getcwd("/var/tmp/final-authoritative-relocation-ptrace/worktree/.task7f-relocation-diagnostic", 4096) = 86
+2430721 faccessat(AT_FDCWD, "/var/tmp/final-authoritative-relocation-ptrace/worktree/.task7f-relocation-diagnostic/Holmakefile", R_OK) = 0
+2430721 openat(AT_FDCWD, "/var/tmp/final-authoritative-relocation-ptrace/worktree/.kernelidstr", O_RDONLY) = 3
+2430721 getcwd("/var/tmp/final-authoritative-relocation-ptrace/worktree/.task7f-relocation-diagnostic", 4096) = 86
+2430721 getcwd("/var/tmp/final-authoritative-relocation-ptrace/worktree/.task7f-relocation-diagnostic", 4096) = 86
+2430721 openat(AT_FDCWD, "/var/tmp/final-authoritative-relocation-ptrace/worktree/.task7f-relocation-diagnostic/Holmakefile", O_RDONLY) = 3
+2430721 faccessat(AT_FDCWD, "/var/tmp/final-authoritative-relocation-ptrace/worktree/.task7f-relocation-diagnostic/holproject.toml", R_OK) = -1 ENOENT (No such file or directory)
+2430721 faccessat(AT_FDCWD, "/var/tmp/final-authoritative-relocation-ptrace/worktree/.hol_preexec", R_OK) = -1 ENOENT (No such file or directory)
+2430721 getcwd("/var/tmp/final-authoritative-relocation-ptrace/worktree/.task7f-relocation-diagnostic", 4096) = 86
+2430721 faccessat(AT_FDCWD, "/var/tmp/final-authoritative-relocation-ptrace/worktree/Holmakefile", R_OK) = -1 ENOENT (No such file or directory)
+2430721 faccessat(AT_FDCWD, "/var/tmp/final-authoritative-relocation-ptrace/worktree/holproject.toml", R_OK) = 0
+2430721 openat(AT_FDCWD, "/var/tmp/final-authoritative-relocation-ptrace/worktree/holproject.toml", O_RDONLY) = 3
+2430721 faccessat(AT_FDCWD, "/var/tmp/final-authoritative-relocation-ptrace/worktree/holproject.local.toml", R_OK) = -1 ENOENT (No such file or directory)
+2430721 faccessat(AT_FDCWD, "/var/tmp/final-authoritative-relocation-ptrace/.hol_preexec", R_OK) = -1 ENOENT (No such file or directory)
+2430721 getcwd("/var/tmp/final-authoritative-relocation-ptrace/worktree/.task7f-relocation-diagnostic", 4096) = 86
+2430721 faccessat(AT_FDCWD, "/var/tmp/final-authoritative-relocation-ptrace/Holmakefile", R_OK) = -1 ENOENT (No such file or directory)
+2430721 faccessat(AT_FDCWD, "/var/tmp/final-authoritative-relocation-ptrace/holproject.toml", R_OK) = -1 ENOENT (No such file or directory)
+2430721 faccessat(AT_FDCWD, "/var/tmp/.hol_preexec", R_OK) = -1 ENOENT (No such file or directory)
+2430721 getcwd("/var/tmp/final-authoritative-relocation-ptrace/worktree/.task7f-relocation-diagnostic", 4096) = 86
+2430721 faccessat(AT_FDCWD, "/var/tmp/Holmakefile", R_OK) = -1 ENOENT (No such file or directory)
+2430721 faccessat(AT_FDCWD, "/var/tmp/holproject.toml", R_OK) = -1 ENOENT (No such file or directory)
+2430721 faccessat(AT_FDCWD, "/var/.hol_preexec", R_OK) = -1 ENOENT (No such file or directory)
+2430721 getcwd("/var/tmp/final-authoritative-relocation-ptrace/worktree/.task7f-relocation-diagnostic", 4096) = 86
+2430721 faccessat(AT_FDCWD, "/var/Holmakefile", R_OK) = -1 ENOENT (No such file or directory)
+2430721 faccessat(AT_FDCWD, "/var/holproject.toml", R_OK) = -1 ENOENT (No such file or directory)
+2430721 faccessat(AT_FDCWD, "/.hol_preexec", R_OK) = -1 ENOENT (No such file or directory)
+2430721 getcwd("/var/tmp/final-authoritative-relocation-ptrace/worktree/.task7f-relocation-diagnostic", 4096) = 86
+2430721 faccessat(AT_FDCWD, "/Holmakefile", R_OK) = -1 ENOENT (No such file or directory)
+2430721 faccessat(AT_FDCWD, "/holproject.toml", R_OK) = -1 ENOENT (No such file or directory)
+2430721 faccessat(AT_FDCWD, "/.hol_preexec", R_OK) = -1 ENOENT (No such file or directory)
+2430721 getcwd("/var/tmp/final-authoritative-relocation-ptrace/worktree/.task7f-relocation-diagnostic", 4096) = 86
+2430721 faccessat(AT_FDCWD, "/holproject.toml", R_OK) = -1 ENOENT (No such file or directory)
+2430721 faccessat(AT_FDCWD, "/var/tmp/final-authoritative-relocation-ptrace/worktree/.task7f-relocation-diagnostic/holproject.toml", R_OK) = -1 ENOENT (No such file or directory)
+2430721 faccessat(AT_FDCWD, "/var/tmp/final-authoritative-relocation-ptrace/worktree/.task7f-relocation-diagnostic/.holpath", R_OK) = -1 ENOENT (No such file or directory)
+2430721 openat(AT_FDCWD, "/var/tmp/final-authoritative-relocation-ptrace/worktree/.kernelidstr", O_RDONLY) = 4
+2430721 faccessat(AT_FDCWD, "Holmakefile", R_OK) = 0
+2430721 faccessat(AT_FDCWD, "/var/tmp/final-authoritative-relocation-ptrace/worktree/.task7f-relocation-diagnostic/holproject.toml", R_OK) = -1 ENOENT (No such file or directory)
+2430721 faccessat(AT_FDCWD, "/var/tmp/final-authoritative-relocation-ptrace/worktree/.task7f-relocation-diagnostic/.holpath", R_OK) = -1 ENOENT (No such file or directory)
+2430721 openat(AT_FDCWD, "/var/tmp/final-authoritative-relocation-ptrace/worktree/.kernelidstr", O_RDONLY) = 4
+2430721 getcwd("/var/tmp/final-authoritative-relocation-ptrace/worktree/.task7f-relocation-diagnostic", 4096) = 86
+2430721 getcwd("/var/tmp/final-authoritative-relocation-ptrace/worktree/.task7f-relocation-diagnostic", 4096) = 86
+2430721 openat(AT_FDCWD, "/var/tmp/final-authoritative-relocation-ptrace/worktree/.task7f-relocation-diagnostic/Holmakefile", O_RDONLY) = 4
+2430721 chdir("/var/tmp/final-authoritative-relocation-ptrace/worktree/.task7f-relocation-diagnostic") = 0
+2430721 openat(AT_FDCWD, ".", O_RDONLY|O_NONBLOCK|O_CLOEXEC|O_DIRECTORY) = 4
+2430721 openat(AT_FDCWD, "/var/tmp/final-authoritative-relocation-ptrace/worktree/bin", O_RDONLY|O_NONBLOCK|O_CLOEXEC|O_DIRECTORY) = 4
+2430721 newfstatat(AT_FDCWD, "/var/tmp/final-authoritative-relocation-ptrace/worktree/bin/hol.state0", {st_mode=S_IFREG|0664, st_size=19297696, ...}, 0) = 0
+2430721 faccessat(AT_FDCWD, "/var/tmp/final-authoritative-relocation-ptrace/worktree/.task7f-relocation-diagnostic/relocation-target", F_OK) = -1 ENOENT (No such file or directory)
+2430721 newfstatat(AT_FDCWD, "/var/tmp/final-authoritative-relocation-ptrace/worktree/.task7f-relocation-diagnostic/relocation-target", 0xed64a8efe788, 0) = -1 ENOENT (No such file or directory)
+2430721 faccessat(AT_FDCWD, "/var/tmp/final-authoritative-relocation-ptrace/worktree/bin/hol.state0", R_OK) = 0
+2430721 openat(AT_FDCWD, "/tmp/MLTEMPwcqU16", O_RDWR|O_CREAT|O_EXCL, 0600) = 4
+2430723 execve("/bin/sh", ["sh", "-c", "stty size 1> /tmp/MLTEMPwcqU16 2"...], 0xffffe3292728 /* 66 vars */) = 0
+2430723 faccessat(AT_FDCWD, "/etc/ld.so.preload", R_OK) = -1 ENOENT (No such file or directory)
+2430723 openat(AT_FDCWD, "/usr/local/lib/libc.so.6", O_RDONLY|O_CLOEXEC) = -1 ENOENT (No such file or directory)
+2430723 newfstatat(AT_FDCWD, "/usr/local/lib/", {st_mode=S_IFDIR|0755, st_size=4096, ...}, 0) = 0
+2430723 openat(AT_FDCWD, "/home/lukasz/lib/libc.so.6", O_RDONLY|O_CLOEXEC) = -1 ENOENT (No such file or directory)
+2430723 newfstatat(AT_FDCWD, "/home/lukasz/lib/", 0xffffe0b13c30, 0) = -1 ENOENT (No such file or directory)
+2430723 openat(AT_FDCWD, "/etc/ld.so.cache", O_RDONLY|O_CLOEXEC) = 3
+2430723 openat(AT_FDCWD, "/lib/aarch64-linux-gnu/libc.so.6", O_RDONLY|O_CLOEXEC) = 3
+2430723 newfstatat(AT_FDCWD, "/var/tmp/final-authoritative-relocation-ptrace/worktree/.task7f-relocation-diagnostic", {st_mode=S_IFDIR|0775, st_size=4096, ...}, 0) = 0
+2430723 newfstatat(AT_FDCWD, ".", {st_mode=S_IFDIR|0775, st_size=4096, ...}, 0) = 0
+2430723 openat(AT_FDCWD, "/tmp/MLTEMPwcqU16", O_WRONLY|O_CREAT|O_TRUNC, 0666) = 3
+2430723 newfstatat(AT_FDCWD, "/var/tmp/final-authoritative-relocation-ptrace/worktree/bin/stty", 0xffffe0b14698, 0) = -1 ENOENT (No such file or directory)
+2430723 newfstatat(AT_FDCWD, "/usr/local/bin/stty", 0xffffe0b14698, 0) = -1 ENOENT (No such file or directory)
+2430723 newfstatat(AT_FDCWD, "/usr/bin/stty", {st_mode=S_IFREG|0755, st_size=67960, ...}, 0) = 0
+2430724 execve("/usr/bin/stty", ["stty", "size"], 0xb663bc64d1a8 /* 66 vars */) = 0
+2430724 faccessat(AT_FDCWD, "/etc/ld.so.preload", R_OK) = -1 ENOENT (No such file or directory)
+2430724 openat(AT_FDCWD, "/usr/local/lib/libc.so.6", O_RDONLY|O_CLOEXEC) = -1 ENOENT (No such file or directory)
+2430724 newfstatat(AT_FDCWD, "/usr/local/lib/", {st_mode=S_IFDIR|0755, st_size=4096, ...}, 0) = 0
+2430724 openat(AT_FDCWD, "/home/lukasz/lib/libc.so.6", O_RDONLY|O_CLOEXEC) = -1 ENOENT (No such file or directory)
+2430724 newfstatat(AT_FDCWD, "/home/lukasz/lib/", 0xffffdb690080, 0) = -1 ENOENT (No such file or directory)
+2430724 openat(AT_FDCWD, "/etc/ld.so.cache", O_RDONLY|O_CLOEXEC) = 3
+2430724 openat(AT_FDCWD, "/lib/aarch64-linux-gnu/libc.so.6", O_RDONLY|O_CLOEXEC) = 3
+2430724 openat(AT_FDCWD, "/usr/lib/locale/locale-archive", O_RDONLY|O_CLOEXEC) = 3
+2430724 openat(AT_FDCWD, "/usr/share/locale/locale.alias", O_RDONLY|O_CLOEXEC) = 3
+2430724 openat(AT_FDCWD, "/usr/lib/locale/C.UTF-8/LC_IDENTIFICATION", O_RDONLY|O_CLOEXEC) = -1 ENOENT (No such file or directory)
+2430724 openat(AT_FDCWD, "/usr/lib/locale/C.utf8/LC_IDENTIFICATION", O_RDONLY|O_CLOEXEC) = 3
+2430724 openat(AT_FDCWD, "/usr/lib/aarch64-linux-gnu/gconv/gconv-modules.cache", O_RDONLY|O_CLOEXEC) = 3
+2430724 openat(AT_FDCWD, "/usr/lib/locale/C.UTF-8/LC_MEASUREMENT", O_RDONLY|O_CLOEXEC) = -1 ENOENT (No such file or directory)
+2430724 openat(AT_FDCWD, "/usr/lib/locale/C.utf8/LC_MEASUREMENT", O_RDONLY|O_CLOEXEC) = 3
+2430724 openat(AT_FDCWD, "/usr/lib/locale/C.UTF-8/LC_TELEPHONE", O_RDONLY|O_CLOEXEC) = -1 ENOENT (No such file or directory)
+2430724 openat(AT_FDCWD, "/usr/lib/locale/C.utf8/LC_TELEPHONE", O_RDONLY|O_CLOEXEC) = 3
+2430724 openat(AT_FDCWD, "/usr/lib/locale/C.UTF-8/LC_ADDRESS", O_RDONLY|O_CLOEXEC) = -1 ENOENT (No such file or directory)
+2430724 openat(AT_FDCWD, "/usr/lib/locale/C.utf8/LC_ADDRESS", O_RDONLY|O_CLOEXEC) = 3
+2430724 openat(AT_FDCWD, "/usr/lib/locale/C.UTF-8/LC_NAME", O_RDONLY|O_CLOEXEC) = -1 ENOENT (No such file or directory)
+2430724 openat(AT_FDCWD, "/usr/lib/locale/C.utf8/LC_NAME", O_RDONLY|O_CLOEXEC) = 3
+2430724 openat(AT_FDCWD, "/usr/lib/locale/C.UTF-8/LC_PAPER", O_RDONLY|O_CLOEXEC) = -1 ENOENT (No such file or directory)
+2430724 openat(AT_FDCWD, "/usr/lib/locale/C.utf8/LC_PAPER", O_RDONLY|O_CLOEXEC) = 3
+2430724 openat(AT_FDCWD, "/usr/lib/locale/C.UTF-8/LC_MESSAGES", O_RDONLY|O_CLOEXEC) = -1 ENOENT (No such file or directory)
+2430724 openat(AT_FDCWD, "/usr/lib/locale/C.utf8/LC_MESSAGES", O_RDONLY|O_CLOEXEC) = 3
+2430724 openat(AT_FDCWD, "/usr/lib/locale/C.utf8/LC_MESSAGES/SYS_LC_MESSAGES", O_RDONLY|O_CLOEXEC) = 3
+2430724 openat(AT_FDCWD, "/usr/lib/locale/C.UTF-8/LC_MONETARY", O_RDONLY|O_CLOEXEC) = -1 ENOENT (No such file or directory)
+2430724 openat(AT_FDCWD, "/usr/lib/locale/C.utf8/LC_MONETARY", O_RDONLY|O_CLOEXEC) = 3
+2430724 openat(AT_FDCWD, "/usr/lib/locale/C.UTF-8/LC_COLLATE", O_RDONLY|O_CLOEXEC) = -1 ENOENT (No such file or directory)
+2430724 openat(AT_FDCWD, "/usr/lib/locale/C.utf8/LC_COLLATE", O_RDONLY|O_CLOEXEC) = 3
+2430724 openat(AT_FDCWD, "/usr/lib/locale/C.UTF-8/LC_TIME", O_RDONLY|O_CLOEXEC) = -1 ENOENT (No such file or directory)
+2430724 openat(AT_FDCWD, "/usr/lib/locale/C.utf8/LC_TIME", O_RDONLY|O_CLOEXEC) = 3
+2430724 openat(AT_FDCWD, "/usr/lib/locale/C.UTF-8/LC_NUMERIC", O_RDONLY|O_CLOEXEC) = -1 ENOENT (No such file or directory)
+2430724 openat(AT_FDCWD, "/usr/lib/locale/C.utf8/LC_NUMERIC", O_RDONLY|O_CLOEXEC) = 3
+2430724 openat(AT_FDCWD, "/usr/lib/locale/C.UTF-8/LC_CTYPE", O_RDONLY|O_CLOEXEC) = -1 ENOENT (No such file or directory)
+2430724 openat(AT_FDCWD, "/usr/lib/locale/C.utf8/LC_CTYPE", O_RDONLY|O_CLOEXEC) = 3
+2430724 +++ exited with 1 +++
+2430723 --- SIGCHLD {si_signo=SIGCHLD, si_code=CLD_EXITED, si_pid=2430724, si_uid=0, si_status=1, si_utime=0, si_stime=0} ---
+2430723 +++ exited with 1 +++
+2430687 --- SIGCHLD {si_signo=SIGCHLD, si_code=CLD_EXITED, si_pid=2430723, si_uid=0, si_status=1, si_utime=0, si_stime=0} ---
+2430721 openat(AT_FDCWD, "/tmp/MLTEMPwcqU16", O_RDONLY) = 4
+2430721 unlinkat(AT_FDCWD, "/tmp/MLTEMPwcqU16", 0) = 0
+2430721 openat(AT_FDCWD, "/tmp/MLTEMPR45YYM", O_RDWR|O_CREAT|O_EXCL, 0600) = 4
+2430725 execve("/bin/sh", ["sh", "-c", "tput cols 1> /tmp/MLTEMPR45YYM 2"...], 0xffffe3292728 /* 66 vars */) = 0
+2430725 faccessat(AT_FDCWD, "/etc/ld.so.preload", R_OK) = -1 ENOENT (No such file or directory)
+2430725 openat(AT_FDCWD, "/usr/local/lib/libc.so.6", O_RDONLY|O_CLOEXEC) = -1 ENOENT (No such file or directory)
+2430725 newfstatat(AT_FDCWD, "/usr/local/lib/", {st_mode=S_IFDIR|0755, st_size=4096, ...}, 0) = 0
+2430725 openat(AT_FDCWD, "/home/lukasz/lib/libc.so.6", O_RDONLY|O_CLOEXEC) = -1 ENOENT (No such file or directory)
+2430725 newfstatat(AT_FDCWD, "/home/lukasz/lib/", 0xffffd6cd1950, 0) = -1 ENOENT (No such file or directory)
+2430725 openat(AT_FDCWD, "/etc/ld.so.cache", O_RDONLY|O_CLOEXEC) = 3
+2430725 openat(AT_FDCWD, "/lib/aarch64-linux-gnu/libc.so.6", O_RDONLY|O_CLOEXEC) = 3
+2430725 newfstatat(AT_FDCWD, "/var/tmp/final-authoritative-relocation-ptrace/worktree/.task7f-relocation-diagnostic", {st_mode=S_IFDIR|0775, st_size=4096, ...}, 0) = 0
+2430725 newfstatat(AT_FDCWD, ".", {st_mode=S_IFDIR|0775, st_size=4096, ...}, 0) = 0
+2430725 openat(AT_FDCWD, "/tmp/MLTEMPR45YYM", O_WRONLY|O_CREAT|O_TRUNC, 0666) = 3
+2430725 newfstatat(AT_FDCWD, "/var/tmp/final-authoritative-relocation-ptrace/worktree/bin/tput", 0xffffd6cd23b8, 0) = -1 ENOENT (No such file or directory)
+2430725 newfstatat(AT_FDCWD, "/usr/local/bin/tput", 0xffffd6cd23b8, 0) = -1 ENOENT (No such file or directory)
+2430725 newfstatat(AT_FDCWD, "/usr/bin/tput", {st_mode=S_IFREG|0755, st_size=67704, ...}, 0) = 0
+2430728 execve("/usr/bin/tput", ["tput", "cols"], 0xca71c908f1a8 /* 66 vars */) = 0
+2430728 faccessat(AT_FDCWD, "/etc/ld.so.preload", R_OK) = -1 ENOENT (No such file or directory)
+2430728 openat(AT_FDCWD, "/usr/local/lib/libtinfo.so.6", O_RDONLY|O_CLOEXEC) = -1 ENOENT (No such file or directory)
+2430728 newfstatat(AT_FDCWD, "/usr/local/lib/", {st_mode=S_IFDIR|0755, st_size=4096, ...}, 0) = 0
+2430728 openat(AT_FDCWD, "/home/lukasz/lib/libtinfo.so.6", O_RDONLY|O_CLOEXEC) = -1 ENOENT (No such file or directory)
+2430728 newfstatat(AT_FDCWD, "/home/lukasz/lib/", 0xffffd5e0eb50, 0) = -1 ENOENT (No such file or directory)
+2430728 openat(AT_FDCWD, "/etc/ld.so.cache", O_RDONLY|O_CLOEXEC) = 3
+2430728 openat(AT_FDCWD, "/lib/aarch64-linux-gnu/libtinfo.so.6", O_RDONLY|O_CLOEXEC) = 3
+2430728 openat(AT_FDCWD, "/usr/local/lib/libc.so.6", O_RDONLY|O_CLOEXEC) = -1 ENOENT (No such file or directory)
+2430728 openat(AT_FDCWD, "/lib/aarch64-linux-gnu/libc.so.6", O_RDONLY|O_CLOEXEC) = 3
+2430728 newfstatat(AT_FDCWD, "/home/lukasz/.terminfo", {st_mode=S_IFDIR|0775, st_size=4096, ...}, 0) = 0
+2430728 newfstatat(AT_FDCWD, "/etc/terminfo", {st_mode=S_IFDIR|0755, st_size=4096, ...}, 0) = 0
+2430728 newfstatat(AT_FDCWD, "/lib/terminfo", 0xbe6e129f17c0, 0) = -1 ENOENT (No such file or directory)
+2430728 newfstatat(AT_FDCWD, "/usr/share/terminfo", {st_mode=S_IFDIR|0755, st_size=4096, ...}, 0) = 0
+2430728 faccessat(AT_FDCWD, "/home/lukasz/.terminfo/t/tmux-256color", R_OK) = -1 ENOENT (No such file or directory)
+2430728 faccessat(AT_FDCWD, "/etc/terminfo/t/tmux-256color", R_OK) = -1 ENOENT (No such file or directory)
+2430728 faccessat(AT_FDCWD, "/usr/share/terminfo/t/tmux-256color", R_OK) = 0
+2430728 openat(AT_FDCWD, "/usr/share/terminfo/t/tmux-256color", O_RDONLY) = 3
+2430728 +++ exited with 0 +++
+2430725 --- SIGCHLD {si_signo=SIGCHLD, si_code=CLD_EXITED, si_pid=2430728, si_uid=0, si_status=0, si_utime=0, si_stime=0} ---
+2430725 +++ exited with 0 +++
+2430687 --- SIGCHLD {si_signo=SIGCHLD, si_code=CLD_EXITED, si_pid=2430725, si_uid=0, si_status=0, si_utime=0, si_stime=0} ---
+2430721 openat(AT_FDCWD, "/tmp/MLTEMPR45YYM", O_RDONLY) = 4
+2430721 unlinkat(AT_FDCWD, "/tmp/MLTEMPR45YYM", 0) = 0
+2430721 faccessat(AT_FDCWD, "/var/tmp/final-authoritative-relocation-ptrace/worktree/.task7f-relocation-diagnostic/.hol", F_OK) = -1 ENOENT (No such file or directory)
+2430721 mkdirat(AT_FDCWD, "/var/tmp/final-authoritative-relocation-ptrace/worktree/.task7f-relocation-diagnostic/.hol", 0777) = 0
+2430721 faccessat(AT_FDCWD, "/var/tmp/final-authoritative-relocation-ptrace/worktree/.task7f-relocation-diagnostic/.hol/locks", F_OK) = -1 ENOENT (No such file or directory)
+2430721 mkdirat(AT_FDCWD, "/var/tmp/final-authoritative-relocation-ptrace/worktree/.task7f-relocation-diagnostic/.hol/locks", 0777) = 0
+2430721 openat(AT_FDCWD, "/var/tmp/final-authoritative-relocation-ptrace/worktree/.task7f-relocation-diagnostic/.hol/locks/relocation-target.lock", O_WRONLY|O_CREAT|O_TRUNC, 0600) = 4
+2430721 faccessat(AT_FDCWD, "/var/tmp/final-authoritative-relocation-ptrace/worktree/.task7f-relocation-diagnostic/relocation-target", R_OK) = -1 ENOENT (No such file or directory)
+2430721 chdir("/var/tmp/final-authoritative-relocation-ptrace/worktree/.task7f-relocation-diagnostic") = 0
+2430721 chdir("/var/tmp/final-authoritative-relocation-ptrace/worktree/.task7f-relocation-diagnostic") = 0
+2430721 newfstatat(AT_FDCWD, "/var/tmp/final-authoritative-relocation-ptrace/worktree/.task7f-relocation-diagnostic/.hol/logs", 0xed64a8efe788, 0) = -1 ENOENT (No such file or directory)
+2430721 newfstatat(AT_FDCWD, "/var/tmp/final-authoritative-relocation-ptrace/worktree/.task7f-relocation-diagnostic/.hol", {st_mode=S_IFDIR|0775, st_size=4096, ...}, 0) = 0
+2430721 mkdirat(AT_FDCWD, "/var/tmp/final-authoritative-relocation-ptrace/worktree/.task7f-relocation-diagnostic/.hol/logs", 0777) = 0
+2430721 openat(AT_FDCWD, "/var/tmp/final-authoritative-relocation-ptrace/worktree/.task7f-relocation-diagnostic/.hol/logs/relocation-target", O_WRONLY|O_CREAT|O_TRUNC, 0666) = 6
+2430732 chdir("/var/tmp/final-authoritative-relocation-ptrace/worktree/.task7f-relocation-diagnostic") = 0
+2430732 execve("/bin/sh", ["/bin/sh", "-c", "printf \"%s\\n\" \"relocation diagno"...], 0xed64a400e180 /* 66 vars */) = 0
+2430732 faccessat(AT_FDCWD, "/etc/ld.so.preload", R_OK) = -1 ENOENT (No such file or directory)
+2430732 openat(AT_FDCWD, "/usr/local/lib/libc.so.6", O_RDONLY|O_CLOEXEC) = -1 ENOENT (No such file or directory)
+2430732 newfstatat(AT_FDCWD, "/usr/local/lib/", {st_mode=S_IFDIR|0755, st_size=4096, ...}, 0) = 0
+2430732 openat(AT_FDCWD, "/home/lukasz/lib/libc.so.6", O_RDONLY|O_CLOEXEC) = -1 ENOENT (No such file or directory)
+2430732 newfstatat(AT_FDCWD, "/home/lukasz/lib/", 0xffffe8c9f560, 0) = -1 ENOENT (No such file or directory)
+2430732 openat(AT_FDCWD, "/etc/ld.so.cache", O_RDONLY|O_CLOEXEC) = 3
+2430732 openat(AT_FDCWD, "/lib/aarch64-linux-gnu/libc.so.6", O_RDONLY|O_CLOEXEC) = 3
+2430732 newfstatat(AT_FDCWD, "/var/tmp/final-authoritative-relocation-ptrace/worktree/.task7f-relocation-diagnostic", {st_mode=S_IFDIR|0775, st_size=4096, ...}, 0) = 0
+2430732 newfstatat(AT_FDCWD, ".", {st_mode=S_IFDIR|0775, st_size=4096, ...}, 0) = 0
+2430732 openat(AT_FDCWD, "relocation-target", O_WRONLY|O_CREAT|O_TRUNC, 0666) = 3
+2430732 +++ exited with 0 +++
+2430687 --- SIGCHLD {si_signo=SIGCHLD, si_code=CLD_EXITED, si_pid=2430732, si_uid=0, si_status=0, si_utime=0, si_stime=0} ---
+2430721 +++ exited with 0 +++
+2430722 +++ exited with 0 +++
+2430688 +++ exited with 0 +++
+2430689 +++ exited with 0 +++
+2430690 +++ exited with 0 +++
+2430693 +++ exited with 0 +++
+2430695 +++ exited with 0 +++
+2430697 +++ exited with 0 +++
+2430699 +++ exited with 0 +++
+2430700 +++ exited with 0 +++
+2430702 +++ exited with 0 +++
+2430704 +++ exited with 0 +++
+2430701 +++ exited with 0 +++
+2430698 +++ exited with 0 +++
+2430696 +++ exited with 0 +++
+2430694 +++ exited with 0 +++
+2430692 +++ exited with 0 +++
+2430691 +++ exited with 0 +++
+2430707 +++ exited with 0 +++
+2430708 +++ exited with 0 +++
+2430706 +++ exited with 0 +++
+2430705 +++ exited with 0 +++
+2430709 +++ exited with 0 +++
+2430703 +++ exited with 0 +++
+2430710 +++ exited with 0 +++
+2430711 +++ exited with 0 +++
+2430713 +++ exited with 0 +++
+2430712 +++ exited with 0 +++
+2430714 +++ exited with 0 +++
+2430717 +++ exited with 0 +++
+2430715 +++ exited with 0 +++
+2430719 +++ exited with 0 +++
+2430718 +++ exited with 0 +++
+2430716 +++ exited with 0 +++
+2430720 +++ exited with 0 +++
+2430687 +++ exited with 0 +++

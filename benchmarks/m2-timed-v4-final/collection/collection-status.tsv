@@ -1,0 +1,7 @@
+label	class	status	command
+pre-collection	process-audit	0	pgrep task7j endpoints
+pre-collection-artifacts	identity	0	artifact-manifest.sh; cmp ARTIFACTS-FROZEN.tsv
+representative-1	supervised-child	0	env T7J_REPETITION=1 T7J_PROBLEM=38 T7J_DEPTH=4 T7J_MODE=v2 ./task7jcalibration.exe
+representative-2	supervised-child	0	env T7J_REPETITION=1 T7J_PROBLEM=38 T7J_DEPTH=4 T7J_MODE=v4 ./task7jcalibration.exe
+representative-3	supervised-child	0	env T7J_REPETITION=1 T7J_PROBLEM=43 T7J_DEPTH=5 T7J_MODE=v2 ./task7jcalibration.exe
+representative-4	supervised-child	125	env T7J_REPETITION=1 T7J_PROBLEM=43 T7J_DEPTH=5 T7J_MODE=v4 ./task7jcalibration.exe

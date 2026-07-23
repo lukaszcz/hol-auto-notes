@@ -1,0 +1,31 @@
+Task 7f authoritative real HOL4 relocation preflight
+====================================================
+
+Namespace command: see NAMESPACE_RELOCATION_INVOCATION.md
+Namespaced output: /var/tmp/final-authoritative-relocation-ptrace
+Physical host output: /tmp/isabelle-tactics-task7f-20260720-root/namespace-run/final-authoritative-relocation-ptrace
+Status: 0.  No HOL source build, selftest, calibration, or timing process ran.
+
+The invoked-script manifest hash is
+5b113d27e8c5aa0490cf591df0876de0f2587c242f80e2477b2f787d7a27aa5b,
+byte-identical to the current authoritative reproducer.  All 40 retained input
+hashes match current files, including process-group-supervisor.py at
+277b483cd57650efdfe7077a4b2bb1bdc84f7f6d2b31fe58c72e6c232952d368.
+
+The private namespace bind-mounted the mandated host namespace-run directory
+over /var/tmp and mounted fresh tmpfs over /tmp.  The disposable full copy
+removed copied .git and external skill metadata, rebased internal absolute
+links, used only COPY/bin:/usr/local/bin:/usr/bin:/bin, left HOLDIR unset, and
+ran copied smart-configure successfully.  Copied Holmake startup, hol heapname,
+and the harmless real-target recipe each returned zero with group-gone PASS.
+The target payload is retained and canonicalized below the copied root.
+
+The real target's 241-line `strace -f -e trace=file` has zero syscalls naming
+the original repository root; the actual zero-byte match output is retained.
+All 1,636 required absolute links resolved below the copy.  The before,
+after-preflight, and after-cleanup whole-tree manifests each have 35,653 lines,
+6,384,248 bytes, and identical SHA-256
+6c3a1073d5d964ee65c29193a075429f000f4b85ec66f0fef91a7d72d2f53ba5.
+The disposable worktree is absent.  Exact compact raw files are under
+authoritative-relocation-evidence/; hashes for omitted bulky raw files are
+pinned there.

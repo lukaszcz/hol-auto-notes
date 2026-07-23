@@ -1,0 +1,173 @@
+reserved and real constant heads cannot collide ...                          OK
+occurs check rejects direct and indirect cycles ...                          OK
+occurs check rejects dangling de Bruijn variables ...                        OK
+Skolem dependencies enforce the eigenvariable condition ...                  OK
+unification decomposes abstractions, applications and type args ...          OK
+failed unification rolls all branch assignments back ...                     OK
+clearTo restores exactly the requested trail suffix ...                      OK
+measured clearTo checkpoints every normal rollback item ...                  OK
+interrupted measured clearTo finishes emergency rollback ...                 OK
+norm chases assignments and beta-normalizes applications ...                 OK
+norm prunes assigned Skolem dependency references ...                        OK
+wkNorm performs head beta and eta contraction ...                            OK
+de Bruijn substitution shifts arguments without capture ...                  OK
+rule-local variables are assigned off-trail in preference ...                OK
+failed unification restores only trailed branch variables ...                OK
+goal translation has faithful per-constant type arguments ...                OK
+goal translation separates typed names and reuses exact metadata ...         OK
+rule translation shares repeated types and typed term variables ...          OK
+bound lookup preserves alpha-equivalence and de Bruijn scope ...             OK
+separate translations allocate fresh names but reuse local names ...         OK
+rule type variables are shared mutable typargs ...                           OK
+goal intake uses conclusion then assumptions in head-first order ...         OK
+intro conversion goldens cover conjunction disjunction and exists ...        OK
+elim conversion goldens cover conjunction disjunction exists and iff ...     OK
+goal-directed implication and universal pseudo-rules have exact shapes ...   OK
+weak elimination warning is verbatim and the rule is skipped ...             OK
+too-flexible assertions never query elimination nets ...                     OK
+weight-zero stored rules precede goal-directed pseudo-rules ...              OK
+cached rule templates survive destructive unification ...                    OK
+cached rules freshen locals but preserve branch dependencies ...             OK
+separate rule caches neither reuse conversions nor templates ...             OK
+each search run starts cold and then reuses its rule cache ...               OK
+successful hyp-subst has exact inference statistics ...                      OK
+admitted pseudo-safe rule has exact inference statistics ...                 OK
+safe fanout counts one inference and one extra branch ...                    OK
+safe nonclosing bound rejection is not counted ...                           OK
+depth-0 unsafe nonclosing rule rejection is not counted ...                  OK
+closing safe rule may exceed the configured resource bound ...               OK
+initial cooperative stop prevents goal and term search work ...              OK
+goal and term measured entry points have equivalent completion ...           OK
+cooperative interruption is distinct from completed exhaustion ...           OK
+cooperative stop exceptions preserve their exact constructors ...            OK
+statistics-only search does no measured phase monitoring ...                 OK
+ordinary Stats and measured searches are observationally equivalent ...      OK
+deterministic generated queries preserve measured candidate order ...        OK
+measured rule conversion and cache hits preserve ordinary outputs ...        OK
+rule alpha comparison preserves sharing, types and dependencies ...          OK
+conversion/query equivalence matrix covers all rule families ...             OK
+completed measured searches have exact phase counters ...                    OK
+rule attempt counters start after the preparation checkpoint ...             OK
+bounded inner interruption returns a coherent partial snapshot ...           OK
+interrupted measured unification rolls back branch assignments ...           OK
+goal interruption abandons a large engine-owned trail exactly ...            OK
+debug goal interruption retains a coherent owned-state trace ...             OK
+goal continuation exceptions restore reachable owned assignments ...         OK
+goal stop exceptions at live owned state restore and rethrow ...             OK
+inner stop-predicate exceptions preserve identity ...                        OK
+continuation exceptions restore caller-owned assignments ...                 OK
+PROOF_FAILED event interruption keeps a coherent snapshot ...                OK
+successful backtracking search has exact complete instrumentation ...        OK
+duplicating elim replay uses REV_DUP_ELIM_RULE only ...                      OK
+initial blast formulae all receive the duplication flag ...                  OK
+blast search closes propositional golden tautologies ...                     OK
+search records the complete six-step vocabulary ...                          OK
+unsafe depth and the deepening cap have exact accounting ...                 OK
+gamma retention is requeued at the back of its level ...                     OK
+gamma requeue lets the next deferred formula run first ...                   OK
+recursive premises share a level and nonrecursive ones do not ...            OK
+prune fires without a next-branch clash and stops on a clash ...             OK
+mayUndo and kill-all obey the crafted branch boundary ...                    OK
+mayUndo retries an unsafe alternative after PROOF_FAILED ...                 OK
+a sole pure gamma inference is not retried after PROOF_FAILED ...            OK
+PROOF_FAILED re-enters the final literal choice point ...                    OK
+reconstruction goldens cover T2 and T3 under Tactical.VALID ...              OK
+measured reconstruction reports exact completed close counters ...           OK
+measured close-contradiction has exact kernel-valid parity ...               OK
+measured reconstruction interruption returns its exact boundary ...          OK
+measured reconstruction does not swallow stop HOL_ERR values ...             OK
+blast generation avoids hidden historical parameters ...                     OK
+stored and pseudo safe rules reconstruct with prefix stripping ...           OK
+measured stored replay exposes transition entry to observers ...             OK
+detailed stored replay has exact completed parity and counters ...           OK
+timed detailed replay accounts failed alternatives exactly ...               OK
+timed detailed Enter and Exit stops preserve exact protocol ...              OK
+timed detailed NONE and clock exceptions preserve identity ...               OK
+timed stored clock observer and stop exceptions preserve identity ...        OK
+detailed stored replay interrupts at an exact classical boundary ...         OK
+detailed stored observers cross reconstruction catch-all unchanged ...       OK
+detailed stored replay observations repeat deterministically ...             OK
+deep measured reconstruction stop exceptions propagate unchanged ...         OK
+deep observer exceptions preserve HOL_ERR custom and Interrupt identity ...  OK
+T5 and T6 reconstruct a witness fixed by a later T2 close ...                OK
+gamma duplication moves the repeated major behind old assumptions ...        OK
+blast hyp-subst reorders affected assumptions before replay ...              OK
+hyp-subst affectedness preserves beta-redex branch order ...                 OK
+real reconstruction failure backtracks to a valid tableau rule ...           OK
+a tableau with only an unreconstructible rule fails cleanly ...              OK
+public BLAST tactics solve golden goals under Tactical.VALID ...             OK
+public blast tactics read configuration when they run ...                    OK
+public deepening explores bounds lazily ...                                  OK
+plain extra lemmas are unsafe intros and markers are processed ...           OK
+tryIt records full search and skips reconstruction ...                       OK
+blast trace levels report reconstruction failure stats and states ...        OK
+fixed-depth trace separates final and cumulative counters ...                OK
+iterative trace labels final depth and cumulative aggregation ...            OK
+public blast calls do not leak claset theory or depth state ...              OK
+BLAST_TAC Pelletier 1 ...                                                    OK
+BLAST_TAC Pelletier 2 ...                                                    OK
+BLAST_TAC Pelletier 3 ...                                                    OK
+BLAST_TAC Pelletier 4 ...                                                    OK
+BLAST_TAC Pelletier 5 ...                                                    OK
+BLAST_TAC Pelletier 6 ...                                                    OK
+BLAST_TAC Pelletier 7 ...                                                    OK
+BLAST_TAC Pelletier 8 ...                                                    OK
+BLAST_TAC Pelletier 9 ...                                                    OK
+BLAST_TAC Pelletier 10 ...                                                   OK
+BLAST_TAC Pelletier 11 ...                                                   OK
+BLAST_TAC Pelletier 12 ...                                                   OK
+BLAST_TAC Pelletier 13 ...                                                   OK
+BLAST_TAC Pelletier 14 ...                                                   OK
+BLAST_TAC Pelletier 15 ...                                                   OK
+BLAST_TAC Pelletier 16 ...                                                   OK
+BLAST_TAC Pelletier 17 ...                                                   OK
+BLAST_TAC Pelletier 18 ...                                                   OK
+BLAST_TAC Pelletier 19 ...                                                   OK
+BLAST_TAC Pelletier 20 ...                                                   OK
+BLAST_TAC Pelletier 21 ...                                                   OK
+BLAST_TAC Pelletier 22 ...                                                   OK
+BLAST_TAC Pelletier 23 ...                                                   OK
+BLAST_TAC Pelletier 24 ...                                                   OK
+BLAST_TAC Pelletier 25 ...                                                   OK
+BLAST_TAC Pelletier 26 ...                                                   OK
+BLAST_TAC Pelletier 27 ...                                                   OK
+BLAST_TAC Pelletier 28 ...                                                   OK
+BLAST_TAC Pelletier 29 ...                                                   OK
+BLAST_TAC Pelletier 30 ...                                                   OK
+BLAST_TAC Pelletier 31 ...                                                   OK
+BLAST_TAC Pelletier 32 ...                                                   OK
+BLAST_TAC Pelletier 33 ...                                                   OK
+BLAST_TAC Pelletier 34 (expected failure) ...                                OK
+BLAST_TAC Pelletier 35 ...                                                   OK
+BLAST_TAC Pelletier 36 ...                                                   OK
+BLAST_TAC Pelletier 37 ...                                                   OK
+BLAST_TAC Pelletier 38 (expected failure) ...                                OK
+BLAST_TAC Pelletier 39 ...                                                   OK
+BLAST_TAC Pelletier 40 ...                                                   OK
+BLAST_TAC Pelletier 41 (expected failure) ...                                OK
+BLAST_TAC Pelletier 42 (expected failure) ...                                OK
+BLAST_TAC Pelletier 43 (expected failure) ...                                OK
+BLAST_TAC Pelletier 44 ...                                                   OK
+BLAST_TAC Pelletier 45 (expected failure) ...                                OK
+BLAST_TAC Pelletier 46 ...                                                   OK
+BLAST_TAC Pelletier 52 ...                                                   OK
+BLAST_TAC Pelletier 62 ...                                                   OK
+BLAST_TAC Pelletier solved-goal count ...                                    OK
+BLAST_DEPTH_TAC Pelletier 24 at 4 ...                                        OK
+BLAST_DEPTH_TAC Pelletier 26 at 3 ...                                        OK
+BLAST_DEPTH_TAC Pelletier 28 at 3 ...                                        OK
+BLAST_DEPTH_TAC Pelletier 34 at 7 (expected failure) ...                     OK
+BLAST_DEPTH_TAC Pelletier 38 at 4 (expected failure) ...                     OK
+BLAST_DEPTH_TAC Pelletier 43 at 5 (expected failure) ...                     OK
+BLAST_DEPTH_TAC Pelletier 46 at 7 ...                                        OK
+BLAST_DEPTH_TAC Pelletier 52 at 7 ...                                        OK
+BLAST_DEPTH_TAC Pelletier 62 at 1 ...                                        OK
+Table-1 published-depth solved-goal count ...                                OK
+Table-1 depth accounting rejects shallower bounds ...                        OK
+BLAST_DEPTH_TAC Union-image ...                                              OK
+BLAST_DEPTH_TAC Inter-image ...                                              OK
+BLAST_DEPTH_TAC Singleton I ...                                              OK
+BLAST_DEPTH_TAC Singleton II ...                                             OK
+Table-1 set-problem solved-goal count ...                                    OK
+higher-order unification requirement fails cleanly ...                       OK
+weak [elim] marker warns and is skipped without aborting ...                 OK

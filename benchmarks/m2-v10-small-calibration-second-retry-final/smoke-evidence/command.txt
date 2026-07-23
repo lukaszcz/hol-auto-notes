@@ -1,0 +1,1 @@
+python3 -B /home/lukasz/dev/HOL/worktrees/isabelle-tactics/.agent-files/benchmarks/m2-v10-small-calibration-second-retry-final/future-protocol/collect-v10.py -- /home/lukasz/dev/HOL/worktrees/isabelle-tactics/.agent-files/benchmarks/m2-v10-small-calibration-second-retry-final/task7mcalibration.exe

@@ -1,0 +1,14 @@
+--- .agent-files/benchmarks/m2-timed-v4-final/frozen-inputs/PRE_SEAL_REPAIR.md	2026-07-21 05:37:36.372499575 +0000
++++ .agent-files/benchmarks/m2-timed-v4-final/PRE_SEAL_REPAIR.md	2026-07-21 05:38:21.091687026 +0000
+@@ -19,3 +19,11 @@
+ bodies, generated files and sole diagnostic. The second mechanical repair
+ removes AWK from hash extraction (`read -r hash ignored` consumes
+ `sha256sum` output). Again, no protocol semantic changed.
++
++A pre-collection review of the first successful seal found that the collector
++verified frozen input hashes but did not itself compare fresh runtime-closure
++manifests at segment endpoints, despite the predeclaration requiring artifact
++drift checks. No clock had run. The superseded seal and complete input bodies
++are retained in `pre-seal-attempt-2/`; its exact patch adds only manifest/cmp
++calls at pre-collection, post-calibration and post-target endpoints. The full
++input seal is regenerated before collection.

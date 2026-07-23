@@ -1,0 +1,7 @@
+Scanning [1m$(HOLDIR)/src/auto/rules[0m
+Scanning [1m$(HOLDIR)/src/metis[0m
+Scanning [1m$(HOLDIR)/src/auto/classical[0m
+Scanning [1m$(HOLDIR)/src/auto/blast[0m
+Scanned 5 directories
+Starting work on task7mcalibration.exe
+task7mcalibration.exe                                       (0s)             OK

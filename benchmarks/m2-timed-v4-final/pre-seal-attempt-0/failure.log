@@ -1,0 +1,3 @@
+artifact-manifest.sh: ROOT: parameter not set or null
+zsh scalar input list was treated as one filename (File name too long)
+subsequent generated seal files were invalid/partial; no benchmark clock ran

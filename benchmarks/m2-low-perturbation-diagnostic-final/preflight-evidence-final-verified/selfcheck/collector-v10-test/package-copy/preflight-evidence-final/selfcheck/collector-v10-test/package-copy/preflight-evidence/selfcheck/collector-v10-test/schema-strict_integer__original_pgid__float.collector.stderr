@@ -1,0 +1,1 @@
+collect-v10: supervisor_schema: Invalid: original_pgid must be strict JSON integer

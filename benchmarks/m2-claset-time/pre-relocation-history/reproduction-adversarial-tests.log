@@ -1,0 +1,28 @@
+Task 7f pre-relocation isolated-copy adversarial suite (obsolete)
+=================================================================
+
+This predates real smart-configuration, relocated-tool diagnostics, sanitized
+PATH auditing, and process-group supervision.  It is non-authoritative and
+must not support a relocation claim.
+
+No HOL build, selftest, or timing process was run.  The executable driver
+retained raw stdout, stderr, status, and whole-source-tree before/after
+manifests for every case under its fresh result directory.
+
+print status=0 source_immutable=PASS
+self_check status=0 source_immutable=PASS
+synthetic_success status=0 source_immutable=PASS
+relative_alias status=1 source_immutable=PASS
+dotdot_alias status=1 source_immutable=PASS
+symlink_parent status=1 source_immutable=PASS
+existing_output status=1 source_immutable=PASS
+contained_output status=1 source_immutable=PASS
+harness_conflict status=1 source_immutable=PASS
+orphan_conflict status=1 source_immutable=PASS
+input_mutation status=1 diagnostic=PASS
+signal_hup status=129 source_immutable=PASS output_retained=PASS
+signal_int status=130 source_immutable=PASS output_retained=PASS
+signal_term status=143 source_immutable=PASS output_retained=PASS
+second_signal status=143 source_immutable=PASS output_retained=PASS
+
+cases=15 failures=0

@@ -1,0 +1,17 @@
+protocol	sequence	repetition	mode	exact_count	observed_count	sink_class	external_elapsed	supervisor_status	classification	containment
+V10CLOCK	1	1	Z	61486260	61486260	nonnegative	1.000000000	1	completed_exit_0	cleared
+V10CLOCK	2	1	N	61486260	61486260	nonnegative	2.000000000	0	completed_exit_0	cleared
+V10CLOCK	3	2	N	61486260	61486260	nonnegative	3.000000000	0	completed_exit_0	cleared
+V10CLOCK	4	2	Z	61486260	61486260	nonnegative	4.000000000	0	completed_exit_0	cleared
+V10CLOCK	5	3	Z	61486260	61486260	nonnegative	5.000000000	0	completed_exit_0	cleared
+V10CLOCK	6	3	N	61486260	61486260	nonnegative	6.000000000	0	completed_exit_0	cleared
+V10CLOCK	7	4	N	61486260	61486260	nonnegative	7.000000000	0	completed_exit_0	cleared
+V10CLOCK	8	4	Z	61486260	61486260	nonnegative	8.000000000	0	completed_exit_0	cleared
+V10CLOCK	9	5	Z	61486260	61486260	nonnegative	9.000000000	0	completed_exit_0	cleared
+V10CLOCK	10	5	N	61486260	61486260	nonnegative	10.000000000	0	completed_exit_0	cleared
+EOF	V10CLOCK
+status	1
+elapsed	1
+sink	1
+eof	1
+header	1

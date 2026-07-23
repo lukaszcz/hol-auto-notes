@@ -1,0 +1,5 @@
+label	status	command
+head	0	git rev-parse HEAD
+index-clean	0	git diff --cached --quiet
+tracked-clean	0	git diff --quiet
+task7k-review-closure	126	m2-v10-small-calibration-final-review/verify-closure.sh
