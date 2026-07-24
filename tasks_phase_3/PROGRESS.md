@@ -8,8 +8,8 @@
 - TASK_04 — done
 - TASK_05 — done
 - TASK_06 — done
-- TASK_07 — unblocked (not started)
-- TASK_08 — blocked (needs 07)
+- TASK_07 — done
+- TASK_08 — unblocked (not started)
 - TASK_09 — blocked (needs 04, 07)
 - TASK_10 — blocked (needs 07)
 - TASK_11 — blocked (needs 06, 10)
@@ -31,3 +31,4 @@ TASK_03 — done; re-verified against TASK_03 and acceptance criteria (three Hol
 TASK_04 — done; implementation and acceptance criteria verified (Holmake, selftest, build gate, h4pedant).
 TASK_05 — done; implementation and acceptance criteria verified (three Holmake/selftest gates, build gate, h4pedant).
 TASK_06 — done; re-verified against TASK_06 (Holmake, all selftests, build gate, h4pedant, exact wiring).
+TASK_07 — done; implementation and acceptance criteria verified (Holmake, selftest, build gate, h4pedant, exact wrapper slots).
