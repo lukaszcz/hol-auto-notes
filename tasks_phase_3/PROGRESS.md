@@ -13,8 +13,8 @@
 - TASK_09 — done
 - TASK_10 — done
 - TASK_11 — done
-- TASK_12 — unblocked (not started)
-- TASK_13 — blocked (needs 08, 09, 11, 12)
+- TASK_12 — done
+- TASK_13 — unblocked (not started)
 - TASK_14 — blocked (needs 01–13)
 
 ## Next unblocked task
@@ -36,3 +36,4 @@ TASK_08 — done; implementation and acceptance criteria re-verified against TAS
 TASK_09 — done; re-verified against TASK_09 on 2026-07-24 (Holmake + selftest, upto-auto build, h4pedant, defaults, equivalence/inertness comments, and all acceptance criteria).
 TASK_10 — done; re-verified against TASK_10 on 2026-07-24 (Holmake, selftest, upto-auto build, h4pedant, all six decision-tree cases, and temporary Iff state).
 TASK_11 — done; verified against TASK_11 on 2026-07-24 (clasimp and theory-test Holmake, selftest, upto-auto build, h4pedant, persistence round-trip, ancestry, diamond merge, collision guard, and remove_iff retraction).
+TASK_12 — done; verified against TASK_12 on 2026-07-24 (clasimp Holmake, selftest, upto-auto build, h4pedant, post-load and catch-up TypeBase hooks, constructor intro usability, and no duplicate seeded rules).
