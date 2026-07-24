@@ -34,4 +34,4 @@ TASK_06 — done; re-verified against TASK_06 (Holmake, all selftests, build gat
 TASK_07 — done; implementation and acceptance criteria verified (Holmake, selftest, build gate, h4pedant, exact wrapper slots).
 TASK_08 — done; implementation and acceptance criteria re-verified against TASK_08 on 2026-07-24 (Holmake, selftest, upto-auto build, h4pedant, must-close and change-or-fail semantics).
 TASK_09 — done; re-verified against TASK_09 on 2026-07-24 (Holmake + selftest, upto-auto build, h4pedant, defaults, equivalence/inertness comments, and all acceptance criteria).
-TASK_10 — done; implementation and acceptance criteria verified on 2026-07-24 (Holmake, selftest, upto-auto build, h4pedant, decision-tree cases, and temporary Iff state).
+TASK_10 — done; re-verified against TASK_10 on 2026-07-24 (Holmake, selftest, upto-auto build, h4pedant, decision-tree cases, and temporary Iff state).
