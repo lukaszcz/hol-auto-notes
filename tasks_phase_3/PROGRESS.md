@@ -7,8 +7,8 @@
 - TASK_03 — done
 - TASK_04 — done
 - TASK_05 — done
-- TASK_06 — unblocked (not started)
-- TASK_07 — blocked (needs 05, 06)
+- TASK_06 — done
+- TASK_07 — unblocked (not started)
 - TASK_08 — blocked (needs 07)
 - TASK_09 — blocked (needs 04, 07)
 - TASK_10 — blocked (needs 07)
@@ -19,7 +19,7 @@
 
 ## Next unblocked task
 
-.agent-files/tasks_phase_3/TASK_06.md
+.agent-files/tasks_phase_3/TASK_07.md
 
 ## Completion log
 
@@ -30,3 +30,4 @@ TASK_02 — done; implementation and acceptance criteria verified (Holmake, self
 TASK_03 — done; re-verified against TASK_03 and acceptance criteria (three Holmake/selftest gates, build gate, h4pedant, old-name/API audit).
 TASK_04 — done; implementation and acceptance criteria verified (Holmake, selftest, build gate, h4pedant).
 TASK_05 — done; implementation and acceptance criteria verified (three Holmake/selftest gates, build gate, h4pedant).
+TASK_06 — done; implementation and acceptance criteria verified (Holmake, selftest, build gate, h4pedant).
