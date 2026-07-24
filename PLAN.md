@@ -1041,6 +1041,13 @@ rule-by-rule — misclassified "safe" rules are the classic way clasets rot.
   pre-existing upstream `cv_compute/automation ... CHEATED` selftest.
   The supported documentation fallback reported that `pandoc` was absent,
   wrote the mdbook Markdown mirror, and did not affect the successful gate.
+- **2026-07-24, Phase 3 at `2da4b3d64`:** `bin/build -F -t` exited 0
+  and ended `Hol built successfully.` in 75.31 seconds wall-clock.  The
+  full-build transcript contained zero `F-CHEAT`, zero `CHEATED`, and
+  zero `Saved CHEAT` results.  `tools/h4pedant/h4pedant` was clean over
+  every Phase-3-touched directory: `help/Docfiles`, `src/auto/blast`,
+  `src/auto/clasimp`, `src/auto/classical`, `src/auto/rules`,
+  `src/parallel_builds/core`, `src/simp/src`, and `tools/sequences`.
 
 ### Promotion (Phase 9, gated on the layer proving itself)
 
