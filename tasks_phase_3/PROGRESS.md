@@ -19,7 +19,7 @@
 
 ## Next unblocked task
 
-.agent-files/tasks_phase_3/TASK_11.md
+.agent-files/tasks_phase_3/TASK_12.md
 
 ## Completion log
 
