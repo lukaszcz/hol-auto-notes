@@ -25,4 +25,4 @@
 
 Append exactly ONE line per task as it lands (task id — outcome,
 verified against its acceptance criteria).
-TASK_01 — done; implementation and acceptance criteria verified.
+TASK_01 — done; implementation and acceptance criteria verified (Holmake, selftest, build gate, h4pedant).
