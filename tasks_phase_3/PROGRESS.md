@@ -19,7 +19,7 @@
 
 ## Next unblocked task
 
-TASK_01 (TASK_02 is also unblocked and independent).
+.agent-files/tasks_phase_3/TASK_01.md (TASK_02 is also unblocked and independent).
 
 ## Completion log
 
