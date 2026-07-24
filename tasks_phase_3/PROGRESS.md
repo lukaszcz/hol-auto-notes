@@ -32,4 +32,4 @@ TASK_04 — done; implementation and acceptance criteria verified (Holmake, self
 TASK_05 — done; implementation and acceptance criteria verified (three Holmake/selftest gates, build gate, h4pedant).
 TASK_06 — done; re-verified against TASK_06 (Holmake, all selftests, build gate, h4pedant, exact wiring).
 TASK_07 — done; implementation and acceptance criteria verified (Holmake, selftest, build gate, h4pedant, exact wrapper slots).
-TASK_08 — done; re-verified against TASK_08 acceptance criteria (Holmake, selftest, build gate, h4pedant, must-close and change-or-fail semantics).
+TASK_08 — done; acceptance criteria re-verified 2026-07-24 (Holmake/selftest, upto-auto build, h4pedant, must-close and change-or-fail semantics).
