@@ -30,4 +30,4 @@ TASK_02 — done; implementation and acceptance criteria verified (Holmake, self
 TASK_03 — done; re-verified against TASK_03 and acceptance criteria (three Holmake/selftest gates, build gate, h4pedant, old-name/API audit).
 TASK_04 — done; implementation and acceptance criteria verified (Holmake, selftest, build gate, h4pedant).
 TASK_05 — done; implementation and acceptance criteria verified (three Holmake/selftest gates, build gate, h4pedant).
-TASK_06 — done; re-verified against acceptance criteria (Holmake, selftest, build gate, h4pedant, and exact build wiring).
+TASK_06 — done; re-verified against acceptance criteria (Holmake, all selftests, build gate, h4pedant, and exact build wiring).
