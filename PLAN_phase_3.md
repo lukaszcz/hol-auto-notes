@@ -266,8 +266,9 @@ One processor in `clasimpLib`, shared by all six tactics:
    temporary); claset markers (`SIntro`…`Dest`, `Del`) → temporary
    claset via `process_claset_tags`; simp-side markers
    (`Cong`, `Split`, `AC`, `Excl`, `ExclSF`, `SF`, `Once`, `Ntimes`)
-   → passed through to the simp invocations; **plain theorems →
-   inserted as assumptions first** (D30).
+   → passed through to the simp invocations, using
+   `markerLib.is_generic_simp_marker` rather than a local marker list;
+   **plain theorems → inserted as assumptions first** (D30).
 2. The resulting `(claset, simpset)` pair parameterizes the script; the
    insertion happens once, before step 1 of each script, so inserted
    facts are visible to every phase (simp passes, safe steps, search,

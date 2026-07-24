@@ -1,5 +1,8 @@
 # M2 rollback-ownership experiment
 
+Archive note (2026-07-23): `searchTermsMeasured` was removed; consult git
+history for its implementation.
+
 This package records Task 7c on final uncommitted source based on outer
 revision `8264571bef871399630aed07c36abb7bb486c36b` and notes revision
 `6d5f079ec441c4216f817f15d82aaa90b8bb5758`.  It tests whether emergency

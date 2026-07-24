@@ -1,5 +1,8 @@
 # M2 exact stored-rule forcing experiment
 
+Archive note (2026-07-23): the diagnostic functions described below were
+removed; consult git history for their implementation.
+
 This package records Task 7e on final uncommitted source based on outer
 revision `699c8576ced289ad78a7d8ba1b856ef3b8f57040` and notes revision
 `681adf67fb525ebc6d3528bcf5b417c928b0cbd5`.  It refines the lazy forcing

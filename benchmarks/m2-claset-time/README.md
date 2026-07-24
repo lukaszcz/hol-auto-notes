@@ -1,5 +1,8 @@
 # M2 classical phase elapsed-time diagnosis
 
+Archive note (2026-07-23): the diagnostic functions described below were
+removed; consult git history for their implementation.
+
 This package records Task 7f on final implementation source.  It adds no
 search or proof capability.  The ordinary classical/reconstruction workers,
 the Task 7d API, and the Task 7e untimed detailed API retain their behavior;

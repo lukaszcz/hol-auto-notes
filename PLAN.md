@@ -989,6 +989,27 @@ rule-by-rule — misclassified "safe" rules are the classic way clasets rot.
   resource, security, process or atomicity claim is made.  The
   requirement-by-requirement audit in `PLAN_phase_1_2_green.md` §6 closes
   TASK_27 and the Phases 1/2 Green plan.
+- **2026-07-23, M1/M2 tower removal at `52a267058`:** a clean detached
+  worktree at commit `52a267058` configured successfully.  The exact
+  `bin/build -t --seq=tools/sequences/upto-auto` phase gate and the
+  explicit `bin/build -F -t` full gate both exited 0 and ended
+  `Hol built successfully.`  Targeted Classical and Blast
+  `Holmake`/selftests, h4pedant over both directories, `git diff --check`,
+  the removed-export search, and the production-API preservation audit
+  also passed.  The fine-grained tower is retired; production cooperative
+  interruption and coarse end-to-end wall-clock measurement remain.
+- **2026-07-24, shared generic-marker predicate:** focused `Holmake` and
+  `selftest.exe` gates passed in `src/marker`, `src/simp/src`, and
+  `src/auto/rules`; h4pedant over all three directories and
+  `git diff --check` were clean.  Both
+  `bin/build -t --seq=tools/sequences/upto-parallel` and
+  `bin/build -t --seq=tools/sequences/upto-auto` exited 0 and ended
+  `Hol built successfully.`  The explicit `bin/build -F -t` also exited 0
+  and ended `Hol built successfully.`; `real_borelTheory` was `OK` in
+  14 seconds.  Its sole non-`OK` classification was the intentional
+  pre-existing upstream `cv_compute/automation ... CHEATED` selftest.
+  The supported documentation fallback reported that `pandoc` was absent,
+  wrote the mdbook Markdown mirror, and did not affect the successful gate.
 
 ### Promotion (Phase 9, gated on the layer proving itself)
 
@@ -1260,3 +1281,12 @@ suites, integrity checks and final semantic audit recorded in §11.  The
 requirement audit in `PLAN_phase_1_2_green.md` §6 finds no unmet criterion.
 Phases 1/2 and their Green closure plan are complete; no next task remains
 for this phase.
+
+On 2026-07-23, the owner accepted retiring the closed M1/M2
+timing/diagnostic tower and its fine-grained current-revision
+remeasurement capability.  The removal landed in commits `199dfe4cd`,
+`f23a56183`, `45d1b6b01`, `03ee37955`, and `52a267058`; coarse
+end-to-end wall-clock measurement remains available for Phase 8.  The
+non-blocking statement that current-revision performance is not claimed
+therefore remains historical rather than an outstanding tower
+remeasurement task.

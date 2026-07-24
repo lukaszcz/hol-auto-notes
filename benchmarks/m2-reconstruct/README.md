@@ -1,5 +1,8 @@
 # M2 measured-reconstruction experiment
 
+Archive note (2026-07-23): the diagnostic functions described below were
+removed; consult git history for their implementation.
+
 This package records Task 7d on final uncommitted source based on outer
 revision `9b88306e84b511cdd107085e8d94b43d11e54b8a` and notes revision
 `700252f126d5d2abe16d1860a868c20d1d8742b0`.  It closes the observability gap

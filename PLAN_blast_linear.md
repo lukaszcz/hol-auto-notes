@@ -237,3 +237,23 @@ are internal; only `newCache`/`hitCount`/`conversionCount`/`cache` are
 exported and keep their types). No `blastTerm` surface added under the
 recommended Option A. Nothing downstream (blastSearch, tableauLib) sees a
 change beyond a faster cache.
+
+## 9. Execution record (2026-07-24)
+
+- Task 0 re-verification found only `cached` and `cachedMeasured`; they
+  remain reached solely through `acquire` and `acquireMeasured`.
+- Tasks 1–2 implemented Option A in `blastRule.sml`.  The `HVar` bucket is
+  also checked as a mutation fallback, and insertion stamps preserve the
+  globally newest match when both the concrete and variable-head buckets
+  contain a live `aconv` match.
+- Tasks 3–4 added production-path selftests: deterministic parity with the
+  reference linear predicate, alpha/`vars`/`safe`/newest/`HVar` coverage,
+  and a level-2 measured-probe scaling comparison against the quadratic
+  reference scan.
+- Task 5 passed unchanged: all 48 Pelletier corpus goals, all 9 Table-1
+  published-depth goals, and all 4 Table-1 set goals.  Ordinary and
+  `HOLSELFTESTLEVEL=2` blast selftests both passed.
+- Per-directory `Holmake`, `tools/h4pedant/h4pedant src/auto/blast/`, and
+  `git diff --check` passed.
+- The repository gates `bin/build -t --seq=tools/sequences/upto-auto` and
+  `bin/build -F -t` both passed.
