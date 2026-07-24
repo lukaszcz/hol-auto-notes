@@ -13,7 +13,7 @@
 - TASK_09 — done
 - TASK_10 — done
 - TASK_11 — done
-- TASK_12 — done (re-verified against current sources and all acceptance criteria on 2026-07-24)
+- TASK_12 — done (re-verified against current sources and all acceptance criteria on 2026-07-24 20:26 UTC)
 - TASK_13 — unblocked (not started)
 - TASK_14 — blocked (needs 01–13)
 
