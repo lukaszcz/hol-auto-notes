@@ -3,8 +3,8 @@
 ## Task status
 
 - TASK_01 — done
-- TASK_02 — unblocked (not started)
-- TASK_03 — blocked (needs 02)
+- TASK_02 — done
+- TASK_03 — unblocked (not started)
 - TASK_04 — blocked (needs 03)
 - TASK_05 — blocked (needs 03)
 - TASK_06 — unblocked (not started)
@@ -19,10 +19,11 @@
 
 ## Next unblocked task
 
-.agent-files/tasks_phase_3/TASK_02.md (TASK_06 is also unblocked and independent).
+.agent-files/tasks_phase_3/TASK_03.md (TASK_06 is also unblocked and independent).
 
 ## Completion log
 
 Append exactly ONE line per task as it lands (task id — outcome,
 verified against its acceptance criteria).
 TASK_01 — done; implementation and acceptance criteria verified (Holmake, selftest, build gate, h4pedant).
+TASK_02 — done; implementation and acceptance criteria verified (Holmake, selftest, build gate, h4pedant).
