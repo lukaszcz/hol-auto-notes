@@ -14,12 +14,12 @@
 - TASK_10 — done
 - TASK_11 — done
 - TASK_12 — done (re-verified against current sources and all acceptance criteria on 2026-07-24 21:07 UTC)
-- TASK_13 — unblocked (not started)
-- TASK_14 — blocked (needs 01–13)
+- TASK_13 — done (verified against all acceptance criteria on 2026-07-24)
+- TASK_14 — unblocked (dependencies complete)
 
 ## Next unblocked task
 
-.agent-files/tasks_phase_3/TASK_13.md
+.agent-files/tasks_phase_3/TASK_14.md
 
 ## Completion log
 
@@ -37,3 +37,4 @@ TASK_09 — done; re-verified against TASK_09 on 2026-07-24 (Holmake + selftest,
 TASK_10 — done; re-verified against TASK_10 on 2026-07-24 (Holmake, selftest, upto-auto build, h4pedant, all six decision-tree cases, and temporary Iff state).
 TASK_11 — done; verified against TASK_11 on 2026-07-24 (clasimp and theory-test Holmake, selftest, upto-auto build, h4pedant, persistence round-trip, ancestry, diamond merge, collision guard, and remove_iff retraction).
 TASK_12 — done; re-verified against TASK_12 on 2026-07-24 21:07 UTC (Holmake + selftest, upto-auto build, h4pedant on clasimp, post-load and catch-up hooks, constructor intro usability, and no duplicate seeded rules).
+TASK_13 — done; re-verified against TASK_13 on 2026-07-24 (all required pages and insertion updates present, task pages polyscripted, AliasGen, source cross-reference audit, and h4pedant clean).
