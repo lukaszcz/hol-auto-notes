@@ -10,6 +10,9 @@ Scope of the diff: 92 files — `src/auto/{rules,classical,blast}`,
 
 ## Owner decisions recorded (settled; do not re-litigate)
 
+Recorded in `PLAN.md` §2 on 2026-07-24 as **D38** (= D-R1) and **D39**
+(= D-R2).
+
 - **D-R1** (finding 5): the lowercase claset-explicit layer is renamed
   to uppercase `CS_*_TAC` (`CS_SAFE_TAC`, `CS_FAST_TAC`, ...).  The
   claset-parameterized entry points stay public; docfiles renamed.

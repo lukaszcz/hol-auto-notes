@@ -298,7 +298,8 @@ All decided 2026-07-14, one-by-one, with alternatives presented:
 - **D28:** *(2026-07-19, Phase 3)* **Clasimpset**: the stateful clasimp tactics
   use a cached derived value of `srw_ss()` plus layer config (`cond_depth` 40,
   safe-solver stack, `split_ss`); lowercase claset+simpset-explicit forms
-  throughout. Details: `PLAN_phase_3.md` §4.
+  throughout. Details: `PLAN_phase_3.md` §4. *Amended 2026-07-24 (D36)*: the
+  claset+simpset-explicit forms are uppercase `CS_*`, not lowercase.
 - **D29:** *(2026-07-19, Phase 3)* **`[iff]` persistence**: clasimp-owned
   `ThmSetData` settype `"iff"` whose delta carries only the source theorem;
   both derived views (claset rules, simpset rewrite) are recomputed by the
@@ -319,11 +320,14 @@ All decided 2026-07-14, one-by-one, with alternatives presented:
   **`classicalLib.depth_solve_tac {dup} n cs`** additively exported (Phase-2
   freeze amendment): the one implementation
   of Isabelle's `depth_tac`/`nodup_depth_tac` recipe; internal uses refactored
-  onto it.
+  onto it. *Amended 2026-07-24 (D36)*: exported as `CS_DEPTH_SOLVE_TAC`.
 - **D33:** *(2026-07-19, Phase 3)* **`tableauLib.blast_depth_tac`** additively
   exported (Phase-2 freeze amendment): raw claset-explicit fixed-depth tableau
   entry (no preprocessing, no deepening) for `AUTO_TAC`'s inner loop; public
-  `BLAST_TAC` packaging unchanged.
+  `BLAST_TAC` packaging unchanged. *Amended 2026-07-24 (D36)*: exported as
+  `CS_BLAST_DEPTH_TAC` — the delivered module-private `blast_depth_tac`
+  (`tableauLib.sml:183`) is the unrelated theorem-list entry behind
+  `BLAST_DEPTH_TAC` and keeps its name.
 - **D34:** *(2026-07-19, Phase 3)* **Names**: module `clasimpLib`; `AUTO_TAC`,
   `AUTO_DEPTH_TAC`, `FORCE_TAC`, `FASTFORCE_TAC`, `SLOWSIMP_TAC`,
   `BESTSIMP_TAC`, `CLARSIMP_TAC` (collision-checked). `AUTO`/`CLARSIMP` fail
@@ -333,6 +337,33 @@ All decided 2026-07-14, one-by-one, with alternatives presented:
   `perf_event_paranoid` cannot be lowered on the available host.  Keep the
   unavailable kernel profiler as an explicit environmental limitation; do
   not invent samples or claim a lower setting.
+- **D36:** *(2026-07-24, Phase 3)* **Context-explicit naming**: the `CS_`
+  prefix denotes a context-explicit entry point across the whole layer,
+  whether the context is a claset or a claset/simpset pair. Phase 3 exports
+  `CS_AUTO_TAC`, `CS_FORCE_TAC`, `CS_FASTFORCE_TAC`, `CS_SLOWSIMP_TAC`,
+  `CS_BESTSIMP_TAC`, `CS_CLARSIMP_TAC` (`… -> claset -> simpset -> tactic`),
+  and D32/D33 export `CS_DEPTH_SOLVE_TAC`/`CS_BLAST_DEPTH_TAC`. Supersedes the
+  lowercase forms of D28/D32/D33/D34; brings Phase 3 under the
+  `src/auto/CLAUDE.md` naming rule and D38. Details: `PLAN_phase_3.md` §§3.2,
+  3.3, 7.
+- **D37:** *(2026-07-24, Phase 3)* **Simp-wrapper combinators**: Isabelle's
+  `addss`/`addSss` are named `add_simp_wrapper`/`add_safe_simp_wrapper`,
+  matching the delivered `clasetLib.add_unsafe_wrapper`/`add_safe_wrapper`
+  pair. The wrapper slot *strings* stay Isabelle's (`"asm_full_simp_tac"`,
+  `"safe_asm_full_simp_tac"`) so the port stays greppable against
+  `clasimp.ML:44–54`. Details: `PLAN_phase_3.md` §5.
+- **D38:** *(2026-07-24, Phase-1/2 review; = D-R1 of
+  `PLAN_review_phase_1_2.md`)* **No lowercase alias layer**: the
+  claset-explicit layer of `classicalLib` is uppercase `CS_*_TAC`
+  (`CS_SAFE_TAC`, `CS_FAST_TAC`, …), types unchanged; module-private helpers
+  keep lowercase — the rule governs the public API. Landed at `5a1dee9f9`
+  with the 16 Docfiles renamed.
+- **D39:** *(2026-07-24, Phase-1/2 review; = D-R2 of
+  `PLAN_review_phase_1_2.md`)* **`Measured` twins**: unify the *cold-path*
+  twins (per-invocation setup/translation) on a `checkpoint : unit -> unit`
+  parameter, unmeasured callers passing `fn () => ()`; keep the *hot-path*
+  twins (`blastTerm` term operations, `blastSearch` inner loop) and guard them
+  with differential drift tests. Later phases add no new twins.
 
 Overarching (owner clarification): judge every design by resulting tactic
 strength, not by resemblance to Isabelle's user syntax.
