@@ -649,3 +649,10 @@ Phase 3 consumption map (for orientation): `AUTO_TAC`'s simp wrappers =
 simpsets = `srw_ss() ++ split_ss` + `set_cond_depth 40` + solver
 registrations; Phase 5 registers lin-arith once via
 `solver_ss`/`add_unsafe_solver` (the `lin_arith.ML:947–949` analogue).
+
+**D31 amendment (2026-07-24):** `GEN_GLOBAL_SIMP_TAC` takes a leading
+`simp_mode`, matching `GEN_SIMP_TAC`.  The mode selects only the
+tactic-level final-solver list; traversal side conditions continue to
+use unsafe solvers, and loopers remain enabled.  `global_simp_tac`
+supplies `{safe = false}`, preserving all existing entry-point
+behavior.
