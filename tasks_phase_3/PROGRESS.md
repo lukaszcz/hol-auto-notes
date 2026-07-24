@@ -10,7 +10,7 @@
 - TASK_06 — done
 - TASK_07 — done
 - TASK_08 — done
-- TASK_09 — unblocked (not started)
+- TASK_09 — done
 - TASK_10 — unblocked (not started)
 - TASK_11 — blocked (needs 06, 10)
 - TASK_12 — blocked (needs 10)
@@ -19,7 +19,7 @@
 
 ## Next unblocked task
 
-.agent-files/tasks_phase_3/TASK_09.md
+.agent-files/tasks_phase_3/TASK_10.md
 
 ## Completion log
 
@@ -33,3 +33,4 @@ TASK_05 — done; implementation and acceptance criteria verified (three Holmake
 TASK_06 — done; re-verified against TASK_06 (Holmake, all selftests, build gate, h4pedant, exact wiring).
 TASK_07 — done; implementation and acceptance criteria verified (Holmake, selftest, build gate, h4pedant, exact wrapper slots).
 TASK_08 — done; implementation and acceptance criteria re-verified against TASK_08 on 2026-07-24 (Holmake, selftest, upto-auto build, h4pedant, must-close and change-or-fail semantics).
+TASK_09 — done; implementation and acceptance criteria verified against TASK_09 on 2026-07-24 (Holmake, selftest, upto-auto build, h4pedant, default bounds, equivalence and inertness comments).
