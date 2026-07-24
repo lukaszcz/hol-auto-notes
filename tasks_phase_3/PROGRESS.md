@@ -27,4 +27,4 @@ Append exactly ONE line per task as it lands (task id — outcome,
 verified against its acceptance criteria).
 TASK_01 — done; implementation and acceptance criteria verified (Holmake, selftest, build gate, h4pedant).
 TASK_02 — done; implementation and acceptance criteria verified (Holmake, selftest, build gate, h4pedant).
-TASK_03 — done; implementation and acceptance criteria verified (three Holmake/selftest gates, build gate, h4pedant, old-name grep).
+TASK_03 — done; re-verified against TASK_03 and acceptance criteria (three Holmake/selftest gates, build gate, h4pedant, old-name grep).
