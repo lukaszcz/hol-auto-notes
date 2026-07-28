@@ -364,6 +364,61 @@ All decided 2026-07-14, one-by-one, with alternatives presented:
   parameter, unmeasured callers passing `fn () => ()`; keep the *hot-path*
   twins (`blastTerm` term operations, `blastSearch` inner loop) and guard them
   with differential drift tests. Later phases add no new twins.
+- **D40:** *(2026-07-27, Phase-3 refactor)* **`[iff]` simpset parity**:
+  install each theory's declarations as one batch of named rewrites, and
+  retract rewrites with `temp_delsimps`.  The theorem's `Thy.name` therefore
+  works with `Excl`, `delsimps`, and `temp_delsimps`, exactly as for `[simp]`.
+- **D41:** *(2026-07-27, Phase-3 refactor)* **Iff derivation belongs to the
+  rules layer**: `clasetLib.iff_rules` derives both halves, including both
+  safe constructor-injectivity rules contributed to the base claset.
+  `clasimpLib` adds only the corresponding normalized simp rewrite.
+- **D42:** *(2026-07-27, Phase-3 refactor)* **One simp-argument
+  classifier**: `clasetLib.classify_simp_args` owns the traversal and marker
+  vocabulary.  Simpset-less and simpset-carrying callers retain their
+  distinct unwrap/reject policies.
+- **D43:** *(2026-07-27, Phase-3 refactor)* **Simp wrappers carry controls**:
+  `add_simp_wrapper` and `add_safe_simp_wrapper` take the simplifier-control
+  theorem list explicitly; callers pass `[]` when no controls are wanted.
+
+- **D44:** *(2026-07-28, Phase 4)* **Aesop architecture**: faithful
+  CPP'23 AND/OR tree (goal/rapp/metavariable-cluster nodes, §4 copying
+  algorithm) in new `src/auto/aesop/` modules, reusing `clasetMeta`/
+  `clasetUnify`/`clasetNet`/`clasetGoal` single-goal nodes/`clasetReplay`/
+  `searchHeap` — not best-first over whole proof states, not a Phase-2
+  forest refactor.  Details: `PLAN_phase_4.md` §§0, 4.
+- **D45:** *(2026-07-28, Phase 4)* **`clasetStep.rule_step`** additively
+  exported (Phase-2 freeze amendment, D32/D33 precedent): per-theorem,
+  wrapper-free, standard child policy, explicit unification mode; the
+  amendment umbrella covers a non-consuming elim replay action if the
+  forward builder needs it.
+- **D46:** *(2026-07-28, Phase 4)* **Rule DB v2**: `rulespec.kind` gains
+  `Forward`/`Norm`, persisted via `clasetADD2` alongside v1; the aesop
+  index is a non-persisted by-target/by-hypothesis `clasetNet` pair on
+  the `CS` record (as Phase 0 pre-authorized); simp-builder rewrites are
+  an `aesop_simp` `ThmSetData` settype; tactic rules session-only.
+- **D47:** *(2026-07-28, Phase 4)* **Attributes**: enact D12's
+  `[intro=NN]`/`[elim=NN]`/`[dest=NN]` percent arguments (additive HolLex
+  tweak); new `[norm]`/`[norm=k]`, `[forward]`/`[forward=NN]`,
+  `[sforward]`, `[aesop_simp]`.  No safe integer-priority surface in
+  Phase 4; pattern-cases declarations programmatic only.
+- **D48:** *(2026-07-28, Phase 4)* **Default probability**: unsafe rules
+  without explicit `prio` count as 50% for aesop; seeds annotate only
+  where the paper's corpus differs.
+- **D49:** *(2026-07-28, Phase 4)* **Surface**: `AESOP_TAC` is
+  close-or-fail (safe goals reported via trace); `AESOP_SAFE_TAC` leaves
+  the normalisation+safe frontier as subgoals with D27 semantics;
+  `CS_AESOP_TAC`/`CS_AESOP_SAFE_TAC : aesop_config -> claset -> simpset
+  -> tactic` per D36.
+- **D50:** *(2026-07-28, Phase 4)* **Normalisation**: built-in norm rule
+  = safe-mode mut_impc-parity global simp over an aesop-derived simpset
+  cache (`srw_ss()` + `cond_depth` 40 + safe solvers + `aesop_simp`),
+  **without** `split_ss`; case splits enter as low-priority safe rules
+  from the `[split]` corpus (CPP'23 §3.4 parity; norm rules must yield
+  ≤ 1 subgoal).
+- **D51:** *(2026-07-28, Phase 4)* **`clasetMeta.absorb`** additively
+  exported (second Phase-2 freeze amendment): domain-disjoint store
+  extension merge, erroring on conflicts, required for winning-forest
+  replay (sibling subtrees evolve incomparable store extensions).
 
 Overarching (owner clarification): judge every design by resulting tactic
 strength, not by resemblance to Isabelle's user syntax.
@@ -707,6 +762,16 @@ Pelletier problems 1–46 (Paulson's benchmark set, Table 1 of the paper)
 and HOL4-native set-theoretic goals.
 
 ### 6.4 Phase 4 — Aesop-style best-first engine (`src/auto/aesop/`) (D2)
+
+**Detailed implementation plan: `PLAN_phase_4.md` (2026-07-28; owner
+decisions D44–D51; research: `research/phase4-aesop-engine.md`).**  It
+refines this sketch against the delivered substrate: the "shared
+forest" is realized as a new faithful AND/OR tree over the Phase-2
+components (D44) rather than an exported Phase-2 forest type; case
+splits are safe rules, not normalisation rules (D50); dropped
+metavariables need no synthesis subgoals in HOL (grounded
+deterministically); tactic-valued rules run on rendered goals and
+cannot bind engine metavariables (D24 discipline).
 
 Full implementation of Limperg & From, CPP 2023, over the shared rule DB
 and the shared search forest of §6.2:
