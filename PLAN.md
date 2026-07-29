@@ -420,6 +420,10 @@ All decided 2026-07-14, one-by-one, with alternatives presented:
   extension merge, erroring on conflicts, required for winning-forest
   replay (sibling subtrees evolve incomparable store extensions).
 
+D44–D51 were delivered and gate-verified on 2026-07-29 at source
+revision `406b4efd67e1`; the resulting public contracts are frozen in
+`PLAN_phase_4.md` §13 and in the resolved-micro-decisions register below.
+
 Overarching (owner clarification): judge every design by resulting tactic
 strength, not by resemblance to Isabelle's user syntax.
 
@@ -773,6 +777,18 @@ metavariables need no synthesis subgoals in HOL (grounded
 deterministically); tactic-valued rules run on rendered goals and
 cannot bind engine metavariables (D24 discipline).
 
+**Status (2026-07-29): complete and gate-verified at
+`406b4efd67e1`.**  The delivery audit followed every Phase-4 mechanism
+to a live production consumer or integrated regression path: claset
+candidate indexes and `clasetStep.rule_step` feed `aesopRule`;
+`clasetMeta.absorb` feeds winning-forest extraction before grounding;
+the new markers are consumed by `aesopLib` argument processing; and
+`aesopData.aesop_ss` feeds both the simp builder and public tactic
+contexts.  Tree copying is reached through installed rule
+applications, normalisation and safe/unsafe search are connected to
+the public tactics, and successful search is extracted and replayed
+through the kernel.
+
 Full implementation of Limperg & From, CPP 2023, over the shared rule DB
 and the shared search forest of §6.2:
 
@@ -1113,6 +1129,19 @@ rule-by-rule — misclassified "safe" rules are the classic way clasets rot.
   every Phase-3-touched directory: `help/Docfiles`, `src/auto/blast`,
   `src/auto/clasimp`, `src/auto/classical`, `src/auto/rules`,
   `src/parallel_builds/core`, `src/simp/src`, and `tools/sequences`.
+- **2026-07-29, Phase 4 at `406b4efd67e1`:** the explicit
+  `bin/build -F -t` exited 0 after approximately 16m32s and ended
+  `Hol built successfully.`  The supported documentation fallback
+  reported that `pandoc` was absent, wrote the mdbook Markdown mirror,
+  and did not affect the successful gate.  The live-consumer audit
+  covered every Phase-4 task deliverable, including the candidate
+  indexes, `rule_step`, `absorb`, marker processing, `aesop_ss`, tree
+  copying, normalisation, safe/unsafe search, extraction, and
+  kernel-checked replay.  H4pedant was clean over the Phase-4
+  auto/docs/build-integration directories, and the changed parser hunks
+  introduced no tab, whitespace, Unicode, or line-length violation.
+  `git diff --check` and the committed-source `.agent-files` reference
+  audit were also clean.
 
 ### Promotion (Phase 9, gated on the layer proving itself)
 
@@ -1175,6 +1204,15 @@ arithmetic.  Each gets its own plan when reached.
   `classicalLib.depth_solve_tac` and `tableauLib.blast_depth_tac`
   (Phase 2); `GEN_GLOBAL_SIMP_TAC` gains a leading `simp_mode`
   parameter (Phase S §12).
+- **Phase 4 interface freeze** (2026-07-29, D44–D51):
+  `rulespec`/`cdelta` v2 and per-kind `prio` semantics; the complete
+  attribute surface including numeric arguments; the `aesop_simp`
+  settype; `clasetStep.rule_step`; `clasetMeta.absorb`; marker
+  vocabulary including `Norm`/`Forward`/`SForward`; and the public
+  `aesopLib` surface (`aesop_config`, `AESOP_TAC`, `AESOP_SAFE_TAC`,
+  `CS_AESOP_TAC`, `CS_AESOP_SAFE_TAC`, `augment_aesop`, and
+  `cases_rule_for`) are frozen.  Changes require an owner decision;
+  `aesopTree`/`aesopSearch`/`aesopNorm` internals remain private.
 - **In-engine `mut_impc` revisit**: if Phase 8's Isabelle-translated
   benchmarks show gaps attributable to mutuality inside `SIMP_RULE`, under
   binders, or in nested implications, an engine port becomes its own

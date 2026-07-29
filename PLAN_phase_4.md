@@ -713,7 +713,8 @@ T13 needs T07, T11, T12.
 
 ## 13. Interfaces later phases rely on (freeze list)
 
-Frozen at Phase-4 completion (changes require an owner decision):
+Frozen at Phase-4 completion on 2026-07-29, against source revision
+`406b4efd67e1` (changes require an owner decision):
 `rulespec`/`cdelta` v2 schema and per-kind `prio` semantics; the
 attribute surface incl. numeric-argument syntax; the `aesop_simp`
 settype; `clasetStep.rule_step` and `clasetMeta.absorb` signatures;
