@@ -2,7 +2,7 @@
 
 ## 1. Task status
 
-- TASK_01 — unblocked (not started; source-verified 2026-07-29)
+- TASK_01 — unblocked (not started; verified incomplete 2026-07-29)
 - TASK_02 — unblocked (not started)
 - TASK_03 — blocked (needs 01, 02)
 - TASK_04 — blocked (needs 02)
@@ -31,6 +31,4 @@ TASK_08).
 
 ## 3. Completion log
 
-Add exactly ONE line per task here as it lands, e.g.
-`- TASK_01 done (YYYY-MM-DD, commit <sha>): one-clause summary.`
-(No entries yet.)
+No tasks completed yet.
