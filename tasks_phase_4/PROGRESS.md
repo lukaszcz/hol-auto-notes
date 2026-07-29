@@ -30,13 +30,14 @@
   reduced build pass)
 - TASK_18 — done (re-verified 2026-07-29; focused Holmake/selftest,
   h4pedant, diff check, and reduced build pass)
-- TASK_19 — unblocked (not started)
+- TASK_19 — done (verified 2026-07-29; focused Holmake/selftest,
+  h4pedant, diff check, and reduced build pass)
 - TASK_20 — unblocked (not started)
 - TASK_21 — blocked (needs 19, 20)
 
 ## 2. Next unblocked task
 
-TASK_19.
+TASK_20.
 
 ## 3. Completion log
 
@@ -58,3 +59,4 @@ TASK_19.
 - TASK_16 — landed 2026-07-29: Winning-forest extraction, covering-store absorb/ground, bottom-up replay, kernel-validated REPLAY_TAC, ARB dropped-witness grounding, and hard replay-error diagnostics; focused Holmake + selftest.exe, h4pedant, diff check, and reduced build pass.
 - TASK_17 — landed 2026-07-29: aesopLib public surface, argument pipeline, marker consumption, safe/close-or-fail tactics, and session tactic augmentation; verified against TASK_17, the phase plan, and codebase with focused Holmake + selftest.exe, h4pedant, diff check, and reduced build pass.
 - TASK_18 — landed 2026-07-29: annotated the universal-hypothesis seed rule with 75% priority and locked the reloaded rulespec in selftest; re-verified against the paper and all focused/reduced gates pass.
+- TASK_19 — landed 2026-07-29: completed the listTheory and Pelletier strength smoke set, exact safe-tactic residue checks, and §9 coverage sweep; focused/reduced gates pass.
