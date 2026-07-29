@@ -25,7 +25,8 @@
   h4pedant, diff check, and reduced build pass)
 - TASK_16 — done (verified 2026-07-29; focused Holmake/selftest,
   h4pedant, diff check, and reduced build pass)
-- TASK_17 — done (re-verified 2026-07-29; focused/reduced gates pass)
+- TASK_17 — done (re-verified 2026-07-29; focused Holmake/selftest.exe,
+  h4pedant, diff check, and reduced build pass)
 - TASK_18 — unblocked (not started)
 - TASK_19 — blocked (needs 17, 18)
 - TASK_20 — blocked (needs 17)
