@@ -19,8 +19,8 @@
 - TASK_12 — done (re-verified 2026-07-29; all copying goldens and
   focused/reduced gates pass)
 - TASK_13 — done (verified 2026-07-29; focused/reduced gates pass)
-- TASK_14 — done (verified 2026-07-29; focused Holmake/selftest,
-  h4pedant, diff check, and reduced build pass)
+- TASK_14 — done (re-verified 2026-07-29; focused Holmake/selftest,
+  h4pedant, diff check, and reduced build all pass)
 - TASK_15 — unblocked (not started)
 - TASK_16 — unblocked (not started)
 - TASK_17 — blocked (needs 07, 10, 15, 16)
@@ -48,4 +48,4 @@ TASK_15.
 - TASK_11 — landed 2026-07-29: Functional aesop search tree with log-priority FIFO queue, state propagation, irrelevance, dependency bookkeeping, and transitive clusters; focused/reduced gates pass.
 - TASK_12 — re-verified 2026-07-29: Aesop tree copying with instantiated siblings, transitive coupling, duplicate suppression, subtree omission, and dropped-meta goldens; all acceptance gates pass.
 - TASK_13 — landed 2026-07-29: Aesop normalisation fixpoint with penalty ordering/restart semantics, built-in chain, rigid Match-mode checks, dynamic single-goal enforcement, and iteration limits; all focused/reduced gates pass.
-- TASK_14 — landed 2026-07-29: Aesop search loop skeleton, safe phase, postponement, forward loop prevention, and safe saturation/frontier; all focused/reduced gates pass.
+- TASK_14 — re-verified 2026-07-29: Aesop search loop skeleton, safe phase, postponement, forward loop prevention, and safe saturation/frontier; all focused/reduced acceptance gates pass.
