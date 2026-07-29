@@ -28,8 +28,8 @@
 - TASK_17 — done (verified 2026-07-29 against TASK_17, the phase plan,
   and codebase; focused Holmake/selftest.exe, h4pedant, diff check, and
   reduced build pass)
-- TASK_18 — unblocked (not started)
-- TASK_19 — blocked (needs 17, 18)
+- TASK_18 — done (verified 2026-07-29; focused/reduced gates pass)
+- TASK_19 — unblocked (not started)
 - TASK_20 — blocked (needs 17)
 - TASK_21 — blocked (needs 19, 20)
 
@@ -56,3 +56,4 @@ TASK_18.
 - TASK_15 — re-verified 2026-07-29: Aesop unsafe alternatives, postponed-rapp re-offer, transitivity search, rapp/depth limits, failure safe-goal completion, and trace reporting; focused Holmake + selftest.exe, h4pedant, diff check, and reduced build pass.
 - TASK_16 — landed 2026-07-29: Winning-forest extraction, covering-store absorb/ground, bottom-up replay, kernel-validated REPLAY_TAC, ARB dropped-witness grounding, and hard replay-error diagnostics; focused Holmake + selftest.exe, h4pedant, diff check, and reduced build pass.
 - TASK_17 — landed 2026-07-29: aesopLib public surface, argument pipeline, marker consumption, safe/close-or-fail tactics, and session tactic augmentation; verified against TASK_17, the phase plan, and codebase with focused Holmake + selftest.exe, h4pedant, diff check, and reduced build pass.
+- TASK_18 — landed 2026-07-29: annotated the universal-hypothesis seed rule with 75% priority and locked the reloaded rulespec in selftest; focused/reduced gates pass.
