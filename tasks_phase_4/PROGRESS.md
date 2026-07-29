@@ -32,12 +32,13 @@
   h4pedant, diff check, and reduced build pass)
 - TASK_19 — done (re-verified 2026-07-29 against task spec and codebase;
   focused Holmake/selftest, h4pedant, diff check, and reduced build pass)
-- TASK_20 — unblocked (not started)
-- TASK_21 — blocked (needs 19, 20)
+- TASK_20 — done (verified 2026-07-29; docfiles, alias check,
+  focused/reduced gates pass)
+- TASK_21 — unblocked (not started)
 
 ## 2. Next unblocked task
 
-TASK_20.
+TASK_21.
 
 ## 3. Completion log
 
@@ -60,3 +61,6 @@ TASK_20.
 - TASK_17 — landed 2026-07-29: aesopLib public surface, argument pipeline, marker consumption, safe/close-or-fail tactics, and session tactic augmentation; verified against TASK_17, the phase plan, and codebase with focused Holmake + selftest.exe, h4pedant, diff check, and reduced build pass.
 - TASK_18 — landed 2026-07-29: annotated the universal-hypothesis seed rule with 75% priority and locked the reloaded rulespec in selftest; re-verified against the paper and all focused/reduced gates pass.
 - TASK_19 — landed 2026-07-29: completed the listTheory and Pelletier strength smoke set, exact safe-tactic residue checks, and §9 coverage sweep; focused/reduced gates pass.
+- TASK_20 — landed 2026-07-29: added Aesop Docfiles, numeric attribute
+  documentation, and build-sequence integration; help-tool, alias,
+  focused/reduced gates pass.
