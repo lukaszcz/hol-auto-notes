@@ -21,7 +21,8 @@
 - TASK_13 — done (verified 2026-07-29; focused/reduced gates pass)
 - TASK_14 — done (re-verified 2026-07-29; focused Holmake/selftest,
   h4pedant, diff check, and reduced build all pass)
-- TASK_15 — unblocked (not started)
+- TASK_15 — done (verified 2026-07-29; focused selftest,
+  h4pedant, diff check, and reduced build pass)
 - TASK_16 — unblocked (not started)
 - TASK_17 — blocked (needs 07, 10, 15, 16)
 - TASK_18 — unblocked (not started)
@@ -31,7 +32,7 @@
 
 ## 2. Next unblocked task
 
-TASK_15.
+TASK_16.
 
 ## 3. Completion log
 
@@ -49,3 +50,4 @@ TASK_15.
 - TASK_12 — re-verified 2026-07-29: Aesop tree copying with instantiated siblings, transitive coupling, duplicate suppression, subtree omission, and dropped-meta goldens; all acceptance gates pass.
 - TASK_13 — landed 2026-07-29: Aesop normalisation fixpoint with penalty ordering/restart semantics, built-in chain, rigid Match-mode checks, dynamic single-goal enforcement, and iteration limits; all focused/reduced gates pass.
 - TASK_14 — re-verified 2026-07-29: Aesop search loop skeleton, safe phase, postponement, forward loop prevention, and safe saturation/frontier; all focused/reduced acceptance gates pass.
+- TASK_15 — landed 2026-07-29: Aesop unsafe alternatives, postponed-rapp re-offer, transitivity search, rapp/depth limits, failure safe-goal completion, and trace reporting; all focused/reduced acceptance gates pass.
