@@ -7,7 +7,7 @@
 - TASK_03 — done (verified 2026-07-29)
 - TASK_04 — done (verified 2026-07-29; focused/reduced gates pass)
 - TASK_05 — done (verified 2026-07-29; focused/reduced gates pass)
-- TASK_06 — unblocked (not started)
+- TASK_06 — done (verified 2026-07-29; focused/reduced gates pass)
 - TASK_07 — unblocked (not started)
 - TASK_08 — unblocked (not started)
 - TASK_09 — blocked (needs 02, 04, 05, 08)
@@ -26,7 +26,7 @@
 
 ## 2. Next unblocked task
 
-TASK_06 (also unblocked now: TASK_07, TASK_08).
+TASK_07 (also unblocked now: TASK_08).
 
 ## 3. Completion log
 
@@ -35,3 +35,4 @@ TASK_06 (also unblocked now: TASK_07, TASK_08).
 - TASK_03 — landed 2026-07-29: New-kind attributes and v1/v2 theory reload tests; focused/theory tests and reduced build pass.
 - TASK_04 — landed 2026-07-29: Aesop target/hypothesis candidate index with ordering and maintenance tests; focused/reduced gates pass.
 - TASK_05 — landed 2026-07-29: Wrapper-free standard rule steps, differential tests, and non-consuming elimination replay; focused/reduced gates pass.
+- TASK_06 — landed 2026-07-29: Six-table claset store absorption with conflict diagnostics and golden merge tests; focused/reduced gates pass.
