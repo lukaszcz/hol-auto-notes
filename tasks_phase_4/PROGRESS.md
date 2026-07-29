@@ -16,7 +16,7 @@
 - TASK_10 — done (re-verified 2026-07-29; focused Holmake/selftests,
   h4pedant, diff check, and reduced build pass)
 - TASK_11 — done (verified 2026-07-29; focused/reduced gates pass)
-- TASK_12 — unblocked (not started)
+- TASK_12 — done (verified 2026-07-29; focused/reduced gates pass)
 - TASK_13 — unblocked (not started)
 - TASK_14 — blocked (needs 10, 12, 13)
 - TASK_15 — blocked (needs 14)
@@ -29,7 +29,7 @@
 
 ## 2. Next unblocked task
 
-TASK_12.
+TASK_13.
 
 ## 3. Completion log
 
@@ -44,3 +44,4 @@ TASK_12.
 - TASK_09 — landed 2026-07-29: aesop rule model, claset assembly, apply/constructors/simp builders, closers, and safe-order scaffold; focused/reduced gates pass.
 - TASK_10 — landed 2026-07-29: Forward/destruct, cases, tactic, and conclusion/assumption split builders with indexing, replay, and all focused/reduced gates passing.
 - TASK_11 — landed 2026-07-29: Functional aesop search tree with log-priority FIFO queue, state propagation, irrelevance, dependency bookkeeping, and transitive clusters; focused/reduced gates pass.
+- TASK_12 — landed 2026-07-29: Aesop tree copying with instantiated siblings, transitive coupling, duplicate suppression, subtree omission, and dropped-meta goldens; focused/reduced gates pass.
