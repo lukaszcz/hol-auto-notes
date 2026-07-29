@@ -6,7 +6,7 @@
 - TASK_02 — done (verified 2026-07-29)
 - TASK_03 — done (verified 2026-07-29)
 - TASK_04 — done (verified 2026-07-29; focused/reduced gates pass)
-- TASK_05 — unblocked (not started)
+- TASK_05 — done (verified 2026-07-29; focused/reduced gates pass)
 - TASK_06 — unblocked (not started)
 - TASK_07 — unblocked (not started)
 - TASK_08 — unblocked (not started)
@@ -26,7 +26,7 @@
 
 ## 2. Next unblocked task
 
-TASK_05 (also unblocked now: TASK_06, TASK_07, TASK_08).
+TASK_06 (also unblocked now: TASK_07, TASK_08).
 
 ## 3. Completion log
 
@@ -34,3 +34,4 @@ TASK_05 (also unblocked now: TASK_06, TASK_07, TASK_08).
 - TASK_02 — landed 2026-07-29: Forward/Norm kinds, schema-v2 codec, routing isolation, canonical ext_info, and declaration ordering; focused tests and reduced build pass.
 - TASK_03 — landed 2026-07-29: New-kind attributes and v1/v2 theory reload tests; focused/theory tests and reduced build pass.
 - TASK_04 — landed 2026-07-29: Aesop target/hypothesis candidate index with ordering and maintenance tests; focused/reduced gates pass.
+- TASK_05 — landed 2026-07-29: Wrapper-free standard rule steps, differential tests, and non-consuming elimination replay; focused/reduced gates pass.
