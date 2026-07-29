@@ -9,7 +9,7 @@
 - TASK_05 — done (verified 2026-07-29; focused/reduced gates pass)
 - TASK_06 — done (re-verified 2026-07-29; focused selftest, pedant,
   diff, and reduced build pass)
-- TASK_07 — unblocked (not started)
+- TASK_07 — done (verified 2026-07-29; focused/reduced gates pass)
 - TASK_08 — unblocked (not started)
 - TASK_09 — blocked (needs 02, 04, 05, 08)
 - TASK_10 — blocked (needs 05, 07, 09)
@@ -27,7 +27,7 @@
 
 ## 2. Next unblocked task
 
-TASK_07 (also unblocked now: TASK_08).
+TASK_08.
 
 ## 3. Completion log
 
@@ -37,3 +37,4 @@ TASK_07 (also unblocked now: TASK_08).
 - TASK_04 — landed 2026-07-29: Aesop target/hypothesis candidate index with ordering and maintenance tests; focused/reduced gates pass.
 - TASK_05 — landed 2026-07-29: Wrapper-free standard rule steps, differential tests, and non-consuming elimination replay; focused/reduced gates pass.
 - TASK_06 — landed 2026-07-29: Six-table claset store absorption with conflict diagnostics and golden merge tests; re-verified against the task specification with all gates passing.
+- TASK_07 — landed 2026-07-29: Norm/Forward/SForward markers with classical pass-through and round-trip tests; focused/reduced gates pass.
