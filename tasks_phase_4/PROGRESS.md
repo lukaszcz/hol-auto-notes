@@ -2,7 +2,7 @@
 
 ## 1. Task status
 
-- TASK_01 — unblocked (not started; verified incomplete 2026-07-29)
+- TASK_01 — done (verified 2026-07-29)
 - TASK_02 — unblocked (not started)
 - TASK_03 — blocked (needs 01, 02)
 - TASK_04 — blocked (needs 02)
@@ -26,9 +26,10 @@
 
 ## 2. Next unblocked task
 
-TASK_01 (also unblocked now: TASK_02, TASK_05, TASK_06, TASK_07,
-TASK_08).
+TASK_02 (also unblocked now: TASK_05, TASK_06, TASK_07, TASK_08).
 
 ## 3. Completion log
 
-No tasks completed yet.
+- TASK_01 — landed 2026-07-29: HolLex digit-leading values and unsafe
+  claset priority parsing, with focused/theory tests and reduced build
+  passing.
