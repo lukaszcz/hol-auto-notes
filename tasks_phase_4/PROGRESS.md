@@ -13,7 +13,8 @@
 - TASK_08 — done (re-verified 2026-07-29; focused Holmake/selftest,
   theory-test compile, pedant, diff, and reduced build pass)
 - TASK_09 — done (re-verified 2026-07-29; focused/reduced gates pass)
-- TASK_10 — done (verified 2026-07-29; focused/reduced gates pass)
+- TASK_10 — done (re-verified 2026-07-29; focused Holmake/selftests,
+  h4pedant, diff check, and reduced build pass)
 - TASK_11 — unblocked (not started)
 - TASK_12 — blocked (needs 11)
 - TASK_13 — blocked (needs 08, 09, 11)
@@ -41,4 +42,4 @@ TASK_11.
 - TASK_07 — landed 2026-07-29: Norm/Forward/SForward markers with classical pass-through and round-trip tests; all focused/reduced gates pass.
 - TASK_08 — landed 2026-07-29: aesop_simp settype, derived simpset cache, trace registration, scaffolding, and theory reload tests; re-verified with focused/reduced gates passing.
 - TASK_09 — landed 2026-07-29: aesop rule model, claset assembly, apply/constructors/simp builders, closers, and safe-order scaffold; focused/reduced gates pass.
-- TASK_10 — landed 2026-07-29: Forward/destruct, cases, tactic, and conclusion/assumption split builders with indexing, replay, and focused/reduced gates passing.
+- TASK_10 — landed 2026-07-29: Forward/destruct, cases, tactic, and conclusion/assumption split builders with indexing, replay, and all focused/reduced gates passing.
