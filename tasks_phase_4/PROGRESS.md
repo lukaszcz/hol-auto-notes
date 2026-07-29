@@ -30,8 +30,8 @@
   reduced build pass)
 - TASK_18 — done (re-verified 2026-07-29; focused Holmake/selftest,
   h4pedant, diff check, and reduced build pass)
-- TASK_19 — done (verified 2026-07-29; focused Holmake/selftest,
-  h4pedant, diff check, and reduced build pass)
+- TASK_19 — done (re-verified 2026-07-29 against task spec and codebase;
+  focused Holmake/selftest, h4pedant, diff check, and reduced build pass)
 - TASK_20 — unblocked (not started)
 - TASK_21 — blocked (needs 19, 20)
 
