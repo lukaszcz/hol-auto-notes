@@ -7,7 +7,7 @@
 - TASK_03 — done (verified 2026-07-29)
 - TASK_04 — done (verified 2026-07-29; focused/reduced gates pass)
 - TASK_05 — done (verified 2026-07-29; focused/reduced gates pass)
-- TASK_06 — done (verified 2026-07-29; all task gates pass)
+- TASK_06 — done (verified 2026-07-29; all gates pass)
 - TASK_07 — unblocked (not started)
 - TASK_08 — unblocked (not started)
 - TASK_09 — blocked (needs 02, 04, 05, 08)
