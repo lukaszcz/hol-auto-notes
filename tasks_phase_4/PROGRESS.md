@@ -34,9 +34,9 @@
   focused Holmake/selftest, h4pedant, diff check, and reduced build pass)
 - TASK_20 — done (verified 2026-07-29; docfiles, alias check,
   focused/reduced gates pass)
-- TASK_21 — done (verified 2026-07-29; full build, freeze/register
-  records, live-consumer audit, scoped h4pedant/parser-style audit,
-  reference audit, and diff checks pass)
+- TASK_21 — done (re-verified 2026-07-29; explicit full build, freeze/
+  register records, live-consumer audit, scoped h4pedant/parser-style
+  audit, reference audit, and diff checks pass)
 
 ## 2. Next unblocked task
 
@@ -68,4 +68,4 @@ None; Phase 4 is complete.
   focused/reduced gates pass.
 - TASK_21 — landed 2026-07-29: explicit full build passed at
   `406b4efd67e1`; D44–D51, the Phase-4 interface freeze, gate evidence,
-  and the live-consumer audit were recorded; final hygiene checks pass.
+  and the live-consumer audit were recorded; re-verification passed.
