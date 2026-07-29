@@ -3,9 +3,9 @@
 ## 1. Task status
 
 - TASK_01 — done (verified 2026-07-29)
-- TASK_02 — unblocked (not started)
-- TASK_03 — blocked (needs 01, 02)
-- TASK_04 — blocked (needs 02)
+- TASK_02 — done (verified 2026-07-29)
+- TASK_03 — unblocked (not started)
+- TASK_04 — unblocked (not started)
 - TASK_05 — unblocked (not started)
 - TASK_06 — unblocked (not started)
 - TASK_07 — unblocked (not started)
@@ -26,10 +26,14 @@
 
 ## 2. Next unblocked task
 
-TASK_02 (also unblocked now: TASK_05, TASK_06, TASK_07, TASK_08).
+TASK_03 (also unblocked now: TASK_04, TASK_05, TASK_06, TASK_07,
+TASK_08).
 
 ## 3. Completion log
 
 - TASK_01 — landed 2026-07-29: HolLex digit-leading values and unsafe
   claset priority parsing, with focused/theory tests and reduced build
   passing.
+- TASK_02 — landed 2026-07-29: Forward/Norm rule kinds, versioned
+  schema-v2 codec, classical-routing isolation, canonical ext_info, and
+  declaration ordering, with focused tests and reduced build passing.
