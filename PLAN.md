@@ -8,6 +8,11 @@ Implement HOL4 analogues of Isabelle/HOL's automation — `auto`, `blast`,
 `force`, `fastforce`, `safe`, `clarify`, `clarsimp`, `fast`, `best`,
 `deepen`, `simp` (upgrades), `arith`, `presburger`, `algebra`, `ring` —
 that are **at least as strong** as the Isabelle originals.
+*(2026-07-30: the arith/algebra tail was rescoped by D55–D58 — `arith`
+is covered by `LINARITH_TAC` + existing backends, `presburger` by the
+existing `intLib` tactics, and `algebra`/`ring` by the existing
+per-type ring tactics, with the D58 gaps accepted as recorded
+shortfalls.)*
 
 - The target is parity in **automation strength**, not Isabelle-style proof
   texts.  Surface syntax stays idiomatic HOL4 (owner decision; see §2).
@@ -165,17 +170,26 @@ All decided 2026-07-14, one-by-one, with alternatives presented:
   engine parametric over instance records; port the `lin_arith.ML`
   preprocessing layer; wire as type-generic simp solver; `ARITH_TAC` =
   extensible registry with escalation linarith → presburger → real backends.
+  *Revised 2026-07-30 (D55)*: the registry and `ARITH_TAC` are dropped;
+  the tactic surface is `LINARITH_TAC` only.
 - **D7:** **presburger**: Omega first, Cooper fallback, behind Isabelle-parity
-  preprocessing and a `[presburger]` rule set.
+  preprocessing and a `[presburger]` rule set.  *Revised 2026-07-30 (D57)*:
+  Phase 6 is dropped entirely — the existing `intLib` entry points already
+  carry the parity preprocessing.
 - **D8:** **algebra/ring**: persistent instance registry (types and
   abstract-structure hypotheses → semiring/ring/field instance records) +
   goal-type dispatch; `ringLib` promoted from `examples/`; curated
-  `algebra_simps`/`field_simps` collections.
+  `algebra_simps`/`field_simps` collections.  *Revised 2026-07-30 (D58)*:
+  Phase 7 is dropped entirely; the existing per-type entry points stand.
 - **D9:** **Naming**: HOL4 uppercase convention only — `AUTO_TAC`, `BLAST_TAC`,
   `FORCE_TAC`, `FASTFORCE_TAC`, `SAFE_TAC`, `CLARIFY_TAC`, `CLARSIMP_TAC`,
   `FAST_TAC`, `BEST_TAC`, `DEEPEN_TAC`, `AESOP_TAC`, `ARITH_TAC`,
   `PRESBURGER_TAC`, `ALGEBRA_TAC`, `RING_TAC`, `IDEAL_TAC`. No lowercase
   Isabelle-alias layer. (Collision handling: §11, "Resolved micro-decisions".)
+  *Revised 2026-07-30 (D55, D57, D58)*: `ARITH_TAC` is not exported
+  (the linarith entry point is `LINARITH_TAC`); `PRESBURGER_TAC` is
+  dropped with Phase 6; `ALGEBRA_TAC`/`RING_TAC`/`IDEAL_TAC` are
+  dropped with Phase 7.
 - **D10:** **Integration**: portable opt-in layer — own subtree in the default
   build (after the core), integration-identical mechanisms, central seed
   theories for the rule corpus, TypeBase hook + catch-up; promotion to full
@@ -424,6 +438,112 @@ D44–D51 were delivered and gate-verified on 2026-07-29 at source
 revision `406b4efd67e1`; the resulting public contracts are frozen in
 `PLAN_phase_4.md` §13 and in the resolved-micro-decisions register below.
 
+- **D52:** *(2026-07-30, Phase 4 simplify)* **The D45 non-consuming elim
+  umbrella closes unused.**  The forward builder ships through
+  `FORWARD_RULE_TAC`, so `NONCONSUMING_ELIM_RULE_TAC`,
+  `nonconsuming_elim_rule_action`, the `retain_major` parameter they
+  forced into the shared `rule_tac_with`, and their selftest are removed.
+  A replay primitive only a test drives is untested where it matters.
+  Accepted: a future rule family wanting elim-style children while
+  retaining the major assumption rebuilds the one-line parameter.
+- **D53:** *(2026-07-30, Phase 4 simplify)* **`SearchFailed`'s safe-goal
+  report becomes a thunk**: `safe_goals : unit -> (gid * cgoal) list`.
+  The second full safe search stays unconditional to anyone who asks and
+  costs nothing to the callers that discard it — today both production
+  failure branches in `aesopLib.close_raw`.  Rejected: gating on the
+  `aesop` trace level; a `report_safe_goals` config flag.
+- **D54:** *(2026-07-30, Phase 4 simplify)* **The claset precomputes its
+  Norm declaration list; Norm leaves the aesop net.**  `CS` gains
+  `norm_decls`, exposed as `clasetLib.norm_rules_of`; `insert_aesop_decl`
+  stops indexing Norm and `aesop_class`/`norm_rank`/`compare_aentry` lose
+  their Norm arms.  The per-assembly `rules_of` scan was O(all
+  declarations) on the hot path.  Rejected: index-driven Norm retrieval —
+  `aesopNorm.normalise` fetches its rule list once and reuses it across
+  the fixpoint while the goal is rewritten, so conclusion-indexing
+  against the initial goal would drop rules that only become applicable
+  after an earlier norm step.  Accepted: `aesop_target_candidates`
+  narrows to Intro rules.
+
+- **D55:** *(2026-07-30, Phase 5 scope)* **No `ARITH_TAC`** (revises D6
+  §8.5): Phase 5 delivers `LINARITH_TAC`, the instance records, the
+  preprocessing layer, the `[arith]` fact set, and the simp integration
+  (`LINARITH_ss` + unsafe solver); `arith_data.ML` is not ported — no
+  extensible tactic registry, no dispatching `ARITH_TAC`.  Rationale:
+  the registry adds no deciding power (every goal it closes, a direct
+  backend call closes), and dropping it removes the deliberate
+  shadowing of `numLib.ARITH_TAC`/`intLib.ARITH_TAC`.  Accepted: no
+  single-name analogue of Isabelle's `arith` — the Phase-8 parity
+  suite maps `arith` to `LINARITH_TAC`, the `intLib` Presburger
+  backends (D57), or a real backend per goal class; the promotion-time `DECIDE` escalation
+  (§11) needs its own mechanism if revisited.  (`PRESBURGER_TAC` was to
+  ship standalone; D57, same day, drops it.)
+- **D56:** *(2026-07-30, Phase 5 scope)* **Linarith default-on in the
+  layer's simpsets**: once Phase 5 lands, the D28 clasimp cache and
+  the D50 `aesop_ss` include the linarith unsafe solver and the
+  `[arith]` fact set by default, so `AUTO_TAC`/`FORCE_TAC`/
+  `FASTFORCE_TAC`/`CLARSIMP_TAC` and aesop normalisation get the
+  solver slot Isabelle's `auto`/`simp` always have
+  (`lin_arith.ML:949`); no clasimp-side code beyond the cache
+  configuration is involved.  Distribution simpsets (`srw_ss`,
+  `std_ss`, …) remain untouched until Phase 9 promotion (D10).
+- **D57:** *(2026-07-30, Phase 6 scope)* **Phase 6 dropped** (revises
+  D7): no `PRESBURGER_TAC`, no `src/auto/presburger/`, no
+  `[presburger]` rule set.  Code inspection showed `IntDP_Munge`
+  already provides `cooper.ML`-parity preprocessing: non-Presburger
+  subterm generalization, premise inclusion with thinning
+  (`conv_tac`/`ok_asm`, `IntDP_Munge.sml:519`), `min`/`max`/`abs`/
+  parity/nat-subtraction/`div`/`mod` elimination, and nat→int lifting.
+  Isabelle's `presburger` maps to `intLib.ARITH_TAC` (Omega) and
+  `intLib.COOPER_TAC` in the Phase-8 parity suite.  Accepted: no
+  single-call Omega→Cooper escalation (the one real strength delta —
+  Cooper handles quantifier alternations the Omega implementation
+  rejects; users pick explicitly) and no rule-set extensibility;
+  benchmark-demonstrated gaps become targeted `IntDP_Munge`
+  extensions, each its own task.
+- **D58:** *(2026-07-30, Phase 7 scope)* **Phase 7 dropped** (revises
+  D8): no `src/auto/algebra/`, no generic `RING_TAC`/`ALGEBRA_TAC`/
+  `IDEAL_TAC`, no instance registry, no `ringLib` promotion, no
+  rat/words `Grobner` instances, no assumption-aware wrappers, and no
+  `algebra_simps`/`field_simps` collections (the last may return as a
+  Phase-8 seeding decision).  Isabelle's `algebra`/`ring` map to the
+  existing per-type entry points (`Grobner.NUM_RING`,
+  `intLib.INT_RING_TAC`, `RealField.REAL_RING`/`REAL_FIELD_TAC`,
+  examples-only `ringLib.RING_TAC`) in the Phase-8 parity suite.
+  Accepted, to be recorded honestly by the benchmarks as known
+  strength shortfalls vs Isabelle: ring goals over rat and over words,
+  ideal-membership witness goals, and assumption-list integration.
+  Each may return as its own targeted task if benchmarks or users
+  demand it; the `Grobner.sig` params interface makes any single
+  instance bounded follow-up work.
+
+- **D59:** *(2026-07-30, Phase 5)* **Goal-level splitting**: the
+  `min`/`max`/`abs`/nat-subtraction/`div`/`mod` elimination layer runs
+  as genuine tactic preprocessing on the real goal (splitLib-driven
+  P-form splits; div/mod with literal divisors by fact-augmentation),
+  not as a port of the mirrored `pre_decomp`/`pre_tac` pair; in-engine
+  `≠`-splitting (`neq_limit`) is kept in both replay styles.  Details:
+  `PLAN_phase_5.md` §0, §5.
+- **D60:** *(2026-07-30, Phase 5)* **Two directories + live registry**
+  (revises §8.2's "persistent registry, ThmSetData-backed"):
+  `src/auto/linarith` = engine + registry + surface + num instance,
+  pre-boss deps, built before `auto/clasimp`;
+  `src/auto/linarith/instances` = int/real/rat instances + missing
+  lemmas, parallel band, self-registering at load into an in-memory
+  registry (instance records contain closures; D46 precedent).  The
+  D56 cache edits reference only the core; the solver reads the
+  registry and `[arith]` set dynamically.
+- **D61:** *(2026-07-30, Phase 5)* **Attributes `[arith]` +
+  `[arith_split]`**: settypes `"arith"` (facts) and `"arith_split"`
+  (P-form split rules, shape-validated), Symtab-keyed with REMOVE
+  support and removal functions; per-invocation `Split th` adds a
+  split rule; not Isabelle's `linarith_split` name.
+- **D62:** *(2026-07-30, Phase 5)* **Surface**: `LINARITH_TAC`,
+  `SIMPLE_LINARITH_TAC`, `CFG_LINARITH_TAC` (config
+  `{neq_limit, split_limit}`, defaults 9/9), `LINARITH_PROVE`,
+  `LINARITH_CONV`, `LINARITH_ss`, `linarith_solver` (slot string
+  `"lin_arith"`), `register_instance`, set accessors/removers,
+  `clear_linarith_caches`.  No global mutable limit refs.
+
 Overarching (owner clarification): judge every design by resulting tactic
 strength, not by resemblance to Isabelle's user syntax.
 
@@ -440,9 +560,7 @@ src/auto/
   blast/       -- tableau prover (Phase 2)
   clasimp/     -- AUTO/FORCE/FASTFORCE/CLARSIMP, [iff] (Phase 3)
   aesop/       -- best-first engine (Phase 4)
-  linarith/    -- generic linear arith + ARITH_TAC registry (Phase 5)
-  presburger/  -- PRESBURGER_TAC front end (Phase 6)
-  algebra/     -- instance registry, ALGEBRA_TAC/RING_TAC (Phase 7)
+  linarith/    -- generic linear arith, LINARITH_TAC (Phase 5, D55)
 ```
 
 Design constraints making the layer portable to full integration (D10):
@@ -850,9 +968,17 @@ All of these take the shared marker vocabulary (`Intro th`, `Simp th`
 of `auto intro!: foo split: ...`.
 
 <h2 id="8-phase-5--generic-linear-arithmetic-and-arith_tac-srcautolinarith-d6">
-8. Phase 5 — Generic linear arithmetic and <code>ARITH_TAC</code>
-(<code>src/auto/linarith/</code>) (D6)
+8. Phase 5 — Generic linear arithmetic: <code>LINARITH_TAC</code>
+(<code>src/auto/linarith/</code>) (D6, D55–D56)
 </h2>
+
+**Detailed implementation plan: `PLAN_phase_5.md` (2026-07-30; owner
+decisions D59–D62; research: `research/phase5-*.md`).**  It revises
+this sketch in two respects: splitting is goal-level, not a
+`pre_decomp`/`pre_tac` mirror port (D59), and the instance registry is
+an in-memory registry with a separate parallel-band
+`src/auto/linarith/instances` directory, not ThmSetData-persisted
+records (D60).
 
 1. **Core engine**: port of the `Fast_Lin_Arith` functor
    (`fast_lin_arith.ML`): untrusted Fourier–Motzkin over integer-scaled
@@ -875,19 +1001,34 @@ of `auto intro!: foo split: ...`.
    (`LINARITH_ss`, superseding nat-only `ARITH_ss` — swapped in as the
    `srw_ss` default only at promotion, D10) and (b) an unsafe solver for
    side conditions (§5.3), with the context-filtering + caching pattern of
-   `numSimps.CTXT_ARITH`/`Cache`.
-5. **`ARITH_TAC` registry** (port of `arith_data.ML`): ordered, extensible
-   tactic registry + `[arith]` fact set inserted before running; default
-   chain: generic linarith (full splitting) → `PRESBURGER_TAC` (§9) for
-   nat/int goals → `REAL_ARITH` backends for real goals.  `DECIDE`'s
-   behavior is unchanged until promotion; the layer's `ARITH_TAC` is the
-   strength-parity entry point.
+   `numSimps.CTXT_ARITH`/`Cache`.  Per D56 the solver and the `[arith]`
+   facts enter the D28 clasimp cache and the D50 `aesop_ss` by default,
+   so the whole clasimp family and aesop normalisation inherit them;
+   distribution simpsets are untouched until promotion.
+5. **Tactic surface (D55)**: `LINARITH_TAC` (full splitting) plus the
+   ThmSetData-backed `[arith]` fact set inserted before running.  No
+   `arith_data.ML` port: no extensible tactic registry and no
+   dispatching `ARITH_TAC` — escalation to `intLib.ARITH_TAC`/
+   `COOPER_TAC` (§9, D57) or the real backends is the user's explicit
+   call.  `DECIDE` and the existing
+   `numLib`/`intLib` `ARITH_TAC`s are untouched (no shadowing).
+   Strength-parity accounting for Isabelle's `arith` is per goal class
+   (§11 Benchmarking).
 
 Certificate-checking stays LCF-style proof-producing (reflection deferred
 to the later verified-QE phase, per D1/D6; cf. Chaieb & Nipkow JAR 2008 on
 the trade-off).
 
 ## 9. Phase 6 — `PRESBURGER_TAC` (`src/auto/presburger/`) (D7)
+
+**Status (2026-07-30): dropped (D57).**  Code inspection showed the
+sketch below re-describes preprocessing `IntDP_Munge` already performs
+(subterm generalization, premise thinning via `conv_tac`/`ok_asm`,
+`min`/`max`/`abs`/parity/subtraction/`div`/`mod` elimination, nat→int
+lifting).  The parity entry points are the existing `intLib.ARITH_TAC`
+(Omega) and `intLib.COOPER_TAC`; Phase-8 benchmark gaps, if any, become
+targeted `IntDP_Munge` extensions.  The original sketch is retained
+below for the record.
 
 Front end achieving `cooper.ML`-parity preprocessing over the existing
 complete engines:
@@ -902,7 +1043,9 @@ complete engines:
 3. Engine escalation: **Omega first** (fast on the QF/low-alternation
    goals dominating practice), **Cooper fallback** (full quantifier
    structure) — both already proof-producing and complete (Norrish 2003).
-4. Registered as the Presburger stage of the `ARITH_TAC` registry (§8.5).
+4. *(Overtaken by D57 with the rest of this section: no
+   `PRESBURGER_TAC` ships; `intLib.ARITH_TAC`/`COOPER_TAC` remain
+   available to the simp solver lists as opt-ins, never defaults.)*
 
 Later phase (sketch, per D1): verified reflected Cooper executed by
 `computeLib`/`cv_compute` (Chaieb & Nipkow LPAR 2005: ~200× over LCF
@@ -910,6 +1053,15 @@ replay), as a third, optional engine — plus Ferrante–Rackoff and MIR for
 linear real / mixed goals (Nipkow JAR 2010; Chaieb IJCAR 2006).
 
 ## 10. Phase 7 — `ALGEBRA_TAC` / `RING_TAC` (`src/auto/algebra/`) (D8)
+
+**Status (2026-07-30): dropped (D58).**  The engines and per-type entry
+points already exist (`NUM_RING`, `INT_RING_TAC`, `REAL_RING`/
+`REAL_FIELD_TAC`, examples-only abstract `ringLib.RING_TAC`); the
+dispatch/registry layer added no deciding power, and the genuine gaps
+(rat and words instances, an ideal-membership tactic, assumption
+pull-in) are accepted as recorded strength shortfalls, each revivable
+as a targeted task.  The original sketch is retained below for the
+record.
 
 1. **Instance registry**: persistent (ThmSetData-backed) map from
    (a) carrier types and (b) abstract-structure hypothesis patterns
@@ -1170,13 +1322,12 @@ arithmetic.  Each gets its own plan when reached.
   are all free):
   - `BLAST_TAC` is used as-is; its documentation cross-references
     `blastLib.BBLAST_TAC` (bit-blasting) to preempt confusion.
-  - `ARITH_TAC`: the layer exports it, deliberately shadowing
-    `numLib.ARITH_TAC`/`intLib.ARITH_TAC` when opened later — safe
-    because the registry tactic strictly subsumes both (same goals
-    solved and more); qualified names remain untouched.
-  - `RING_TAC`: `ringLib.RING_TAC` (examples/) is absorbed into the
-    layer as the abstract-ring instance of the generic `RING_TAC`
-    (§10.3), so there is no lasting duplicate.
+  - `ARITH_TAC`: not exported (D55, superseding the earlier shadowing
+    plan); `numLib.ARITH_TAC`/`intLib.ARITH_TAC` are unaffected.  The
+    layer's linarith entry point is `LINARITH_TAC` (collision-free).
+  - `RING_TAC`: no layer export (D58, superseding the planned
+    absorption of `ringLib.RING_TAC`); the examples-level tactic keeps
+    its name and home.
   - Best-first engine entry point: `AESOP_TAC`.
 - **Marker constructors**: `SIntro`, `Intro`, `SElim`, `Elim`, `SDest`,
   `Dest`, `Iff`, `Split`, `Del` — reusing existing `Cong`, `Excl`, `SF`,
@@ -1213,6 +1364,12 @@ arithmetic.  Each gets its own plan when reached.
   `CS_AESOP_TAC`, `CS_AESOP_SAFE_TAC`, `augment_aesop`, and
   `cases_rule_for`) are frozen.  Changes require an owner decision;
   `aesopTree`/`aesopSearch`/`aesopNorm` internals remain private.
+  Amended 2026-07-30 by D52–D54: `clasetReplay` loses
+  `NONCONSUMING_ELIM_RULE_TAC`/`nonconsuming_elim_rule_action` (D45's
+  umbrella, unused); `clasetLib` gains `norm_rules_of` and
+  `aesop_target_candidates` narrows to Intro rules (D54);
+  `aesopSearch.SearchFailed`'s `safe_goals` becomes a thunk (D53,
+  private internal).
 - **In-engine `mut_impc` revisit**: if Phase 8's Isabelle-translated
   benchmarks show gaps attributable to mutuality inside `SIMP_RULE`, under
   binders, or in nested implications, an engine port becomes its own
@@ -1233,9 +1390,10 @@ Phase 1  SAFE/CLARIFY    ──┤  needs 0
 Phase 2  FAST/BEST/DEEPEN + BLAST   needs 0,1 (shared search forest)
 Phase 3  AUTO/FORCE/CLARSIMP/[iff]  needs S,1,2
 Phase 4  aesop engine               needs 0, forest of 2
-Phase 5  linarith + ARITH_TAC       needs S (solver slot); independent of 1–4
-Phase 6  PRESBURGER_TAC             needs 5 (registry); engines exist
-Phase 7  ALGEBRA/RING               independent (engines exist)
+Phase 5  linarith (LINARITH_TAC)    needs S (solver slot); independent of 1–4
+Phase 6  (dropped, D57 — intLib.ARITH_TAC/COOPER_TAC already at parity)
+Phase 7  (dropped, D58 — per-type ring entry points stand; rat/words/ideal
+          gaps accepted, revivable as targeted tasks)
 Phase 8  seeding + benchmarks       continuous, gates parity claims
 Phase 9  promotion                  gated, per-item owner decisions
 ```

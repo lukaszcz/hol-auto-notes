@@ -16,7 +16,11 @@ the plans themselves:
 - one `phase4-*` report produced 2026-07-28 during the Phase 4
   planning round, prior to the owner-decision round and the writing of
   `../PLAN_phase_4.md` (HOL4 citations refer to worktree HEAD
-  `3bac17ef5`).
+  `3bac17ef5`);
+- three `phase5-*` reports produced 2026-07-30 during the Phase 5
+  planning round, prior to the D59–D62 owner decisions and the writing
+  of `../PLAN_phase_5.md` (HOL4 citations refer to worktree HEAD
+  `7a8a286b5`).
 
 Isabelle citations in these reports refer to `mirror-isabelle @ master`
 as of 2026-07-14, which is exactly the snapshot vendored at
@@ -45,4 +49,7 @@ for the 07-14/07-15 sets, `7dfd21f4f` for the 07-16 sets).
 | [phase12-classical-search-port.md](phase12-classical-search-port.md) | exact semantics of classical.ML:578–732 + Pure/search.ML combinators + Thm.biresolution (lifting, elim consumption, match mode); Phase 1 goal-level mapping (design choices C1–C10); Phase 2 metavariable-engine requirements (E1–E11); wrapper-on-Vars analysis; numeric constants; upstream `safe_depth_tac` DETERM-inversion finding |
 | [phase12-blast-port.md](phase12-blast-port.md) | reimplementation-grade spec of blast.ML: prototerm language/trail/unification, typargs + HOL4 encoding options, netMkRules/rule conversion, five-clause search cascade (penalties, md flags, prune, mayUndo), six-tactic reconstruction vocabulary + replay-instantiation analysis, limitations table, design choices A–M, Pelletier Table 1 + selftest spec |
 | [phase4-aesop-engine.md](phase4-aesop-engine.md) | precise CPP'23 Aesop spec (tree/states/priorities, phases, safe goals, multi-rules, seven builders, discrimination-tree indexing, §4 metavariable algorithm: clusters/copying/postponed safe rapps/dropped mvars); verified inventory of the delivered Phase-0/2/3 substrate it maps onto (prio reservation, clasetNet dual-mode net, clasetMeta/clasetUnify/clasetGoal render-unrender, clasimp derived-simpset + [iff] template); feasibility mapping, HOL4-specific simplifications, gap list, freeze constraints, open decisions |
+| [phase5-simp-substrate.md](phase5-simp-substrate.md) | delivered Phase-S extension points as-built: ssolver/subgoaler types and invocation sites (side conditions vs final residue), mk_tactic_solver semantics, looper hook, cond_depth plumbing, full splitLib API + programmatic-reuse verdict for linarith pre-splitting, extended SSFRAG/REDUCER records, the numSimps CTXT_ARITH/RCACHE pattern with a transposition recipe |
+| [phase5-arith-theorem-inventory.md](phase5-arith-theorem-inventory.md) | verified per-type lemma inventory for the Fast_Lin_Arith kits (num/int/real/rat): add/mult monotonicity, discreteness, neqE sources, min/max/abs and sub/div/mod split material, injection homomorphisms, literal-evaluation conversions, the existing RealArith0 FM-with-Positivstellensatz machinery, rat build position, and the explicit to-prove gap list |
+| [phase5-auto-layer-substrate.md](phase5-auto-layer-substrate.md) | src/auto substrate for Phase 5: D28 clasimp cache and D50 aesop_ss internals with exact linarith insertion points and invalidation caveats, ThmSetData settype/attribute pattern (aesop_simp vs split vs iff shapes), build/Holmakefile/selftest integration template, marker vocabulary and classify_simp_args, Docfiles format, and the verified stratification verdict forcing the two-directory layout |
 | [phase12-hol4-substrate.md](phase12-hol4-substrate.md) | delivered Phase-0 API as-built; HOL4 unification survey (`FullUnify` verdict, no HOU anywhere); jrhTactics (no metavariable support); meson/metis search-then-replay pipelines incl. types-as-terms typargs precedent; rule-application tactic vocabulary; `VAR_EQ_TAC` vs hypsubst verified (4 deviations); assumption ordering/rotation gaps; term_size/heap findings; Pelletier absence; bounding/trace conventions |

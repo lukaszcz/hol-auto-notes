@@ -32,9 +32,13 @@ register as D44–D51.
   freeze amendment, D32/D33 precedent): a per-theorem, wrapper-free
   step with the *standard* child policy and explicit unification mode —
   the `blast_rule_step` analogue minus `ExactBlastPrefixes` — consumed
-  by aesop on single-goal nodes.  The amendment umbrella includes, if
-  implementation requires it, an additive *non-consuming* elim replay
-  action in `clasetReplay` for forward rules (§5.3).  Rejected:
+  by aesop on single-goal nodes.  The amendment umbrella included, if
+  implementation required it, an additive *non-consuming* elim replay
+  action in `clasetReplay` for forward rules (§5.3).  **Closed unused by
+  D52 (2026-07-30, `PLAN_phase_4_simplify.md`)**: the forward path ships
+  through `FORWARD_RULE_TAC`, so `NONCONSUMING_ELIM_RULE_TAC`,
+  `nonconsuming_elim_rule_action` and the `retain_major` parameter are
+  removed.  Rejected:
   reimplementation in `aesop/` (duplicates the centralized
   canonicalisation/meta-creation/replay logic); using
   `blast_rule_step` as-is (blast-exact prefix policy is a semantic
@@ -207,9 +211,9 @@ fresh metas for rule variables, conclusion/major-premise unification
 per `mode`, `clasetGoal.children`/`elim_children`, per-alternative
 `step_record` with instantiated-replay `action`) — re-exported, not
 re-implemented.  Each alternative in the returned seq is one candidate
-rapp.  If the forward builder (§5.3) needs non-consuming elim
-application at replay, the companion additive `clasetReplay` action
-lands here under the same gate.  Differential tests against
+rapp.  (The companion non-consuming `clasetReplay` action that the D45
+umbrella held open for the forward builder was not required and is
+closed by D52.)  Differential tests against
 `blast_rule_step` on intro/elim examples where the policies agree.
 
 ### 3.3 `clasetRules` schema v2 (D46, D47)
@@ -249,7 +253,12 @@ type aesop_index =
 
 where `aentry` carries `{name, spec : rulespec, tag, thm}`.  Intro
 rules (safe+unsafe) index by conclusion; Elim/Dest/Forward by major
-premise; Norm by conclusion of the canonical rule.  Built
+premise.  **Amended by D52–D54 (2026-07-30, `PLAN_phase_4_simplify.md`):
+Norm rules are not indexed at all.**  The normalisation phase takes the
+whole Norm list rather than retrieving by goal shape, so the claset
+precomputes it as `norm_decls` and exposes `clasetLib.norm_rules_of :
+claset -> (rulespec * (string * thm)) list`, held in `rules_of` order.
+`aesop_target_candidates` therefore comprises Intro rules only.  Built
 incrementally in `add_decl`, rebuilt by `vfilter` on removal, merged
 by replaying `decl_merge_order` (same discipline as the netpairs).
 New lookup entry points (additive, `rulespec`-carrying):
@@ -262,7 +271,8 @@ val aesop_hyp_candidates : (* same type *)
 ```
 
 unify-mode (`clasetNet.unify`), candidate order = `(prio-derived
-rank, weight, recency)` for unsafe, claset candidate order for safe.
+rank, weight, recency)` for unsafe, claset candidate order for safe;
+safe precedes unsafe (the Norm class is gone per D54).
 Match locations (§3.3 of the paper) are recovered by the caller: the
 hyp-side query is per assumption, so the assumption index is known.
 
@@ -480,8 +490,9 @@ Declared `[forward]`/`[forward=NN]`/`[sforward]` (kind `Forward`,
 `safe` flag) or per-invocation via `Forward`/`SForward` markers.
 Operationally: apply `MAKE_ELIM_RULE thm` via `rule_step` with
 `elim = true` against a matching assumption, **without consuming
-it** (`children` with `consumed = NONE`; the D45 umbrella covers a
-non-consuming replay action if needed).  Phase-4 default =
+it** (`children` with `consumed = NONE`; replay is `FORWARD_RULE_TAC`,
+so the D45 non-consuming replay action was never needed — D52).
+Phase-4 default =
 all-immediate: after the major premise matches, every remaining
 premise subgoal must close immediately by assumption
 (match/unify per goal mode); the conclusion lands as the new head
@@ -550,6 +561,15 @@ built-ins.  Rigid rendering + `Match` mode structurally enforce the
 §4.5 no-metavariable rule for the whole phase.  A norm application
 that branches or that binds a metavariable fails that rule
 dynamically.
+
+The user `[norm]` rule list is fetched **once** per goal expansion
+(from `clasetLib.norm_rules_of`, D54) and reused across the whole
+fixpoint while the goal is rewritten — it is deliberately *not*
+retrieved from the aesop index by goal shape, since a rule indexed
+against the initial conclusion is not the set applicable at iteration
+*k*.  Moving retrieval inside the fixpoint (one query per iteration)
+is sound and possibly stronger, but needs its own benchmark evidence;
+it is a Phase-5 item, not part of D54.
 
 ## 7. Surface (`aesopLib`, D49)
 
